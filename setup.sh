@@ -89,7 +89,7 @@ apt-get install -y -qq python3 python3-pip python3-venv sqlite3
 
 python3 -m venv /opt/venv
 /opt/venv/bin/pip install --quiet --upgrade pip
-/opt/venv/bin/pip install --quiet requests playwright anthropic beehiiv-sdk
+/opt/venv/bin/pip install --quiet requests playwright anthropic
 
 # Install Playwright browsers
 /opt/venv/bin/python -m playwright install chromium
