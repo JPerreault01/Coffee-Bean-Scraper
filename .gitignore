@@ -8,4 +8,6 @@ __pycache__/
 *.pyc
 .DS_Store
 training_data/raw/
+training_data/cleaned/
 training_data/processed/
+training_data/state/

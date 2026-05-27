@@ -1,6 +1,7 @@
 """
 Reddit scraper using PRAW.
 Fetches posts from coffee-related subreddits and extracts top comments.
+Supports checkpointing: resumes interrupted runs from last saved state.
 """
 
 import json
@@ -16,6 +17,8 @@ import praw
 from praw.exceptions import PRAWException
 
 logger = logging.getLogger("reddit_scraper")
+
+STATE_PATH = Path("training_data/state/reddit_state.json")
 
 
 def load_config() -> dict:
@@ -33,6 +36,34 @@ def setup_logging():
     )
 
 
+# --- State management ---
+
+def load_state(fresh: bool = False) -> dict:
+    if not fresh and STATE_PATH.exists():
+        with open(STATE_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    return {
+        "scraped_post_ids": [],
+        "completed_subreddits": [],
+        "in_progress": None,
+        "last_run_at": None,
+    }
+
+
+def save_state(state: dict):
+    STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(STATE_PATH, "w", encoding="utf-8") as f:
+        json.dump(state, f, indent=2, ensure_ascii=False)
+
+
+def add_scraped_id(state: dict, post_id: str):
+    if post_id not in state["scraped_post_ids"]:
+        state["scraped_post_ids"].append(post_id)
+    save_state(state)
+
+
+# --- Helpers ---
+
 def get_domain_tags(text: str, config: dict) -> list[str]:
     text_lower = text.lower()
     tags = []
@@ -40,6 +71,13 @@ def get_domain_tags(text: str, config: dict) -> list[str]:
         if any(kw.lower() in text_lower for kw in keywords):
             tags.append(tag)
     return tags
+
+
+def get_max_comments(num_comments: int, config: dict) -> int:
+    for tier in config["reddit"]["comment_tiers"]:
+        if num_comments >= tier["min_comments"]:
+            return tier["max_comments_per_post"]
+    return config["reddit"]["comment_tiers"][-1]["max_comments_per_post"]
 
 
 def compute_reddit_quality(post_data: dict, config: dict) -> float:
@@ -89,24 +127,26 @@ def extract_comment(comment, depth: int, config: dict) -> Optional[dict]:
     return result
 
 
-def fetch_subreddit_posts(reddit: praw.Reddit, subreddit_name: str, config: dict) -> list[dict]:
+def fetch_subreddit_posts(reddit: praw.Reddit, subreddit_name: str, config: dict, scraped_ids: set) -> list[dict]:
     rcfg = config["reddit"]
     seen_ids: set[str] = set()
     posts: list[dict] = []
+    post_limit = rcfg.get("post_limit", 2000)
 
     sub = reddit.subreddit(subreddit_name)
 
     fetch_jobs = [
-        ("top", {"time_filter": "year", "limit": 500}),
-        ("top", {"time_filter": "all", "limit": 500}),
-        ("hot", {"limit": 200}),
+        ("top", {"time_filter": "year", "limit": post_limit}),
+        ("top", {"time_filter": "all", "limit": post_limit}),
+        ("hot", {"limit": min(post_limit, 1000)}),
+        ("new", {"limit": min(post_limit, 1000)}),
     ]
 
     for method, kwargs in fetch_jobs:
         try:
             listing = getattr(sub, method)(**kwargs)
             for submission in listing:
-                if submission.id in seen_ids:
+                if submission.id in seen_ids or submission.id in scraped_ids:
                     continue
                 seen_ids.add(submission.id)
 
@@ -138,13 +178,13 @@ def fetch_subreddit_posts(reddit: praw.Reddit, subreddit_name: str, config: dict
 
 
 def fetch_comments_for_post(reddit: praw.Reddit, post_data: dict, config: dict) -> list[dict]:
-    rcfg = config["reddit"]
     try:
+        max_comments = get_max_comments(post_data["num_comments"], config)
         submission = reddit.submission(id=post_data["post_id"])
         submission.comments.replace_more(limit=0)
         sorted_comments = sorted(submission.comments, key=lambda c: c.score, reverse=True)
         comments = []
-        for comment in sorted_comments[: rcfg["max_comments_per_post"]]:
+        for comment in sorted_comments[:max_comments]:
             extracted = extract_comment(comment, depth=1, config=config)
             if extracted:
                 comments.append(extracted)
@@ -157,7 +197,7 @@ def fetch_comments_for_post(reddit: praw.Reddit, post_data: dict, config: dict) 
         return []
 
 
-def run(config: dict) -> dict:
+def run(config: dict, fresh: bool = False) -> dict:
     setup_logging()
     rcfg = config["reddit"]
     output_dir = Path(rcfg["output_dir"])
@@ -177,19 +217,31 @@ def run(config: dict) -> dict:
         user_agent=user_agent,
     )
 
+    state = load_state(fresh=fresh)
+    scraped_ids = set(state["scraped_post_ids"])
+    completed_subreddits = set(state["completed_subreddits"])
+
     summary = {"posts": 0, "comments": 0, "subreddits": {}}
     scraped_at = datetime.now(tz=timezone.utc).isoformat()
 
     for subreddit_name in rcfg["subreddits"]:
+        if subreddit_name in completed_subreddits:
+            logger.info(f"r/{subreddit_name}: already completed, skipping")
+            continue
+
+        state["in_progress"] = subreddit_name
+        save_state(state)
+
         logger.info(f"Fetching posts from r/{subreddit_name}")
-        posts = fetch_subreddit_posts(reddit, subreddit_name, config)
-        logger.info(f"r/{subreddit_name}: {len(posts)} posts after filtering, fetching comments...")
+        posts = fetch_subreddit_posts(reddit, subreddit_name, config, scraped_ids)
+        logger.info(f"r/{subreddit_name}: {len(posts)} new posts after filtering, fetching comments...")
 
         out_path = output_dir / f"{subreddit_name}.jsonl"
         post_count = 0
         comment_count = 0
 
-        with open(out_path, "w", encoding="utf-8") as f:
+        # Append mode so interrupted runs don't lose progress
+        with open(out_path, "a", encoding="utf-8") as f:
             for post_data in posts:
                 try:
                     comments = fetch_comments_for_post(reddit, post_data, config)
@@ -212,13 +264,25 @@ def run(config: dict) -> dict:
                     post_count += 1
                     comment_count += len(comments)
 
+                    # Update state after each successfully written record
+                    add_scraped_id(state, post_data["post_id"])
+                    scraped_ids.add(post_data["post_id"])
+
                 except Exception as e:
                     logger.error(f"Error processing post {post_data.get('post_id', '?')}: {e}")
+
+        state["completed_subreddits"].append(subreddit_name)
+        completed_subreddits.add(subreddit_name)
+        save_state(state)
 
         summary["subreddits"][subreddit_name] = {"posts": post_count, "comments": comment_count}
         summary["posts"] += post_count
         summary["comments"] += comment_count
         logger.info(f"r/{subreddit_name}: wrote {post_count} posts, {comment_count} comments → {out_path}")
+
+    state["in_progress"] = None
+    state["last_run_at"] = datetime.now(tz=timezone.utc).isoformat()
+    save_state(state)
 
     print(f"Reddit complete:  {summary['posts']:,} posts | {summary['comments']:,} comments")
     return summary

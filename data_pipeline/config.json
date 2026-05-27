@@ -1,15 +1,20 @@
 {
   "reddit": {
-    "subreddits": ["Coffee", "espresso", "pourover", "CoffeePH"],
-    "fetch_filters": ["top_year", "top_all", "hot"],
+    "subreddits": ["Coffee", "espresso", "pourover", "CoffeePH", "coffeegeek", "barista", "Coffee_Reviews", "HomeBarista"],
+    "fetch_filters": ["top_year", "top_all", "hot", "new"],
+    "post_limit": 2000,
     "min_score": 50,
     "min_comments": 10,
     "short_post_min_chars": 50,
     "short_post_score_threshold": 200,
-    "max_comments_per_post": 25,
     "comment_reply_depth": 2,
     "max_replies_per_comment": 5,
     "min_comment_chars": 30,
+    "comment_tiers": [
+      {"min_comments": 500, "max_comments_per_post": 75},
+      {"min_comments": 100, "max_comments_per_post": 50},
+      {"min_comments": 0,   "max_comments_per_post": 25}
+    ],
     "output_dir": "training_data/raw/reddit",
     "quality": {
       "score_weight": 0.5,
@@ -27,19 +32,37 @@
         "base_url": "https://baristahustle.com",
         "start_url": "https://baristahustle.com/blog/",
         "pagination_type": "wordpress",
-        "max_articles": 300
+        "max_articles": 500
       },
       "coffee_ad_astra": {
         "base_url": "https://coffeeadastra.com",
         "start_url": "https://coffeeadastra.com",
         "pagination_type": "link_collection",
-        "max_articles": 300
+        "max_articles": 500
       },
       "perfect_daily_grind": {
         "base_url": "https://perfectdailygrind.com",
         "categories": ["/category/read/", "/category/roast/", "/category/brew/"],
         "pagination_type": "wordpress",
-        "max_articles": 300
+        "max_articles": 500
+      },
+      "home_barista": {
+        "article_list_urls": [
+          "https://www.home-barista.com/forums/"
+        ],
+        "type": "forum",
+        "max_articles": 500,
+        "min_replies": 10
+      },
+      "barista_hustle_pro": {
+        "article_list_urls": [
+          "https://www.baristahustle.com/knowledgebase/"
+        ],
+        "type": "wordpress",
+        "base_url": "https://www.baristahustle.com",
+        "start_url": "https://www.baristahustle.com/knowledgebase/",
+        "pagination_type": "wordpress",
+        "max_articles": 500
       }
     },
     "min_article_chars": 500,
@@ -63,14 +86,39 @@
       "lance_hedrick": {
         "channel_id": "UCKl3yBpTMZbGxRAjoZMDHHQ",
         "authority_weight": 0.8
+      },
+      "matt_perger": {
+        "channel_id": "UCiPWFqHpoztGxE7SsGCi3Vg",
+        "authority_weight": 0.9
+      },
+      "sprometheus": {
+        "channel_id": "UCcBMbOTJwCmCFaos4e51s-g",
+        "authority_weight": 0.8
       }
     },
     "default_authority_weight": 0.8,
-    "max_videos_per_channel": 200,
+    "max_videos_per_channel": 500,
     "min_transcript_chars": 300,
     "transcript_language_preference": ["en", "en-US", "en-GB"],
     "description_max_chars": 500,
     "output_dir": "training_data/raw/youtube",
+    "term_corrections": {
+      "nice zero": "Niche Zero",
+      "nice zeros": "Niche Zero",
+      "df 64": "DF64",
+      "df64": "DF64",
+      "v 60": "V60",
+      "v60": "V60",
+      "aeropress": "AeroPress",
+      "kinu": "Kinu",
+      "comandante": "Comandante",
+      "weber workshops": "Weber Workshops",
+      "ek 43": "EK43",
+      "ek43": "EK43",
+      "la marzocco": "La Marzocco",
+      "flair espresso": "Flair Espresso",
+      "1zpresso": "1Zpresso"
+    },
     "quality": {
       "transcript_weight": 0.5,
       "keyword_weight": 0.3,
