@@ -1,33 +1,36 @@
 # scrapers/price_scraper.py
 """
 Coffee bean price scraper.
-Fetches prices from Amazon PA-API 5.0 and direct roaster URLs via Playwright.
+Fetches prices from Amazon product pages and direct roaster URLs via Playwright.
 Stores results in SQLite. Designed for daily cron execution.
 
 Cron entry:
   0 6 * * * /opt/venv/bin/python3 /opt/scrapers/price_scraper.py >> /opt/data/scraper.log 2>&1
 
 Dependencies:
-  pip install requests playwright
+  pip install playwright
   python -m playwright install chromium
 """
 
-import hashlib
-import hmac
 import json
 import logging
 import os
+import random
+import re
 import sqlite3
 import sys
-from datetime import datetime, timezone
+import time
 from pathlib import Path
 
-import requests
+from playwright.sync_api import sync_playwright
 
 ENV_FILE = Path("/opt/.env")
-DB_PATH = Path("/opt/data/prices.db")
-LOG_PATH = Path("/opt/data/scraper.log")
-PRODUCTS_FILE = Path("/opt/scrapers/products.json")
+BASE_DIR = Path(__file__).resolve().parent.parent
+DB_PATH = BASE_DIR / "data" / "prices.db"
+LOG_PATH = BASE_DIR / "data" / "scraper.log"
+PRODUCTS_FILE = Path(__file__).resolve().parent / "products.json"
+
+LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -73,117 +76,15 @@ def init_db(conn: sqlite3.Connection) -> None:
     conn.commit()
 
 
-# ---------------------------------------------------------------------------
-# Amazon PA-API 5.0 with AWS Signature Version 4
-# ---------------------------------------------------------------------------
+# Amazon selectors in priority order — .a-offscreen has the full price string
+AMAZON_PRICE_SELECTORS = [
+    ".a-price-whole",
+    "#priceblock_ourprice",
+    "#priceblock_dealprice",
+    ".a-offscreen",
+]
 
-def _sign(key: bytes, msg: str) -> bytes:
-    return hmac.new(key, msg.encode("utf-8"), hashlib.sha256).digest()
-
-
-def _get_signing_key(secret_key: str, date: str, region: str, service: str) -> bytes:
-    k_date = _sign(("AWS4" + secret_key).encode("utf-8"), date)
-    k_region = _sign(k_date, region)
-    k_service = _sign(k_region, service)
-    return _sign(k_service, "aws4_request")
-
-
-def amazon_get_price(asin: str, partner_tag: str, env: dict) -> float | None:
-    access_key = env.get("AMAZON_ACCESS_KEY", "")
-    secret_key = env.get("AMAZON_SECRET_KEY", "")
-    partner_tag = partner_tag or env.get("AMAZON_PARTNER_TAG", "")
-
-    if not all([access_key, secret_key, partner_tag]):
-        log.warning("Amazon PA-API credentials not configured — skipping ASIN %s", asin)
-        return None
-
-    host = "webservices.amazon.com"
-    region = "us-east-1"
-    service = "ProductAdvertisingAPI"
-    endpoint = f"https://{host}/paapi5/getitems"
-
-    now = datetime.now(timezone.utc)
-    amz_date = now.strftime("%Y%m%dT%H%M%SZ")
-    date_stamp = now.strftime("%Y%m%d")
-
-    payload = {
-        "ItemIds": [asin],
-        "PartnerTag": partner_tag,
-        "PartnerType": "Associates",
-        "Marketplace": "www.amazon.com",
-        "Resources": [
-            "Offers.Listings.Price",
-            "Offers.Listings.SavingBasis",
-            "ItemInfo.Title",
-        ],
-    }
-    payload_json = json.dumps(payload)
-    payload_hash = hashlib.sha256(payload_json.encode("utf-8")).hexdigest()
-
-    headers_to_sign = {
-        "content-encoding": "amz-1.0",
-        "content-type": "application/json; charset=utf-8",
-        "host": host,
-        "x-amz-date": amz_date,
-        "x-amz-target": "com.amazon.paapi5.v1.ProductAdvertisingAPIv1.GetItems",
-    }
-    canonical_headers = "".join(f"{k}:{v}\n" for k, v in sorted(headers_to_sign.items()))
-    signed_headers = ";".join(sorted(headers_to_sign.keys()))
-
-    canonical_request = "\n".join([
-        "POST",
-        "/paapi5/getitems",
-        "",
-        canonical_headers,
-        signed_headers,
-        payload_hash,
-    ])
-
-    credential_scope = f"{date_stamp}/{region}/{service}/aws4_request"
-    string_to_sign = "\n".join([
-        "AWS4-HMAC-SHA256",
-        amz_date,
-        credential_scope,
-        hashlib.sha256(canonical_request.encode("utf-8")).hexdigest(),
-    ])
-
-    signing_key = _get_signing_key(secret_key, date_stamp, region, service)
-    signature = hmac.new(signing_key, string_to_sign.encode("utf-8"), hashlib.sha256).hexdigest()
-
-    auth_header = (
-        f"AWS4-HMAC-SHA256 Credential={access_key}/{credential_scope}, "
-        f"SignedHeaders={signed_headers}, Signature={signature}"
-    )
-
-    request_headers = {
-        **headers_to_sign,
-        "Authorization": auth_header,
-    }
-
-    try:
-        resp = requests.post(endpoint, data=payload_json, headers=request_headers, timeout=15)
-        resp.raise_for_status()
-        data = resp.json()
-        items = data.get("ItemsResult", {}).get("Items", [])
-        if not items:
-            log.warning("No items returned for ASIN %s", asin)
-            return None
-        listings = items[0].get("Offers", {}).get("Listings", [])
-        if not listings:
-            log.warning("No listings for ASIN %s", asin)
-            return None
-        price = listings[0].get("Price", {}).get("Amount")
-        return float(price) if price is not None else None
-    except Exception as exc:
-        log.error("Amazon PA-API error for ASIN %s: %s", asin, exc)
-        return None
-
-
-# ---------------------------------------------------------------------------
-# Roaster URL scraping via Playwright
-# ---------------------------------------------------------------------------
-
-PRICE_SELECTORS = [
+ROASTER_PRICE_SELECTORS = [
     "[data-price]",
     ".price",
     ".product-price",
@@ -193,19 +94,20 @@ PRICE_SELECTORS = [
     "[class*='price']",
     "span.money",
     ".woocommerce-Price-amount",
-    "#priceblock_ourprice",
-    "#priceblock_dealprice",
-    ".a-price .a-offscreen",
 ]
 
 
-def scrape_roaster_price(url: str) -> float | None:
-    try:
-        from playwright.sync_api import sync_playwright
-    except ImportError:
-        log.error("Playwright not installed — run: pip install playwright && python -m playwright install chromium")
-        return None
+def _parse_price(text: str) -> float | None:
+    match = re.search(r"\d[\d,]*\.?\d*", text.replace(",", ""))
+    if match:
+        try:
+            return float(match.group().replace(",", ""))
+        except ValueError:
+            return None
+    return None
 
+
+def scrape_price(url: str, selectors: list[str]) -> float | None:
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
@@ -218,7 +120,7 @@ def scrape_roaster_price(url: str) -> float | None:
             page.goto(url, timeout=20000, wait_until="domcontentloaded")
             page.wait_for_timeout(2000)
 
-            for selector in PRICE_SELECTORS:
+            for selector in selectors:
                 try:
                     el = page.query_selector(selector)
                     if el:
@@ -238,23 +140,29 @@ def scrape_roaster_price(url: str) -> float | None:
         return None
 
 
-def _parse_price(text: str) -> float | None:
-    import re
-    match = re.search(r"\d[\d,]*\.?\d*", text.replace(",", ""))
-    if match:
-        try:
-            return float(match.group().replace(",", ""))
-        except ValueError:
-            return None
-    return None
+def print_summary(results: list[dict]) -> None:
+    if not results:
+        print("\nNo prices collected.")
+        return
 
+    col_name = max((len(r["name"]) for r in results), default=12)
+    col_name = max(col_name, 12)
 
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
+    header = f"{'Product':<{col_name}}  {'Price':>8}  {'Price/oz':>9}  URL"
+    separator = "-" * min(len(header) + 40, 120)
+    print(f"\n{header}")
+    print(separator)
+
+    for r in results:
+        price_str = f"${r['price']:.2f}" if r["price"] is not None else "—"
+        ppoz_str = f"${r['price_per_oz']:.3f}" if r.get("price_per_oz") is not None else "—"
+        print(f"{r['name']:<{col_name}}  {price_str:>8}  {ppoz_str:>9}  {r['url']}")
+
+    print()
+
 
 def run() -> None:
-    env = load_env()
+    env = load_env()  # noqa: F841 — kept for env loading pattern consistency
 
     if not PRODUCTS_FILE.exists():
         log.error("products.json not found at %s", PRODUCTS_FILE)
@@ -267,32 +175,45 @@ def run() -> None:
     conn = sqlite3.connect(DB_PATH)
     init_db(conn)
 
+    results = []
     success = 0
     failed = 0
 
-    for product in products:
+    for i, product in enumerate(products):
         pid = product["id"]
         name = product["name"]
         weight_oz = product.get("weight_oz")
         asin = product.get("amazon_asin")
         roaster_url = product.get("roaster_url")
-        affiliate_tag = product.get("affiliate_tag")
+
+        if i > 0:
+            delay = random.uniform(3, 8)
+            log.info("Waiting %.1f seconds before next request...", delay)
+            time.sleep(delay)
 
         price: float | None = None
+        source_url: str = ""
         source: str = ""
 
         if asin:
-            log.info("Fetching Amazon price for %s (ASIN: %s)", name, asin)
-            price = amazon_get_price(asin, affiliate_tag or "", env)
+            source_url = f"https://www.amazon.com/dp/{asin}"
+            log.info("Scraping Amazon price for %s (%s)", name, source_url)
+            price = scrape_price(source_url, AMAZON_PRICE_SELECTORS)
             source = "amazon"
         elif roaster_url:
+            source_url = roaster_url
             log.info("Scraping roaster price for %s (%s)", name, roaster_url)
-            price = scrape_roaster_price(roaster_url)
+            price = scrape_price(source_url, ROASTER_PRICE_SELECTORS)
             source = "roaster"
+        else:
+            log.warning("No ASIN or roaster URL for %s — skipping", name)
+            failed += 1
+            continue
 
         if price is None:
             log.warning("No price found for %s — skipping", name)
             failed += 1
+            results.append({"name": name, "price": None, "price_per_oz": None, "url": source_url})
             continue
 
         price_per_oz = round(price / weight_oz, 4) if weight_oz else None
@@ -313,10 +234,12 @@ def run() -> None:
             source,
             f" (${price_per_oz:.3f}/oz)" if price_per_oz else "",
         )
+        results.append({"name": name, "price": price, "price_per_oz": price_per_oz, "url": source_url})
         success += 1
 
     conn.close()
     log.info("Done. %d succeeded, %d failed.", success, failed)
+    print_summary(results)
 
 
 if __name__ == "__main__":
