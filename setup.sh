@@ -31,7 +31,8 @@ apt-get install -y -qq ufw fail2ban curl wget unzip gnupg2 software-properties-c
 ufw default deny incoming
 ufw default allow outgoing
 ufw allow ssh
-ufw allow 'Nginx Full'
+ufw allow 80/tcp
+ufw allow 443/tcp
 ufw --force enable
 
 # fail2ban config
