@@ -214,3 +214,121 @@ Always use tracked affiliate links. Never link directly to a product without an 
 - Re-explaining the project context back to me
 - Warnings and disclaimers unless there's a real risk I should know about
 - Suggestions to hire a developer for tasks the scraper/AI pipeline can handle
+
+Content standards
+Review format (all product reviews must follow this)
+## [Product Name] Review
+
+**One-line verdict**: [Direct, specific, no hedge words]
+
+| Spec | Detail |
+|---|---|
+| Roast | |
+| Origin | |
+| Process | |
+| Best for | [brew methods] |
+| Price/oz | $X.XX |
+
+### Tasting notes
+- [Specific note — e.g. "Dark chocolate bitterness that fades clean, not lingering"]
+- [3–5 bullets total, no vague descriptors without context]
+
+### Who it's for
+[1–2 sentences. Specific — "espresso drinkers who want low acidity" not "coffee lovers"]
+
+### Who should skip it
+[1–2 sentences. Honest.]
+
+### Price analysis
+[Current price vs 30-day average, value judgment, when to buy]
+
+### Rating: X/10
+[One sentence explaining the score]
+
+Review voice system — HARD RULES
+Every review is generated in one of two voice modes. These rules are non-negotiable
+and apply to all AI-generated content on this site.
+Default mode: Analytical voice
+Used for all products unless --personal is explicitly passed to generate_review.py.
+Hard rules — analytical mode:
+
+NEVER write "I tried", "I brewed", "I tasted", "I found", or any first-person
+consumption claim for the specific product being reviewed
+NEVER write "buyers say", "reviewers report", "customers note", "users find",
+or any attribution to a crowd or group
+State what the coffee IS and DOES. The coffee is the subject, not a person.
+Second person ("you get", "you'll find") is allowed — it puts the reader in the
+experience without claiming the writer was there
+Apply the site's standing preferences (see below) as the critical lens —
+they are established voice, not personal consumption claims
+Confidence level is absolute. No "may", "might", "could", "tends to", "can be"
+
+Good:
+"The finish is clean. No linger."
+"This roast turns acrid past 205°F."
+"Too aggressive for an early cup."
+"You get dark chocolate up front, then a clean caramel fade."
+"Pull this short. Long extractions go muddy."
+Bad:
+"I found the finish clean." ← personal consumption claim, analytical mode only
+"Buyers report it turns acrid." ← crowd attribution, never allowed
+"Some may find this too intense." ← hedging, never allowed
+"It could potentially work for espresso." ← hedging, never allowed
+Personal mode: --personal flag
+Used only for products the site owner has personally tried.
+Pass --personal to generate_review.py to activate.
+What the personal flag unlocks:
+
+First-person language ("I", "my", "I've") for direct consumption claims
+about this specific product
+"Too aggressive for my first cup."
+"I've pushed this past 205°F — it turns acrid every time."
+"My go-to for moka pot mornings."
+
+What the personal flag does NOT change:
+
+Confidence level — identical to analytical, absolute
+Sentence structure — still short, declarative
+The site's standing preferences
+The ban on hedging language
+The analytical framing of price, value, and specs
+
+The reader should not be able to tell which mode they're reading based on
+confidence level. Only the presence or absence of "I" language differs.
+Site's standing preferences (apply in both modes)
+These are the established voice of this site. Applying them to a product's
+documented characteristics is legitimate critical judgment, not a consumption claim.
+
+Clean finishes over lingering bitterness
+Forgiving brew profiles over finicky ones
+Value-driven pricing over brand premiums
+Bright, defined flavors over muddy complexity
+Aggressive, high-intensity roasts are not early morning coffees
+Espresso that works without a $2,000 machine is worth more than espresso that doesn't
+
+
+Writing style — HARD RULES
+
+Direct, confident voice — no softening, no flattery
+No filler phrases: "in conclusion", "it's worth noting", "at the end of the day", "overall"
+No fake hedging: "some may find", "could potentially", "tends to", "can be"
+Specific over vague: "turns acrid past 205°F" beats "can be harsh if over-extracted"
+Short sentences preferred over compound clauses
+No producer puffery — never repeat marketing language uncritically
+British or American spelling is fine, but be consistent within a piece
+
+
+Content types and their purposes
+TypeSEO intentMonetizationIndividual reviewBrand + product name searchesAffiliate link in review"Best X for Y" roundupCommercial intent ("best espresso beans under $20")Multiple affiliate linksOrigin guideInformational ("Ethiopian coffee taste")Internal links to reviewsPrice tracker pageNavigational + returning visitorsAffiliate link on price dropComparison ("X vs Y")High-converting commercial intentAffiliate links to both
+First 10 pages to publish (priority order)
+
+Lavazza Super Crema review
+Best Espresso Beans Under $20 roundup
+Illy Classico review
+Ethiopian Coffee taste guide (informational)
+Death Wish Coffee review
+Best Dark Roast Coffee Beans roundup
+Stumptown Hair Bender review
+French Press Coffee Beans guide (informational)
+Peet's Major Dickason's review
+Blue Bottle Hayes Valley review
