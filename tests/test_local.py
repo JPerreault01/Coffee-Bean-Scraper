@@ -6,10 +6,11 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).parent.parent
-DB_PATH = REPO_ROOT / "data" / "prices.db"
 PRODUCTS_FILE = REPO_ROOT / "scrapers" / "products.json"
 
 sys.path.insert(0, str(REPO_ROOT))
+
+from scrapers.db import DB_PATH  # noqa: E402
 
 
 def check(label, condition, reason=""):

@@ -17,7 +17,6 @@ import logging
 import os
 import random
 import re
-import sqlite3
 import sys
 import time
 from pathlib import Path
@@ -26,9 +25,11 @@ from playwright.sync_api import sync_playwright
 
 ENV_FILE = Path("/opt/.env")
 BASE_DIR = Path(__file__).resolve().parent.parent
-DB_PATH = BASE_DIR / "data" / "prices.db"
 LOG_PATH = BASE_DIR / "data" / "scraper.log"
 PRODUCTS_FILE = Path(__file__).resolve().parent / "products.json"
+
+sys.path.insert(0, str(BASE_DIR))
+from scrapers.db import get_connection  # noqa: E402
 
 LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
 
@@ -54,26 +55,6 @@ def load_env() -> dict:
                     env[k.strip()] = v.strip().strip('"').strip("'")
     env.update(os.environ)
     return env
-
-
-def init_db(conn: sqlite3.Connection) -> None:
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS price_history (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            product_id TEXT NOT NULL,
-            price REAL NOT NULL,
-            currency TEXT DEFAULT 'USD',
-            source TEXT NOT NULL,
-            weight_oz REAL,
-            price_per_oz REAL,
-            checked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
-    conn.execute("""
-        CREATE INDEX IF NOT EXISTS idx_product_checked
-        ON price_history (product_id, checked_at)
-    """)
-    conn.commit()
 
 
 # Amazon selectors in priority order — .a-offscreen has the full price string
@@ -186,73 +167,69 @@ def run() -> None:
     with open(PRODUCTS_FILE, encoding="utf-8") as f:
         products = json.load(f)
 
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
-    init_db(conn)
-
     results = []
     success = 0
     failed = 0
 
-    for i, product in enumerate(products):
-        pid = product["id"]
-        name = product["name"]
-        weight_oz = product.get("weight_oz")
-        asin = product.get("amazon_asin")
-        roaster_url = product.get("roaster_url")
+    with get_connection() as conn:
+        for i, product in enumerate(products):
+            pid = product["id"]
+            name = product["name"]
+            weight_oz = product.get("weight_oz")
+            asin = product.get("amazon_asin")
+            roaster_url = product.get("roaster_url")
 
-        if i > 0:
-            delay = random.uniform(3, 8)
-            log.info("Waiting %.1f seconds before next request...", delay)
-            time.sleep(delay)
+            if i > 0:
+                delay = random.uniform(3, 8)
+                log.info("Waiting %.1f seconds before next request...", delay)
+                time.sleep(delay)
 
-        price: float | None = None
-        source_url: str = ""
-        source: str = ""
+            price: float | None = None
+            source_url: str = ""
+            source: str = ""
 
-        if asin:
-            source_url = f"https://www.amazon.com/dp/{asin}"
-            log.info("Scraping Amazon price for %s (%s)", name, source_url)
-            price = scrape_price(source_url, AMAZON_PRICE_SELECTORS)
-            source = "amazon"
-        elif roaster_url:
-            source_url = roaster_url
-            log.info("Scraping roaster price for %s (%s)", name, roaster_url)
-            price = scrape_price(source_url, ROASTER_PRICE_SELECTORS)
-            source = "roaster"
-        else:
-            log.warning("No ASIN or roaster URL for %s — skipping", name)
-            failed += 1
-            continue
+            if asin:
+                source_url = f"https://www.amazon.com/dp/{asin}"
+                log.info("Scraping Amazon price for %s (%s)", name, source_url)
+                price = scrape_price(source_url, AMAZON_PRICE_SELECTORS)
+                source = "amazon"
+            elif roaster_url:
+                source_url = roaster_url
+                log.info("Scraping roaster price for %s (%s)", name, roaster_url)
+                price = scrape_price(source_url, ROASTER_PRICE_SELECTORS)
+                source = "roaster"
+            else:
+                log.warning("No ASIN or roaster URL for %s — skipping", name)
+                failed += 1
+                continue
 
-        if price is None:
-            log.warning("No price found for %s — skipping", name)
-            failed += 1
-            results.append({"name": name, "price": None, "price_per_oz": None, "url": source_url})
-            continue
+            if price is None:
+                log.warning("No price found for %s — skipping", name)
+                failed += 1
+                results.append({"name": name, "price": None, "price_per_oz": None, "url": source_url})
+                continue
 
-        price_per_oz = round(price / weight_oz, 4) if weight_oz else None
+            price_per_oz = round(price / weight_oz, 4) if weight_oz else None
 
-        conn.execute(
-            """
-            INSERT INTO price_history (product_id, price, source, weight_oz, price_per_oz)
-            VALUES (?, ?, ?, ?, ?)
-            """,
-            (pid, price, source, weight_oz, price_per_oz),
-        )
-        conn.commit()
+            conn.execute(
+                """
+                INSERT INTO price_history (product_id, price, source, weight_oz, price_per_oz)
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                (pid, price, source, weight_oz, price_per_oz),
+            )
+            conn.commit()
 
-        log.info(
-            "Saved: %s | $%.2f | %s%s",
-            name,
-            price,
-            source,
-            f" (${price_per_oz:.3f}/oz)" if price_per_oz else "",
-        )
-        results.append({"name": name, "price": price, "price_per_oz": price_per_oz, "url": source_url})
-        success += 1
+            log.info(
+                "Saved: %s | $%.2f | %s%s",
+                name,
+                price,
+                source,
+                f" (${price_per_oz:.3f}/oz)" if price_per_oz else "",
+            )
+            results.append({"name": name, "price": price, "price_per_oz": price_per_oz, "url": source_url})
+            success += 1
 
-    conn.close()
     log.info("Done. %d succeeded, %d failed.", success, failed)
     print_summary(results)
 
