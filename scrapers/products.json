@@ -16,7 +16,12 @@
     "body": 4,
     "sweetness": 3,
     "bitterness": 3,
-    "roast_intensity": 3
+    "roast_intensity": 3,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {"product": "Café Don Pablo Gourmet Coffee Signature Blend", "logic": "flavor_profile"},
+      {"product": "Illy Classico Ground Coffee Medium Roast", "logic": "performance"}
+    ]
   },
   {
     "id": "illy-classico-medium",
@@ -35,7 +40,12 @@
     "body": 3,
     "sweetness": 4,
     "bitterness": 2,
-    "roast_intensity": 3
+    "roast_intensity": 3,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {"product": "Stumptown Hair Bender", "logic": "flavor_profile"},
+      {"product": "Lavazza Super Crema", "logic": "performance"}
+    ]
   },
   {
     "id": "peets-major-dickasons",
@@ -54,7 +64,12 @@
     "body": 5,
     "sweetness": 2,
     "bitterness": 4,
-    "roast_intensity": 5
+    "roast_intensity": 5,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {"product": "Camano Island Coffee Roasters Sumatra", "logic": "origin"},
+      {"product": "Kicking Horse Coffee 454 Horse Power Dark Roast", "logic": "performance"}
+    ]
   },
   {
     "id": "stumptown-hair-bender",
@@ -73,7 +88,12 @@
     "body": 3,
     "sweetness": 3,
     "bitterness": 3,
-    "roast_intensity": 3
+    "roast_intensity": 3,
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {"product": "Atlas Coffee Club Ethiopia Limu", "logic": "origin"},
+      {"product": "Intelligentsia Black Cat Espresso", "logic": "performance"}
+    ]
   },
   {
     "id": "death-wish-coffee",
@@ -92,7 +112,12 @@
     "body": 5,
     "sweetness": 2,
     "bitterness": 5,
-    "roast_intensity": 5
+    "roast_intensity": 5,
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {"product": "Community Coffee Signature Blend Medium-Dark Roast", "logic": "flavor_profile"},
+      {"product": "Café Bustelo Espresso Style Dark Roast", "logic": "performance"}
+    ]
   },
   {
     "id": "kicking-horse-454-horse-power",
@@ -111,7 +136,12 @@
     "body": 5,
     "sweetness": 2,
     "bitterness": 4,
-    "roast_intensity": 5
+    "roast_intensity": 5,
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {"product": "Café Bustelo Espresso Style Dark Roast", "logic": "performance"},
+      {"product": "Peet's Coffee Major Dickason's Blend", "logic": "flavor_profile"}
+    ]
   },
   {
     "id": "lifeboost-medium-roast",
@@ -130,7 +160,12 @@
     "body": 3,
     "sweetness": 3,
     "bitterness": 2,
-    "roast_intensity": 3
+    "roast_intensity": 3,
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {"product": "Eight O'Clock Original Whole Bean Coffee", "logic": "flavor_profile"},
+      {"product": "Don Francisco's Colombia Supremo Medium Roast", "logic": "origin"}
+    ]
   },
   {
     "id": "cafe-don-pablo-gourmet",
@@ -149,7 +184,12 @@
     "body": 4,
     "sweetness": 3,
     "bitterness": 3,
-    "roast_intensity": 4
+    "roast_intensity": 4,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {"product": "Caribou Coffee Caribou Blend", "logic": "flavor_profile"},
+      {"product": "Community Coffee Signature Blend Medium-Dark Roast", "logic": "performance"}
+    ]
   },
   {
     "id": "camano-island-sumatra",
@@ -168,7 +208,12 @@
     "body": 5,
     "sweetness": 2,
     "bitterness": 4,
-    "roast_intensity": 5
+    "roast_intensity": 5,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {"product": "Onyx Coffee Lab Southern Weather Blend", "logic": "origin"},
+      {"product": "Peet's Coffee Major Dickason's Blend", "logic": "flavor_profile"}
+    ]
   },
   {
     "id": "caribou-caribou-blend",
@@ -187,7 +232,12 @@
     "body": 3,
     "sweetness": 4,
     "bitterness": 2,
-    "roast_intensity": 3
+    "roast_intensity": 3,
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {"product": "Kirkland Signature Colombian Supremo", "logic": "performance"},
+      {"product": "Café Don Pablo Gourmet Coffee Signature Blend", "logic": "flavor_profile"}
+    ]
   },
   {
     "id": "blue-bottle-hayes-valley",
@@ -206,7 +256,12 @@
     "body": 4,
     "sweetness": 3,
     "bitterness": 4,
-    "roast_intensity": 4
+    "roast_intensity": 4,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {"product": "Counter Culture Big Trouble", "logic": "origin"},
+      {"product": "Intelligentsia Black Cat Espresso", "logic": "performance"}
+    ]
   },
   {
     "id": "intelligentsia-black-cat",
@@ -225,7 +280,12 @@
     "body": 4,
     "sweetness": 3,
     "bitterness": 3,
-    "roast_intensity": 4
+    "roast_intensity": 4,
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {"product": "Lavazza Super Crema", "logic": "performance"},
+      {"product": "Blue Bottle Hayes Valley Espresso", "logic": "flavor_profile"}
+    ]
   },
   {
     "id": "counter-culture-big-trouble",
@@ -244,7 +304,12 @@
     "body": 3,
     "sweetness": 4,
     "bitterness": 2,
-    "roast_intensity": 3
+    "roast_intensity": 3,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {"product": "Eight O'Clock Original Whole Bean Coffee", "logic": "performance"},
+      {"product": "Stumptown Hair Bender", "logic": "flavor_profile"}
+    ]
   },
   {
     "id": "atlas-limu-ethiopia",
@@ -263,7 +328,12 @@
     "body": 2,
     "sweetness": 4,
     "bitterness": 1,
-    "roast_intensity": 2
+    "roast_intensity": 2,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {"product": "Lifeboost Medium Roast Coffee", "logic": "performance"},
+      {"product": "Onyx Coffee Lab Southern Weather Blend", "logic": "origin"}
+    ]
   },
   {
     "id": "onyx-southern-weather",
@@ -282,7 +352,12 @@
     "body": 2,
     "sweetness": 4,
     "bitterness": 1,
-    "roast_intensity": 1
+    "roast_intensity": 1,
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {"product": "Counter Culture Big Trouble", "logic": "performance"},
+      {"product": "Atlas Coffee Club Ethiopia Limu", "logic": "origin"}
+    ]
   },
   {
     "id": "kirkland-colombian",
@@ -301,7 +376,12 @@
     "body": 3,
     "sweetness": 3,
     "bitterness": 2,
-    "roast_intensity": 3
+    "roast_intensity": 3,
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {"product": "Don Francisco's Colombia Supremo Medium Roast", "logic": "origin"},
+      {"product": "Caribou Coffee Caribou Blend", "logic": "performance"}
+    ]
   },
   {
     "id": "eight-oclock-original",
@@ -320,7 +400,12 @@
     "body": 2,
     "sweetness": 3,
     "bitterness": 2,
-    "roast_intensity": 3
+    "roast_intensity": 3,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {"product": "Kirkland Signature Colombian Supremo", "logic": "performance"},
+      {"product": "Caribou Coffee Caribou Blend", "logic": "flavor_profile"}
+    ]
   },
   {
     "id": "don-franciscos-colombia",
@@ -339,7 +424,12 @@
     "body": 2,
     "sweetness": 3,
     "bitterness": 2,
-    "roast_intensity": 3
+    "roast_intensity": 3,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {"product": "Camano Island Coffee Roasters Sumatra", "logic": "origin"},
+      {"product": "Lifeboost Medium Roast Coffee", "logic": "flavor_profile"}
+    ]
   },
   {
     "id": "community-coffee-medium-dark",
@@ -358,7 +448,12 @@
     "body": 4,
     "sweetness": 2,
     "bitterness": 4,
-    "roast_intensity": 4
+    "roast_intensity": 4,
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {"product": "Kicking Horse Coffee 454 Horse Power Dark Roast", "logic": "flavor_profile"},
+      {"product": "Peet's Coffee Major Dickason's Blend", "logic": "performance"}
+    ]
   },
   {
     "id": "cafe-bustelo-espresso",
@@ -377,6 +472,11 @@
     "body": 5,
     "sweetness": 1,
     "bitterness": 5,
-    "roast_intensity": 5
+    "roast_intensity": 5,
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {"product": "Blue Bottle Hayes Valley Espresso", "logic": "performance"},
+      {"product": "Intelligentsia Black Cat Espresso", "logic": "flavor_profile"}
+    ]
   }
 ]
