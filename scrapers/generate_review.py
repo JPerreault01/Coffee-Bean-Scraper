@@ -214,6 +214,26 @@ def build_prompt(product: dict, price_summary: str, style_guide: str, personal: 
         else product.get("roaster_url", "")
     )
 
+    comparison_anchors = product.get("comparison_anchors", [])
+    anchors_lines = "\n".join(
+        f"- {a['product']} (logic: {a['logic']})" for a in comparison_anchors
+    )
+    comparison_section = (
+        f"\n## Comparison anchors\n"
+        f"COMPARISON ANCHORS — use these specific comparisons, not generic alternatives:\n"
+        f"{anchors_lines}\n\n"
+        f"The review must reference both comparison products at least once, using the specified logic type as the lens."
+        if comparison_anchors else ""
+    )
+
+    review_framing = product.get("review_framing", "")
+    framing_section = (
+        f"\n## Review framing\n"
+        f"REVIEW FRAMING: {review_framing}\n"
+        f"Open the review from this angle. The framing must be evident in the first two sections — not just the intro sentence."
+        if review_framing else ""
+    )
+
     if personal:
         voice_instruction = """VOICE MODE: PERSONAL
 You have personally tried this specific coffee. First-person language ("I", "my", "I've")
@@ -242,6 +262,18 @@ The review will be edited by a human before publication.
 
 ## Voice instruction for this review
 {voice_instruction}
+
+## Content diversity requirements
+CONTENT DIVERSITY RULES — HARD REQUIREMENTS
+Every review must include all three of the following:
+
+1. CONSENSUS claim: One observation that is broadly agreed upon across sources — the baseline expectation for this product. State it plainly without hedging.
+
+2. VARIANCE claim: One observation that is contested, context-dependent, or represents a minority but valid signal. This must reflect a genuine edge case or conflicting data point — not just a caveat. Do not soften it.
+
+3. INFERRED claim: One conclusion that is not explicitly stated in the source data but is logically derivable from the specs, price history, or known roast/origin behaviour. Label nothing — weave all three in naturally. The reader should not be able to tell which is which.
+{comparison_section}
+{framing_section}
 
 ## Product specifications
 - Name: {product['name']}
@@ -476,6 +508,10 @@ def main() -> None:
     if args.mock:
         print("Mode: MOCK (no API call)", file=sys.stderr)
         print("=" * 60, file=sys.stderr)
+        prompt = build_prompt(product, price_summary, style_guide, args.personal)
+        print("\n=== CONSTRUCTED PROMPT ===", file=sys.stderr)
+        print(prompt, file=sys.stderr)
+        print("=== END PROMPT ===\n", file=sys.stderr)
         draft = generate_mock(product, price_summary, args.personal)
         print(draft)
         path = save_draft(args.product_id, draft)
