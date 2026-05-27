@@ -1,12 +1,20 @@
 # data_pipeline/reddit_scraper.py
 """
 Reddit scraper using direct JSON endpoints — no API credentials required.
-Reddit exposes <url>.json on every public listing. Respects rate limits via
-a 2-second delay between requests and a descriptive User-Agent header.
+
+Anti-ban measures:
+  - Randomized delays with jitter (never a fixed pattern)
+  - User-Agent rotation across realistic desktop browser strings
+  - Exponential backoff with jitter on errors and rate limits
+  - Circuit breaker: pauses the whole run after N consecutive failures
+  - Per-subreddit cooldown to avoid burst patterns
+  - Retry-After header respected on 429s
+  - Connection errors handled separately from HTTP errors
 """
 
 import json
 import logging
+import random
 import sys
 import time
 from datetime import datetime, timezone
@@ -17,10 +25,29 @@ import requests
 
 logger = logging.getLogger("reddit_scraper")
 
-_SESSION: Optional[requests.Session] = None
-
 REDDIT_BASE = "https://www.reddit.com"
-REQUEST_DELAY = 2.0  # seconds between requests — stay well under Reddit's rate limit
+
+# --- Timing constants (all in seconds) ---
+DELAY_MIN = 2.0          # minimum wait between any two requests
+DELAY_MAX = 5.0          # maximum wait (randomized in this range)
+SUBREDDIT_BREAK_MIN = 8  # pause between subreddits
+SUBREDDIT_BREAK_MAX = 15
+CIRCUIT_BREAK_THRESHOLD = 5   # consecutive failures before pausing
+CIRCUIT_BREAK_PAUSE = 120     # how long to pause when circuit breaks (2 min)
+
+# Rotate through realistic desktop User-Agents so requests don't fingerprint
+# as a single static bot string
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+]
+
+# Track consecutive failures for circuit breaker
+_consecutive_failures = 0
 
 
 def setup_logging():
@@ -32,36 +59,113 @@ def setup_logging():
     )
 
 
-def get_session() -> requests.Session:
-    global _SESSION
-    if _SESSION is None:
-        _SESSION = requests.Session()
-        _SESSION.headers.update({
-            # Reddit requires a descriptive User-Agent or it returns 429/403
-            "User-Agent": "coffee-pipeline/1.0 (training data collector; github.com/JPerreault01/Coffee-Bean-Scraper)"
-        })
-    return _SESSION
+def _make_session() -> requests.Session:
+    """Create a session with a randomly selected User-Agent."""
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": random.choice(USER_AGENTS),
+        "Accept": "application/json, text/javascript, */*; q=0.01",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
+        "DNT": "1",
+        "Connection": "keep-alive",
+    })
+    return session
 
 
-def _get(url: str, params: dict = None, retries: int = 3) -> Optional[dict]:
-    """GET a Reddit JSON endpoint with retry logic."""
-    session = get_session()
+def _jitter_sleep(min_s: float, max_s: float):
+    """Sleep for a random duration in [min_s, max_s]."""
+    delay = random.uniform(min_s, max_s)
+    logger.debug(f"Sleeping {delay:.1f}s")
+    time.sleep(delay)
+
+
+def _backoff_sleep(attempt: int, base: float = 3.0, cap: float = 60.0):
+    """Exponential backoff with full jitter: random(0, min(cap, base * 2^attempt))."""
+    ceiling = min(cap, base * (2 ** attempt))
+    delay = random.uniform(1.0, ceiling)
+    logger.info(f"Backoff: sleeping {delay:.1f}s (attempt {attempt + 1})")
+    time.sleep(delay)
+
+
+def _get(url: str, params: dict = None, retries: int = 4) -> Optional[dict]:
+    """
+    GET a Reddit JSON endpoint with:
+    - randomized pre-request delay
+    - per-attempt User-Agent rotation (new session each retry)
+    - Retry-After header respected on 429
+    - exponential backoff with jitter on all failures
+    - circuit breaker integration
+    """
+    global _consecutive_failures
+
+    # Check circuit breaker before attempting
+    if _consecutive_failures >= CIRCUIT_BREAK_THRESHOLD:
+        logger.warning(
+            f"Circuit breaker tripped ({_consecutive_failures} consecutive failures) — "
+            f"pausing {CIRCUIT_BREAK_PAUSE}s before retrying"
+        )
+        time.sleep(CIRCUIT_BREAK_PAUSE)
+        _consecutive_failures = 0
+
     for attempt in range(retries):
+        # Rotate User-Agent on every attempt
+        session = _make_session()
+
+        # Random delay before every request — never a fixed cadence
+        _jitter_sleep(DELAY_MIN, DELAY_MAX)
+
         try:
-            time.sleep(REQUEST_DELAY)
             resp = session.get(url, params=params, timeout=20)
+
             if resp.status_code == 429:
-                wait = int(resp.headers.get("Retry-After", 60))
-                logger.warning(f"Rate limited — waiting {wait}s")
+                retry_after = int(resp.headers.get("Retry-After", 60))
+                # Add jitter on top of the server-requested wait
+                wait = retry_after + random.uniform(5, 15)
+                logger.warning(f"429 rate limit — waiting {wait:.0f}s (Retry-After: {retry_after}s)")
                 time.sleep(wait)
+                _consecutive_failures += 1
                 continue
+
+            if resp.status_code == 403:
+                logger.warning(f"403 forbidden — {url} (possible block, backing off)")
+                _backoff_sleep(attempt)
+                _consecutive_failures += 1
+                continue
+
+            if resp.status_code == 503:
+                logger.warning(f"503 service unavailable — {url} (Reddit overloaded)")
+                _backoff_sleep(attempt, base=10.0)
+                _consecutive_failures += 1
+                continue
+
             resp.raise_for_status()
-            return resp.json()
+
+            data = resp.json()
+            _consecutive_failures = 0  # reset on success
+            return data
+
+        except requests.exceptions.ConnectionError as e:
+            logger.warning(f"Connection error (attempt {attempt + 1}/{retries}): {e}")
+            _consecutive_failures += 1
+            _backoff_sleep(attempt)
+
+        except requests.exceptions.Timeout:
+            logger.warning(f"Timeout (attempt {attempt + 1}/{retries}): {url}")
+            _consecutive_failures += 1
+            _backoff_sleep(attempt)
+
+        except requests.exceptions.JSONDecodeError:
+            logger.warning(f"Invalid JSON response from {url} — skipping")
+            _consecutive_failures += 1
+            return None
+
         except requests.exceptions.RequestException as e:
             logger.warning(f"Request error (attempt {attempt + 1}/{retries}): {url} — {e}")
-            if attempt < retries - 1:
-                time.sleep(5 * (attempt + 1))
-    logger.error(f"Failed after {retries} attempts: {url}")
+            _consecutive_failures += 1
+            _backoff_sleep(attempt)
+
+    logger.error(f"Giving up after {retries} attempts: {url}")
     return None
 
 
@@ -99,10 +203,8 @@ def _extract_comments_from_listing(listing: list, depth: int, config: dict) -> l
         kind = item.get("kind")
         data = item.get("data", {})
 
-        if kind == "more":
-            # Skip "load more" stubs
+        if kind in ("more", None):
             continue
-
         if kind != "t1":
             continue
 
@@ -120,7 +222,6 @@ def _extract_comments_from_listing(listing: list, depth: int, config: dict) -> l
             "replies": [],
         }
 
-        # Recurse into replies
         if depth < rcfg["comment_reply_depth"]:
             replies_data = data.get("replies")
             if isinstance(replies_data, dict):
@@ -140,36 +241,38 @@ def _extract_comments_from_listing(listing: list, depth: int, config: dict) -> l
 
 
 def fetch_comments_for_post(post_id: str, subreddit: str, config: dict) -> list[dict]:
-    """Fetch top comments for a post via the post's JSON endpoint."""
+    """Fetch top comments for a post via its JSON endpoint."""
     rcfg = config["reddit"]
     url = f"{REDDIT_BASE}/r/{subreddit}/comments/{post_id}.json"
-    data = _get(url, params={"limit": rcfg["max_comments_per_post"], "sort": "top", "depth": rcfg["comment_reply_depth"]})
+    data = _get(url, params={
+        "limit": rcfg["max_comments_per_post"],
+        "sort": "top",
+        "depth": rcfg["comment_reply_depth"],
+    })
 
     if not data or not isinstance(data, list) or len(data) < 2:
         return []
 
-    # data[0] = post, data[1] = comments listing
     comment_children = data[1].get("data", {}).get("children", [])
-
-    # Sort top-level comments by score descending
     top_level = sorted(
         [c for c in comment_children if isinstance(c, dict) and c.get("kind") == "t1"],
         key=lambda c: c.get("data", {}).get("score", 0),
         reverse=True,
     )
 
-    return _extract_comments_from_listing(top_level[: rcfg["max_comments_per_post"]], depth=1, config=config)
+    return _extract_comments_from_listing(
+        top_level[: rcfg["max_comments_per_post"]], depth=1, config=config
+    )
 
 
 def fetch_listing(subreddit: str, sort: str, params: dict, config: dict, seen_ids: set) -> list[dict]:
     """
-    Fetch posts from a subreddit listing endpoint (top/hot/new).
-    Paginates using Reddit's `after` cursor until limit is reached or results dry up.
+    Fetch posts from a subreddit listing with cursor-based pagination.
+    Stops when no new results or max_fetch reached.
     """
     rcfg = config["reddit"]
     posts = []
     after = None
-    page_limit = params.get("limit", 100)
     fetched = 0
     max_fetch = params.get("max_fetch", 500)
 
@@ -189,6 +292,7 @@ def fetch_listing(subreddit: str, sort: str, params: dict, config: dict, seen_id
         if not children:
             break
 
+        new_this_page = 0
         for child in children:
             if child.get("kind") != "t3":
                 continue
@@ -224,9 +328,11 @@ def fetch_listing(subreddit: str, sort: str, params: dict, config: dict, seen_id
                     post.get("created_utc", 0), tz=timezone.utc
                 ).isoformat(),
             })
+            new_this_page += 1
 
         fetched += len(children)
         after = data.get("data", {}).get("after")
+
         if not after:
             break
 
@@ -247,7 +353,7 @@ def fetch_subreddit_posts(subreddit: str, config: dict) -> list[dict]:
         logger.info(f"r/{subreddit}: fetching {sort} (t={params.get('t', 'n/a')})")
         batch = fetch_listing(subreddit, sort, params, config, seen_ids)
         posts.extend(batch)
-        logger.info(f"r/{subreddit}: {len(batch)} new posts from {sort}, {len(posts)} total so far")
+        logger.info(f"r/{subreddit}: +{len(batch)} posts from {sort}, {len(posts)} total")
 
     return posts
 
@@ -261,10 +367,11 @@ def run(config: dict) -> dict:
     summary = {"posts": 0, "comments": 0, "subreddits": {}}
     scraped_at = datetime.now(tz=timezone.utc).isoformat()
 
-    for subreddit_name in rcfg["subreddits"]:
-        logger.info(f"Starting r/{subreddit_name}")
+    subreddits = rcfg["subreddits"]
+    for idx, subreddit_name in enumerate(subreddits):
+        logger.info(f"Starting r/{subreddit_name} ({idx + 1}/{len(subreddits)})")
         posts = fetch_subreddit_posts(subreddit_name, config)
-        logger.info(f"r/{subreddit_name}: {len(posts)} posts after filtering — fetching comments...")
+        logger.info(f"r/{subreddit_name}: {len(posts)} posts — fetching comments...")
 
         out_path = output_dir / f"{subreddit_name}.jsonl"
         post_count = 0
@@ -301,12 +408,16 @@ def run(config: dict) -> dict:
         summary["comments"] += comment_count
         logger.info(f"r/{subreddit_name}: wrote {post_count} posts, {comment_count} comments → {out_path}")
 
+        # Longer random cooldown between subreddits — breaks up the request pattern
+        if idx < len(subreddits) - 1:
+            cooldown = random.uniform(SUBREDDIT_BREAK_MIN, SUBREDDIT_BREAK_MAX)
+            logger.info(f"Cooldown before next subreddit: {cooldown:.0f}s")
+            time.sleep(cooldown)
+
     print(f"Reddit complete:  {summary['posts']:,} posts | {summary['comments']:,} comments")
     return summary
 
 
 if __name__ == "__main__":
-    import json
-    from pathlib import Path
     cfg = json.loads((Path(__file__).parent / "config.json").read_text())
     run(cfg)
