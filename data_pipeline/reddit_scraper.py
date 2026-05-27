@@ -1,27 +1,26 @@
+# data_pipeline/reddit_scraper.py
 """
-Reddit scraper using PRAW.
-Fetches posts from coffee-related subreddits and extracts top comments.
+Reddit scraper using direct JSON endpoints — no API credentials required.
+Reddit exposes <url>.json on every public listing. Respects rate limits via
+a 2-second delay between requests and a descriptive User-Agent header.
 """
 
 import json
 import logging
-import os
 import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
-import praw
-from praw.exceptions import PRAWException
+import requests
 
 logger = logging.getLogger("reddit_scraper")
 
+_SESSION: Optional[requests.Session] = None
 
-def load_config() -> dict:
-    config_path = Path(__file__).parent / "config.json"
-    with open(config_path) as f:
-        return json.load(f)
+REDDIT_BASE = "https://www.reddit.com"
+REQUEST_DELAY = 2.0  # seconds between requests — stay well under Reddit's rate limit
 
 
 def setup_logging():
@@ -33,13 +32,43 @@ def setup_logging():
     )
 
 
+def get_session() -> requests.Session:
+    global _SESSION
+    if _SESSION is None:
+        _SESSION = requests.Session()
+        _SESSION.headers.update({
+            # Reddit requires a descriptive User-Agent or it returns 429/403
+            "User-Agent": "coffee-pipeline/1.0 (training data collector; github.com/JPerreault01/Coffee-Bean-Scraper)"
+        })
+    return _SESSION
+
+
+def _get(url: str, params: dict = None, retries: int = 3) -> Optional[dict]:
+    """GET a Reddit JSON endpoint with retry logic."""
+    session = get_session()
+    for attempt in range(retries):
+        try:
+            time.sleep(REQUEST_DELAY)
+            resp = session.get(url, params=params, timeout=20)
+            if resp.status_code == 429:
+                wait = int(resp.headers.get("Retry-After", 60))
+                logger.warning(f"Rate limited — waiting {wait}s")
+                time.sleep(wait)
+                continue
+            resp.raise_for_status()
+            return resp.json()
+        except requests.exceptions.RequestException as e:
+            logger.warning(f"Request error (attempt {attempt + 1}/{retries}): {url} — {e}")
+            if attempt < retries - 1:
+                time.sleep(5 * (attempt + 1))
+    logger.error(f"Failed after {retries} attempts: {url}")
+    return None
+
+
 def get_domain_tags(text: str, config: dict) -> list[str]:
     text_lower = text.lower()
-    tags = []
-    for tag, keywords in config["domain_tags"].items():
-        if any(kw.lower() in text_lower for kw in keywords):
-            tags.append(tag)
-    return tags
+    return [tag for tag, keywords in config["domain_tags"].items()
+            if any(kw.lower() in text_lower for kw in keywords)]
 
 
 def compute_reddit_quality(post_data: dict, config: dict) -> float:
@@ -59,102 +88,168 @@ def compute_reddit_quality(post_data: dict, config: dict) -> float:
     return round(quality, 4)
 
 
-def extract_comment(comment, depth: int, config: dict) -> Optional[dict]:
+def _extract_comments_from_listing(listing: list, depth: int, config: dict) -> list[dict]:
+    """Recursively extract comments from a Reddit comment listing."""
     rcfg = config["reddit"]
-    if comment.body in ("[deleted]", "[removed]") or not comment.body:
-        return None
-    if len(comment.body) < rcfg["min_comment_chars"]:
-        return None
+    comments = []
 
-    author = str(comment.author) if comment.author else "[deleted]"
-    result = {
-        "id": comment.id,
-        "author": author,
-        "body": comment.body,
-        "score": comment.score,
-        "replies": [],
-    }
+    for item in listing:
+        if not isinstance(item, dict):
+            continue
+        kind = item.get("kind")
+        data = item.get("data", {})
 
-    if depth < rcfg["comment_reply_depth"]:
-        try:
-            comment.replies.replace_more(limit=0)
-            sorted_replies = sorted(comment.replies, key=lambda r: r.score, reverse=True)
-            for reply in sorted_replies[: rcfg["max_replies_per_comment"]]:
-                extracted = extract_comment(reply, depth + 1, config)
-                if extracted:
-                    result["replies"].append(extracted)
-        except Exception as e:
-            logger.warning(f"Error extracting replies for comment {comment.id}: {e}")
+        if kind == "more":
+            # Skip "load more" stubs
+            continue
 
-    return result
+        if kind != "t1":
+            continue
+
+        body = data.get("body", "")
+        if body in ("[deleted]", "[removed]") or not body:
+            continue
+        if len(body) < rcfg["min_comment_chars"]:
+            continue
+
+        comment = {
+            "id": data.get("id", ""),
+            "author": data.get("author", "[deleted]"),
+            "body": body,
+            "score": data.get("score", 0),
+            "replies": [],
+        }
+
+        # Recurse into replies
+        if depth < rcfg["comment_reply_depth"]:
+            replies_data = data.get("replies")
+            if isinstance(replies_data, dict):
+                reply_children = replies_data.get("data", {}).get("children", [])
+                reply_children_sorted = sorted(
+                    [c for c in reply_children if isinstance(c, dict) and c.get("kind") == "t1"],
+                    key=lambda c: c.get("data", {}).get("score", 0),
+                    reverse=True,
+                )
+                for reply in reply_children_sorted[: rcfg["max_replies_per_comment"]]:
+                    extracted = _extract_comments_from_listing([reply], depth + 1, config)
+                    comment["replies"].extend(extracted)
+
+        comments.append(comment)
+
+    return comments
 
 
-def fetch_subreddit_posts(reddit: praw.Reddit, subreddit_name: str, config: dict) -> list[dict]:
+def fetch_comments_for_post(post_id: str, subreddit: str, config: dict) -> list[dict]:
+    """Fetch top comments for a post via the post's JSON endpoint."""
     rcfg = config["reddit"]
-    seen_ids: set[str] = set()
-    posts: list[dict] = []
+    url = f"{REDDIT_BASE}/r/{subreddit}/comments/{post_id}.json"
+    data = _get(url, params={"limit": rcfg["max_comments_per_post"], "sort": "top", "depth": rcfg["comment_reply_depth"]})
 
-    sub = reddit.subreddit(subreddit_name)
+    if not data or not isinstance(data, list) or len(data) < 2:
+        return []
 
-    fetch_jobs = [
-        ("top", {"time_filter": "year", "limit": 500}),
-        ("top", {"time_filter": "all", "limit": 500}),
-        ("hot", {"limit": 200}),
-    ]
+    # data[0] = post, data[1] = comments listing
+    comment_children = data[1].get("data", {}).get("children", [])
 
-    for method, kwargs in fetch_jobs:
-        try:
-            listing = getattr(sub, method)(**kwargs)
-            for submission in listing:
-                if submission.id in seen_ids:
-                    continue
-                seen_ids.add(submission.id)
+    # Sort top-level comments by score descending
+    top_level = sorted(
+        [c for c in comment_children if isinstance(c, dict) and c.get("kind") == "t1"],
+        key=lambda c: c.get("data", {}).get("score", 0),
+        reverse=True,
+    )
 
-                if submission.score < rcfg["min_score"]:
-                    continue
-                if submission.num_comments < rcfg["min_comments"]:
-                    continue
+    return _extract_comments_from_listing(top_level[: rcfg["max_comments_per_post"]], depth=1, config=config)
 
-                body = submission.selftext or ""
-                if len(body) < rcfg["short_post_min_chars"] and submission.score < rcfg["short_post_score_threshold"]:
-                    continue
 
-                posts.append({
-                    "post_id": submission.id,
-                    "subreddit": subreddit_name,
-                    "title": submission.title,
-                    "body": body,
-                    "url": submission.url,
-                    "score": submission.score,
-                    "num_comments": submission.num_comments,
-                    "created_utc": datetime.fromtimestamp(submission.created_utc, tz=timezone.utc).isoformat(),
-                })
-        except PRAWException as e:
-            logger.error(f"PRAW error fetching {method} from r/{subreddit_name}: {e}")
-        except Exception as e:
-            logger.error(f"Unexpected error fetching {method} from r/{subreddit_name}: {e}")
+def fetch_listing(subreddit: str, sort: str, params: dict, config: dict, seen_ids: set) -> list[dict]:
+    """
+    Fetch posts from a subreddit listing endpoint (top/hot/new).
+    Paginates using Reddit's `after` cursor until limit is reached or results dry up.
+    """
+    rcfg = config["reddit"]
+    posts = []
+    after = None
+    page_limit = params.get("limit", 100)
+    fetched = 0
+    max_fetch = params.get("max_fetch", 500)
+
+    while fetched < max_fetch:
+        url = f"{REDDIT_BASE}/r/{subreddit}/{sort}.json"
+        req_params = {"limit": min(100, max_fetch - fetched), "raw_json": 1}
+        if params.get("t"):
+            req_params["t"] = params["t"]
+        if after:
+            req_params["after"] = after
+
+        data = _get(url, params=req_params)
+        if not data:
+            break
+
+        children = data.get("data", {}).get("children", [])
+        if not children:
+            break
+
+        for child in children:
+            if child.get("kind") != "t3":
+                continue
+            post = child.get("data", {})
+            pid = post.get("id", "")
+
+            if pid in seen_ids:
+                continue
+            seen_ids.add(pid)
+
+            score = post.get("score", 0)
+            num_comments = post.get("num_comments", 0)
+            body = post.get("selftext", "") or ""
+
+            if score < rcfg["min_score"]:
+                continue
+            if num_comments < rcfg["min_comments"]:
+                continue
+            if len(body) < rcfg["short_post_min_chars"] and score < rcfg["short_post_score_threshold"]:
+                continue
+            if body in ("[deleted]", "[removed]"):
+                continue
+
+            posts.append({
+                "post_id": pid,
+                "subreddit": subreddit,
+                "title": post.get("title", ""),
+                "body": body,
+                "url": post.get("url", ""),
+                "score": score,
+                "num_comments": num_comments,
+                "created_utc": datetime.fromtimestamp(
+                    post.get("created_utc", 0), tz=timezone.utc
+                ).isoformat(),
+            })
+
+        fetched += len(children)
+        after = data.get("data", {}).get("after")
+        if not after:
+            break
 
     return posts
 
 
-def fetch_comments_for_post(reddit: praw.Reddit, post_data: dict, config: dict) -> list[dict]:
-    rcfg = config["reddit"]
-    try:
-        submission = reddit.submission(id=post_data["post_id"])
-        submission.comments.replace_more(limit=0)
-        sorted_comments = sorted(submission.comments, key=lambda c: c.score, reverse=True)
-        comments = []
-        for comment in sorted_comments[: rcfg["max_comments_per_post"]]:
-            extracted = extract_comment(comment, depth=1, config=config)
-            if extracted:
-                comments.append(extracted)
-        return comments
-    except PRAWException as e:
-        logger.error(f"PRAW error fetching comments for post {post_data['post_id']}: {e}")
-        return []
-    except Exception as e:
-        logger.error(f"Error fetching comments for post {post_data['post_id']}: {e}")
-        return []
+def fetch_subreddit_posts(subreddit: str, config: dict) -> list[dict]:
+    seen_ids: set[str] = set()
+    posts: list[dict] = []
+
+    fetch_jobs = [
+        ("top", {"t": "year", "max_fetch": 500}),
+        ("top", {"t": "all",  "max_fetch": 500}),
+        ("hot", {"max_fetch": 200}),
+    ]
+
+    for sort, params in fetch_jobs:
+        logger.info(f"r/{subreddit}: fetching {sort} (t={params.get('t', 'n/a')})")
+        batch = fetch_listing(subreddit, sort, params, config, seen_ids)
+        posts.extend(batch)
+        logger.info(f"r/{subreddit}: {len(batch)} new posts from {sort}, {len(posts)} total so far")
+
+    return posts
 
 
 def run(config: dict) -> dict:
@@ -163,27 +258,13 @@ def run(config: dict) -> dict:
     output_dir = Path(rcfg["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    client_id = os.environ.get("REDDIT_CLIENT_ID")
-    client_secret = os.environ.get("REDDIT_CLIENT_SECRET")
-    user_agent = os.environ.get("REDDIT_USER_AGENT", "coffee-pipeline/1.0")
-
-    if not client_id or not client_secret:
-        logger.error("REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET must be set in environment")
-        sys.exit(1)
-
-    reddit = praw.Reddit(
-        client_id=client_id,
-        client_secret=client_secret,
-        user_agent=user_agent,
-    )
-
     summary = {"posts": 0, "comments": 0, "subreddits": {}}
     scraped_at = datetime.now(tz=timezone.utc).isoformat()
 
     for subreddit_name in rcfg["subreddits"]:
-        logger.info(f"Fetching posts from r/{subreddit_name}")
-        posts = fetch_subreddit_posts(reddit, subreddit_name, config)
-        logger.info(f"r/{subreddit_name}: {len(posts)} posts after filtering, fetching comments...")
+        logger.info(f"Starting r/{subreddit_name}")
+        posts = fetch_subreddit_posts(subreddit_name, config)
+        logger.info(f"r/{subreddit_name}: {len(posts)} posts after filtering — fetching comments...")
 
         out_path = output_dir / f"{subreddit_name}.jsonl"
         post_count = 0
@@ -192,7 +273,7 @@ def run(config: dict) -> dict:
         with open(out_path, "w", encoding="utf-8") as f:
             for post_data in posts:
                 try:
-                    comments = fetch_comments_for_post(reddit, post_data, config)
+                    comments = fetch_comments_for_post(post_data["post_id"], subreddit_name, config)
                     post_data["comments"] = comments
 
                     text = post_data["title"] + " " + post_data["body"]
@@ -222,3 +303,10 @@ def run(config: dict) -> dict:
 
     print(f"Reddit complete:  {summary['posts']:,} posts | {summary['comments']:,} comments")
     return summary
+
+
+if __name__ == "__main__":
+    import json
+    from pathlib import Path
+    cfg = json.loads((Path(__file__).parent / "config.json").read_text())
+    run(cfg)
