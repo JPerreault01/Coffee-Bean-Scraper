@@ -78,10 +78,11 @@ def init_db(conn: sqlite3.Connection) -> None:
 
 # Amazon selectors in priority order — .a-offscreen has the full price string
 AMAZON_PRICE_SELECTORS = [
+    ".a-offscreen",
     ".a-price-whole",
     "#priceblock_ourprice",
     "#priceblock_dealprice",
-    ".a-offscreen",
+    "span[data-a-color='price'] .a-offscreen",
 ]
 
 ROASTER_PRICE_SELECTORS = [
@@ -89,6 +90,9 @@ ROASTER_PRICE_SELECTORS = [
     ".price",
     ".product-price",
     ".product__price",
+    ".product__price .price",
+    "[data-product-price]",
+    ".price--main",
     ".price__regular",
     ".price-item--regular",
     "[class*='price']",
@@ -108,17 +112,28 @@ def _parse_price(text: str) -> float | None:
 
 
 def scrape_price(url: str, selectors: list[str]) -> float | None:
+    is_amazon = "amazon.com" in url
     try:
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            page = browser.new_page(
-                user_agent=(
-                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-                )
+            browser = p.chromium.launch(
+                headless=True,
+                args=[
+                    "--disable-blink-features=AutomationControlled",
+                    "--no-sandbox",
+                ],
             )
+            context = browser.new_context(
+                user_agent=(
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                ),
+                viewport={"width": 1280, "height": 800},
+                locale="en-US",
+            )
+            page = context.new_page()
             page.goto(url, timeout=20000, wait_until="domcontentloaded")
-            page.wait_for_timeout(2000)
+            page.evaluate("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+            page.wait_for_timeout(5000 if is_amazon else 2000)
 
             for selector in selectors:
                 try:
@@ -168,7 +183,7 @@ def run() -> None:
         log.error("products.json not found at %s", PRODUCTS_FILE)
         sys.exit(1)
 
-    with open(PRODUCTS_FILE) as f:
+    with open(PRODUCTS_FILE, encoding="utf-8") as f:
         products = json.load(f)
 
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
