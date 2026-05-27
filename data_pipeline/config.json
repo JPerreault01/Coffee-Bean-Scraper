@@ -1,0 +1,103 @@
+{
+  "reddit": {
+    "subreddits": ["Coffee", "espresso", "pourover", "CoffeePH"],
+    "fetch_filters": ["top_year", "top_all", "hot"],
+    "min_score": 50,
+    "min_comments": 10,
+    "short_post_min_chars": 50,
+    "short_post_score_threshold": 200,
+    "max_comments_per_post": 25,
+    "comment_reply_depth": 2,
+    "max_replies_per_comment": 5,
+    "min_comment_chars": 30,
+    "output_dir": "training_data/raw/reddit",
+    "quality": {
+      "score_weight": 0.5,
+      "comment_weight": 0.5,
+      "score_normalize_cap": 5000,
+      "comment_normalize_cap": 500,
+      "short_body_penalty_threshold": 200,
+      "short_body_penalty": 0.2,
+      "boost_keywords": ["comparison", "recommend", "troubleshooting", "vs", "review", "help", "fix", "upgrade", "best", "worth"]
+    }
+  },
+  "web": {
+    "sites": {
+      "barista_hustle": {
+        "base_url": "https://baristahustle.com",
+        "start_url": "https://baristahustle.com/blog/",
+        "pagination_type": "wordpress",
+        "max_articles": 300
+      },
+      "coffee_ad_astra": {
+        "base_url": "https://coffeeadastra.com",
+        "start_url": "https://coffeeadastra.com",
+        "pagination_type": "link_collection",
+        "max_articles": 300
+      },
+      "perfect_daily_grind": {
+        "base_url": "https://perfectdailygrind.com",
+        "categories": ["/category/read/", "/category/roast/", "/category/brew/"],
+        "pagination_type": "wordpress",
+        "max_articles": 300
+      }
+    },
+    "min_article_chars": 500,
+    "request_delay_seconds": 2,
+    "request_timeout": 30,
+    "output_dir": "training_data/raw/web",
+    "quality": {
+      "length_weight": 0.5,
+      "headings_weight": 0.3,
+      "tech_vocab_weight": 0.2,
+      "length_normalize_cap": 10000,
+      "min_headings_for_boost": 3
+    }
+  },
+  "youtube": {
+    "channels": {
+      "james_hoffmann": {
+        "channel_id": "UCMb0O2CdPBNi-QqPk5T3gsQ",
+        "authority_weight": 1.0
+      },
+      "lance_hedrick": {
+        "channel_id": "UCKl3yBpTMZbGxRAjoZMDHHQ",
+        "authority_weight": 0.8
+      }
+    },
+    "default_authority_weight": 0.8,
+    "max_videos_per_channel": 200,
+    "min_transcript_chars": 300,
+    "transcript_language_preference": ["en", "en-US", "en-GB"],
+    "description_max_chars": 500,
+    "output_dir": "training_data/raw/youtube",
+    "quality": {
+      "transcript_weight": 0.5,
+      "keyword_weight": 0.3,
+      "authority_weight": 0.2,
+      "transcript_normalize_cap": 50000
+    }
+  },
+  "domain_tags": {
+    "grinders": ["grinder", "burr", "retention", "workflow", "single-dose", "grind size", "particle distribution"],
+    "espresso": ["espresso", "shot", "extraction", "puck", "channeling", "pressure", "preinfusion", "dial in"],
+    "pour_over": ["v60", "chemex", "kalita", "bloom", "drawdown", "gooseneck", "flow rate"],
+    "french_press": ["french press", "immersion", "steep", "plunge"],
+    "cold_brew": ["cold brew", "cold drip", "steep time"],
+    "roast": ["roast", "roaster", "development", "first crack", "RoR", "maillard"],
+    "origins": ["ethiopia", "colombia", "kenya", "guatemala", "brazil", "yemen", "geisha", "natural", "washed"],
+    "equipment_review": ["vs", "comparison", "recommend", "worth it", "upgrade", "budget"],
+    "troubleshooting": ["bitter", "sour", "channeling", "inconsistent", "fix", "problem", "help"],
+    "beginner": ["beginner", "starter", "first", "new to", "getting into", "learning"]
+  },
+  "tech_vocabulary": [
+    "extraction", "yield", "ratio", "bloom", "drawdown", "preinfusion", "channeling",
+    "tamping", "distribution", "retention", "single-dose", "burr", "grind size",
+    "particle", "TDS", "EY", "pressure", "flow rate", "temperature", "roast level",
+    "development", "first crack", "maillard", "caramelization", "origin", "process",
+    "natural", "washed", "honey", "anaerobic", "varietal", "terroir"
+  ],
+  "output": {
+    "summary_file": "training_data/raw/run_summary.json"
+  }
+}
