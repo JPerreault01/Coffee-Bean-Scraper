@@ -121,10 +121,18 @@ sed -i "s/database_name_here/${DB_NAME}/" "${WP_DIR}/wp-config.php"
 sed -i "s/username_here/${DB_USER}/" "${WP_DIR}/wp-config.php"
 sed -i "s/password_here/${DB_PASS}/" "${WP_DIR}/wp-config.php"
 
-# Inject unique auth keys
-WP_SALTS=$(curl -s https://api.wordpress.org/secret-key/1.1/salt/)
-sed -i "/AUTH_KEY/,/NONCE_SALT/d" "${WP_DIR}/wp-config.php"
-sed -i "/\/\*\*#\@-\*\//i ${WP_SALTS}" "${WP_DIR}/wp-config.php"
+# Inject unique auth keys using Python to avoid sed special-character issues
+python3 - <<'PYEOF'
+import urllib.request, re
+salts = urllib.request.urlopen('https://api.wordpress.org/secret-key/1.1/salt/').read().decode()
+with open('/var/www/coffeebeans/wp-config.php', 'r') as f:
+    content = f.read()
+content = re.sub(r"define\('AUTH_KEY'.*?define\('NONCE_SALT',\s*'[^']*'\s*\);", '', content, flags=re.DOTALL)
+content = content.replace("/**#@-*/", salts + "\n/**#@-*/")
+with open('/var/www/coffeebeans/wp-config.php', 'w') as f:
+    f.write(content)
+print("WordPress salts injected.")
+PYEOF
 
 echo "==> Configuring Nginx for ${DOMAIN}"
 cat > /etc/nginx/sites-available/coffeebeans <<EOF
