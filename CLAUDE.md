@@ -217,6 +217,29 @@ Always use tracked affiliate links. Never link directly to a product without an 
 
 Content standards
 Review format (all product reviews must follow this)
+REQUIRED SITE DISCLOSURE — DO NOT REMOVE OR MODIFY
+The following disclosure must appear on the site's About/Methodology page and be
+referenced in the site footer. It is the legal and editorial foundation for all
+AI-generated content on this site. It must be preserved exactly as written:
+
+"Reviews are generated using structured product data, public tasting notes, roast
+information, and editorial evaluation criteria. Unless explicitly marked as personal
+reviews, content should be understood as analytical commentary rather than firsthand
+consumption experience."
+
+Additionally, every page containing affiliate links must display this disclosure
+near the top of the content — not only in the footer:
+
+"This page contains affiliate links. We may earn commissions from qualifying purchases."
+
+And sitewide, in the footer or About page:
+
+"Some content on this site is generated or assisted by AI systems using structured
+product and review data."
+
+These three disclosures are non-negotiable. No review, roundup, or guide may be
+published without the appropriate disclosure in place.
+
 ## [Product Name] Review
 
 **One-line verdict**: [Direct, specific, no hedge words]
@@ -262,6 +285,71 @@ experience without claiming the writer was there
 Apply the site's standing preferences (see below) as the critical lens —
 they are established voice, not personal consumption claims
 Confidence level is absolute. No "may", "might", "could", "tends to", "can be"
+
+Review voice system — HARD RULES
+Every review is generated in one of two voice modes. These rules are non-negotiable
+and apply to all AI-generated content on this site.
+Default mode: Analytical voice
+Used for all products unless --personal is explicitly passed to generate_review.py.
+Hard rules — analytical mode:
+
+NEVER write "I tried", "I brewed", "I tasted", "I found", or any first-person
+consumption claim for the specific product being reviewed
+NEVER write "buyers say", "verified buyers report", "reviewers report",
+"customers note", "users find", or any attribution to a crowd or group
+When referencing external opinion, use only: "publicly available customer feedback",
+"published customer reviews", or "aggregated public review data"
+State what the coffee IS and DOES. The coffee is the subject, not a person.
+Second person ("you get", "you'll find") is allowed — it puts the reader in the
+experience without claiming the writer was there
+Apply the site's standing preferences (see below) as the critical lens —
+they are established voice, not personal consumption claims
+Confidence level is absolute. No "may", "might", "could", "tends to", "can be"
+NEVER generate brew logs, ownership duration claims, tasting session descriptions,
+comparative testing histories, or exact workflow accounts in analytical mode
+Absolute performance statements must be framed as tendency, not certainty,
+unless validated by the personal flag:
+Risky:   "Every long extraction goes muddy."
+Safe:    "Long extractions lose clarity fast."
+Risky:   "This roast fails for espresso."
+Safe:    "Best suited for filter brewing."
+
+Good analytical voice:
+"The finish is clean. No linger."
+"Long extractions lose clarity fast."
+"Too aggressive for an early cup."
+"You get dark chocolate up front, then a clean caramel fade."
+"Pull this short."
+"Best suited for filter brewing."
+Bad:
+"I found the finish clean." ← personal consumption claim
+"Buyers report it turns acrid." ← crowd attribution, never allowed
+"Verified buyers say this extracts well." ← "verified" implies authenticated purchase
+"Every long extraction goes muddy." ← absolute claim without personal validation
+"Some may find this too intense." ← hedging, never allowed
+"It could potentially work for espresso." ← hedging, never allowed
+Personal mode: --personal flag
+Used only for products the site owner has personally tried.
+Pass --personal to generate_review.py to activate.
+What the personal flag unlocks:
+
+First-person language ("I", "my", "I've") for direct consumption claims
+about this specific product
+Absolute experiential statements: "Every long extraction goes muddy."
+Specific workflow histories: "I've pulled this short and long. Short wins."
+Brew logs and tasting session details grounded in actual experience
+
+What the personal flag does NOT change:
+
+Confidence level — identical to analytical, absolute
+Sentence structure — still short, declarative
+The site's standing preferences
+The ban on hedging language
+The analytical framing of price, value, and specs
+The ban on fabricated data (see Hallucination safeguards below)
+
+The reader should not be able to tell which mode they're reading based on
+confidence level. Only the presence or absence of "I" language differs.
 
 Good:
 "The finish is clean. No linger."
