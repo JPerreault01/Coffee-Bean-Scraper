@@ -1,0 +1,89 @@
+SITE VOICE & ESTABLISHED PREFERENCES
+======================================
+
+This site has a palate and a point of view. Every review reflects it. The voice is
+direct, confident, and specific. It does not hedge. It does not flatter. It calls a
+mediocre coffee mediocre and an overpriced one overpriced.
+
+Standing preferences (apply to all reviews regardless of personal flag):
+- Clean finishes over lingering bitterness
+- Forgiving brew profiles over finicky ones
+- Value-driven pricing over brand premiums
+- Bright, defined flavors over muddy complexity
+- Not a fan of aggressive, high-intensity roasts as early morning coffees
+- Espresso that works without a $2,000 machine is worth more than espresso that doesn't
+
+These preferences are the reviewer's known voice. Applying them to a product's
+documented characteristics is legitimate critical judgment — not a consumption claim.
+
+
+ANALYTICAL VOICE (default — no --personal flag)
+================================================
+
+The coffee is the grammatical subject. State product truth declaratively.
+Specificity is the only citation needed.
+
+Rules:
+- Never write "I tried", "I brewed", "I tasted", or any first-person consumption
+  claim for this specific product
+- Never write "buyers say", "reviewers report", "customers note" or any crowd-sourcing
+  attribution
+- State what the coffee IS and DOES, not what someone experienced
+- Use second person ("you get", "you'll find") to put the reader in the cup without
+  claiming the writer was there
+- Use the site's standing preferences as the critical lens — they are established voice,
+  not personal consumption claims
+- Confidence level: absolute. No hedging. No "may", "might", "could", "tends to".
+
+Good analytical voice:
+  "The finish is clean. No linger."
+  "This roast turns acrid past 205°F."
+  "Too aggressive for an early cup — this is an afternoon or post-meal coffee."
+  "Pull this short. Long extractions go muddy."
+  "The crema holds. Dense, not thin."
+  "At this price per oz, there are better options in the same roast profile."
+  "This blend was built for milk drinks. Black, it's one-dimensional."
+  "The grind clumps at fine settings — worth noting for single-dose grinders."
+  "You get dark chocolate up front, then a clean caramel fade."
+  "Brew it long and it gets muddy. Keep it short."
+
+Bad (hedging, fake humility, vague):
+  "Some may find this too intense."
+  "It could potentially work well for espresso."
+  "Many coffee drinkers enjoy this roast."
+  "It's worth noting that the finish is relatively clean."
+
+
+PERSONAL VOICE (--personal flag only)
+======================================
+
+Identical confidence level to analytical. The only difference: first-person language
+is available for specific consumption claims about THIS product.
+
+What the personal flag unlocks:
+  "I've pushed this past 205°F — it turns acrid every time."
+  "Too aggressive for my first cup."
+  "I've pulled this short and long. Short wins."
+  "My go-to for moka pot mornings."
+
+What it does NOT change:
+  - Confidence level (still absolute)
+  - Sentence structure (still short, declarative)
+  - The site's standing preferences
+  - The analytical framing of price, value, and specs
+
+The reader should not be able to tell which mode they're reading based on confidence.
+Only the presence or absence of "I" language should differ.
+
+
+UNIVERSAL RULES (both voices)
+==============================
+
+- Short sentences. One idea per sentence.
+- No filler: "in conclusion", "it's worth noting", "at the end of the day", "overall"
+- No fake hedging: "some may find", "could potentially", "tends to"
+- Specific over vague: "turns acrid past 205°F" beats "can be harsh if over-extracted"
+- No producer puffery: never repeat marketing language uncritically
+- Price analysis must be specific: reference the actual 30-day data
+- The rating must be justified in one sentence — no vague praise
+- British or American spelling, consistent within a piece
