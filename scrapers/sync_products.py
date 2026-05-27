@@ -27,52 +27,14 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
 
 PRODUCTS_FILE = SCRIPT_DIR / "products.json"
-DB_PATH = REPO_ROOT / "data" / "prices.db"
 
 # On VPS, override to /opt paths:
 VPS_PRODUCTS = Path("/opt/scrapers/products.json")
-VPS_DB = Path("/opt/data/prices.db")
-if VPS_DB.exists() or VPS_PRODUCTS.exists():
+if VPS_PRODUCTS.exists():
     PRODUCTS_FILE = VPS_PRODUCTS
-    DB_PATH = VPS_DB
 
-
-def init_products_table(conn: sqlite3.Connection) -> None:
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS products (
-            id               TEXT PRIMARY KEY,
-            name             TEXT NOT NULL,
-            brand            TEXT,
-            roast_level      TEXT,
-            origin           TEXT,
-            process_method   TEXT,
-            weight_oz        REAL,
-            amazon_asin      TEXT,
-            roaster_url      TEXT,
-            affiliate_tag    TEXT,
-            best_brew_methods TEXT,
-            flavor_notes     TEXT,
-            acidity          INTEGER,
-            body             INTEGER,
-            sweetness        INTEGER,
-            bitterness       INTEGER,
-            roast_intensity  INTEGER,
-            updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
-    # Add flavor vector columns to existing tables that predate this schema
-    existing = {row[1] for row in conn.execute("PRAGMA table_info(products)")}
-    flavor_cols = {
-        "acidity": "INTEGER",
-        "body": "INTEGER",
-        "sweetness": "INTEGER",
-        "bitterness": "INTEGER",
-        "roast_intensity": "INTEGER",
-    }
-    for col, col_type in flavor_cols.items():
-        if col not in existing:
-            conn.execute(f"ALTER TABLE products ADD COLUMN {col} {col_type}")
-    conn.commit()
+sys.path.insert(0, str(REPO_ROOT))
+from scrapers.db import get_db_path, init_db  # noqa: E402
 
 
 def load_products(path: Path) -> list[dict]:
@@ -181,7 +143,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    db_path = args.db or DB_PATH
+    db_path = args.db or get_db_path()
     products_path = args.products or PRODUCTS_FILE
 
     products = load_products(products_path)
@@ -192,7 +154,7 @@ def main() -> None:
         # Still connect to show insert vs update status
         if db_path.exists():
             conn = sqlite3.connect(db_path)
-            init_products_table(conn)
+            init_db(conn)
         else:
             print("  (DB does not exist yet — all would be INSERTs)")
             for p in products:
@@ -201,7 +163,7 @@ def main() -> None:
     else:
         db_path.parent.mkdir(parents=True, exist_ok=True)
         conn = sqlite3.connect(db_path)
-        init_products_table(conn)
+        init_db(conn)
 
     inserted, updated = upsert_products(conn, products, dry_run=args.dry_run)
 

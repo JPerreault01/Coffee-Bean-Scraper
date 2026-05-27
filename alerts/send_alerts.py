@@ -14,15 +14,16 @@ Run:
 import json
 import logging
 import os
-import sqlite3
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from scrapers.db import get_connection  # noqa: E402
+
 ENV_FILE = Path("/opt/.env")
-DB_PATH = Path("/opt/data/prices.db")
 LOG_PATH = Path("/opt/data/alerts.log")
 PRODUCTS_FILE = Path("/opt/scrapers/products.json")
 
@@ -50,24 +51,6 @@ def load_env() -> dict:
                     env[k.strip()] = v.strip().strip('"').strip("'")
     env.update(os.environ)
     return env
-
-
-def init_alerts_table(conn: sqlite3.Connection) -> None:
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS alert_log (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            product_id TEXT NOT NULL,
-            trigger_price REAL NOT NULL,
-            seven_day_avg REAL NOT NULL,
-            drop_pct REAL NOT NULL,
-            sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
-    conn.execute("""
-        CREATE INDEX IF NOT EXISTS idx_alert_product
-        ON alert_log (product_id, sent_at)
-    """)
-    conn.commit()
 
 
 def get_current_price(conn: sqlite3.Connection, product_id: str) -> tuple[float, float] | None:
@@ -253,56 +236,53 @@ def run() -> None:
         products = json.load(f)
     products_by_id = {p["id"]: p for p in products}
 
-    conn = sqlite3.connect(DB_PATH)
-    init_alerts_table(conn)
-
     alerts_sent = 0
     checked = 0
 
-    for product_id, product in products_by_id.items():
-        current = get_current_price(conn, product_id)
-        if current is None:
-            log.debug("No price data for %s — skipping", product_id)
-            continue
+    with get_connection() as conn:
+        for product_id, product in products_by_id.items():
+            current = get_current_price(conn, product_id)
+            if current is None:
+                log.debug("No price data for %s — skipping", product_id)
+                continue
 
-        current_price, price_per_oz = current
-        avg = get_seven_day_avg(conn, product_id)
+            current_price, price_per_oz = current
+            avg = get_seven_day_avg(conn, product_id)
 
-        if avg is None:
-            log.debug("Not enough history for %s — skipping", product_id)
-            continue
+            if avg is None:
+                log.debug("Not enough history for %s — skipping", product_id)
+                continue
 
-        checked += 1
-        drop_pct = (avg - current_price) / avg
+            checked += 1
+            drop_pct = (avg - current_price) / avg
 
-        if drop_pct < DROP_THRESHOLD:
-            log.debug(
-                "%s: price $%.2f vs avg $%.2f (%.1f%% — below threshold)",
+            if drop_pct < DROP_THRESHOLD:
+                log.debug(
+                    "%s: price $%.2f vs avg $%.2f (%.1f%% — below threshold)",
+                    product["name"],
+                    current_price,
+                    avg,
+                    drop_pct * 100,
+                )
+                continue
+
+            if already_alerted(conn, product_id, current_price):
+                log.info("%s: already alerted at this price today — skipping", product["name"])
+                continue
+
+            log.info(
+                "ALERT: %s dropped %.1f%% ($%.2f → $%.2f)",
                 product["name"],
-                current_price,
-                avg,
                 drop_pct * 100,
+                avg,
+                current_price,
             )
-            continue
 
-        if already_alerted(conn, product_id, current_price):
-            log.info("%s: already alerted at this price today — skipping", product["name"])
-            continue
+            sent = send_beehiiv_alert(product, current_price, avg, drop_pct, price_per_oz, env)
+            if sent:
+                record_alert(conn, product_id, current_price, avg, drop_pct)
+                alerts_sent += 1
 
-        log.info(
-            "ALERT: %s dropped %.1f%% ($%.2f → $%.2f)",
-            product["name"],
-            drop_pct * 100,
-            avg,
-            current_price,
-        )
-
-        sent = send_beehiiv_alert(product, current_price, avg, drop_pct, price_per_oz, env)
-        if sent:
-            record_alert(conn, product_id, current_price, avg, drop_pct)
-            alerts_sent += 1
-
-    conn.close()
     log.info("Done. Checked %d products, sent %d alerts.", checked, alerts_sent)
 
 
