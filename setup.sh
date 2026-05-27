@@ -115,23 +115,30 @@ tar -xzf /tmp/wordpress.tar.gz -C /tmp
 cp -r /tmp/wordpress/. "${WP_DIR}/"
 chown -R www-data:www-data "${WP_DIR}"
 
-# wp-config.php
+# wp-config.php — use Python for all substitutions to handle special characters safely
 cp "${WP_DIR}/wp-config-sample.php" "${WP_DIR}/wp-config.php"
-sed -i "s/database_name_here/${DB_NAME}/" "${WP_DIR}/wp-config.php"
-sed -i "s/username_here/${DB_USER}/" "${WP_DIR}/wp-config.php"
-sed -i "s/password_here/${DB_PASS}/" "${WP_DIR}/wp-config.php"
-
-# Inject unique auth keys using Python to avoid sed special-character issues
-python3 - <<'PYEOF'
+python3 - <<PYEOF
 import urllib.request, re
-salts = urllib.request.urlopen('https://api.wordpress.org/secret-key/1.1/salt/').read().decode()
-with open('/var/www/coffeebeans/wp-config.php', 'r') as f:
+
+db_name = '${DB_NAME}'
+db_user = '${DB_USER}'
+db_pass = '${DB_PASS}'
+config_path = '${WP_DIR}/wp-config.php'
+
+with open(config_path, 'r') as f:
     content = f.read()
+
+content = content.replace('database_name_here', db_name)
+content = content.replace('username_here', db_user)
+content = content.replace('password_here', db_pass)
+
+salts = urllib.request.urlopen('https://api.wordpress.org/secret-key/1.1/salt/').read().decode()
 content = re.sub(r"define\('AUTH_KEY'.*?define\('NONCE_SALT',\s*'[^']*'\s*\);", '', content, flags=re.DOTALL)
 content = content.replace("/**#@-*/", salts + "\n/**#@-*/")
-with open('/var/www/coffeebeans/wp-config.php', 'w') as f:
+
+with open(config_path, 'w') as f:
     f.write(content)
-print("WordPress salts injected.")
+print("wp-config.php configured.")
 PYEOF
 
 echo "==> Configuring Nginx for ${DOMAIN}"
