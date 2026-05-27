@@ -11,7 +11,12 @@
     "roaster_url": null,
     "affiliate_tag": "mycoffeebeans-20",
     "best_brew_methods": ["espresso", "moka pot"],
-    "flavor_notes": ["hazelnut", "brown sugar", "mild cocoa", "creamy body"]
+    "flavor_notes": ["hazelnut", "brown sugar", "mild cocoa", "creamy body"],
+    "acidity": 2,
+    "body": 4,
+    "sweetness": 3,
+    "bitterness": 3,
+    "roast_intensity": 3
   },
   {
     "id": "illy-classico-medium",
@@ -25,7 +30,12 @@
     "roaster_url": null,
     "affiliate_tag": "mycoffeebeans-20",
     "best_brew_methods": ["espresso", "drip", "french press"],
-    "flavor_notes": ["caramel", "orange blossom", "jasmine", "chocolate"]
+    "flavor_notes": ["caramel", "orange blossom", "jasmine", "chocolate"],
+    "acidity": 3,
+    "body": 3,
+    "sweetness": 4,
+    "bitterness": 2,
+    "roast_intensity": 3
   },
   {
     "id": "peets-major-dickasons",
@@ -39,7 +49,12 @@
     "roaster_url": null,
     "affiliate_tag": "mycoffeebeans-20",
     "best_brew_methods": ["drip", "french press", "pour over"],
-    "flavor_notes": ["dark chocolate", "earthy", "full body", "low acidity"]
+    "flavor_notes": ["dark chocolate", "earthy", "full body", "low acidity"],
+    "acidity": 1,
+    "body": 5,
+    "sweetness": 2,
+    "bitterness": 4,
+    "roast_intensity": 5
   },
   {
     "id": "stumptown-hair-bender",
@@ -53,7 +68,12 @@
     "roaster_url": "https://www.stumptowncoffee.com/products/hair-bender",
     "affiliate_tag": null,
     "best_brew_methods": ["espresso", "pour over", "drip"],
-    "flavor_notes": ["bittersweet chocolate", "caramel", "citrus"]
+    "flavor_notes": ["bittersweet chocolate", "caramel", "citrus"],
+    "acidity": 3,
+    "body": 3,
+    "sweetness": 3,
+    "bitterness": 3,
+    "roast_intensity": 3
   },
   {
     "id": "death-wish-coffee",
@@ -67,7 +87,12 @@
     "roaster_url": "https://www.deathwishcoffee.com/products/death-wish-coffee-whole-bean",
     "affiliate_tag": "mycoffeebeans-20",
     "best_brew_methods": ["french press", "drip", "cold brew"],
-    "flavor_notes": ["dark cherry", "chocolate", "bold", "low bitterness"]
+    "flavor_notes": ["dark cherry", "chocolate", "bold", "low bitterness"],
+    "acidity": 1,
+    "body": 5,
+    "sweetness": 2,
+    "bitterness": 5,
+    "roast_intensity": 5
   },
   {
     "id": "kicking-horse-454-horse-power",
@@ -81,7 +106,12 @@
     "roaster_url": null,
     "affiliate_tag": "mycoffeebeans-20",
     "best_brew_methods": ["french press", "drip", "espresso"],
-    "flavor_notes": ["dark chocolate", "molasses", "smoky"]
+    "flavor_notes": ["dark chocolate", "molasses", "smoky"],
+    "acidity": 1,
+    "body": 5,
+    "sweetness": 2,
+    "bitterness": 4,
+    "roast_intensity": 5
   },
   {
     "id": "lifeboost-medium-roast",
@@ -95,7 +125,12 @@
     "roaster_url": null,
     "affiliate_tag": "mycoffeebeans-20",
     "best_brew_methods": ["drip", "pour over", "french press"],
-    "flavor_notes": ["milk chocolate", "mild citrus", "smooth", "low acid"]
+    "flavor_notes": ["milk chocolate", "mild citrus", "smooth", "low acid"],
+    "acidity": 2,
+    "body": 3,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 3
   },
   {
     "id": "cafe-don-pablo-gourmet",
@@ -109,7 +144,12 @@
     "roaster_url": null,
     "affiliate_tag": "mycoffeebeans-20",
     "best_brew_methods": ["drip", "french press", "espresso"],
-    "flavor_notes": ["chocolate", "caramel", "balanced", "medium body"]
+    "flavor_notes": ["chocolate", "caramel", "balanced", "medium body"],
+    "acidity": 2,
+    "body": 4,
+    "sweetness": 3,
+    "bitterness": 3,
+    "roast_intensity": 4
   },
   {
     "id": "camano-island-sumatra",
@@ -123,7 +163,12 @@
     "roaster_url": null,
     "affiliate_tag": "mycoffeebeans-20",
     "best_brew_methods": ["french press", "drip", "cold brew"],
-    "flavor_notes": ["earthy", "cedar", "dark chocolate", "full body"]
+    "flavor_notes": ["earthy", "cedar", "dark chocolate", "full body"],
+    "acidity": 1,
+    "body": 5,
+    "sweetness": 2,
+    "bitterness": 4,
+    "roast_intensity": 5
   },
   {
     "id": "caribou-caribou-blend",
@@ -137,7 +182,12 @@
     "roaster_url": null,
     "affiliate_tag": "mycoffeebeans-20",
     "best_brew_methods": ["drip", "pour over", "french press"],
-    "flavor_notes": ["caramel", "nuts", "light cocoa", "smooth"]
+    "flavor_notes": ["caramel", "nuts", "light cocoa", "smooth"],
+    "acidity": 2,
+    "body": 3,
+    "sweetness": 4,
+    "bitterness": 2,
+    "roast_intensity": 3
   },
   {
     "id": "blue-bottle-hayes-valley",
@@ -151,7 +201,12 @@
     "roaster_url": "https://bluebottlecoffee.com/store/hayes-valley-espresso",
     "affiliate_tag": null,
     "best_brew_methods": ["espresso", "moka pot"],
-    "flavor_notes": ["bittersweet chocolate", "dried fruit", "caramel", "lingering finish"]
+    "flavor_notes": ["bittersweet chocolate", "dried fruit", "caramel", "lingering finish"],
+    "acidity": 2,
+    "body": 4,
+    "sweetness": 3,
+    "bitterness": 4,
+    "roast_intensity": 4
   },
   {
     "id": "intelligentsia-black-cat",
@@ -165,7 +220,12 @@
     "roaster_url": "https://www.intelligentsia.com/products/black-cat-classic-espresso",
     "affiliate_tag": null,
     "best_brew_methods": ["espresso", "moka pot"],
-    "flavor_notes": ["dark chocolate", "brown sugar", "walnut", "thick crema"]
+    "flavor_notes": ["dark chocolate", "brown sugar", "walnut", "thick crema"],
+    "acidity": 2,
+    "body": 4,
+    "sweetness": 3,
+    "bitterness": 3,
+    "roast_intensity": 4
   },
   {
     "id": "counter-culture-big-trouble",
@@ -179,7 +239,12 @@
     "roaster_url": "https://counterculturecoffee.com/products/big-trouble",
     "affiliate_tag": null,
     "best_brew_methods": ["drip", "pour over", "espresso"],
-    "flavor_notes": ["caramel", "toffee", "mild fruit", "balanced"]
+    "flavor_notes": ["caramel", "toffee", "mild fruit", "balanced"],
+    "acidity": 3,
+    "body": 3,
+    "sweetness": 4,
+    "bitterness": 2,
+    "roast_intensity": 3
   },
   {
     "id": "atlas-limu-ethiopia",
@@ -193,7 +258,12 @@
     "roaster_url": "https://atlascoffeeclub.com/products/ethiopia",
     "affiliate_tag": null,
     "best_brew_methods": ["pour over", "aeropress", "drip"],
-    "flavor_notes": ["bergamot", "stone fruit", "jasmine", "clean finish"]
+    "flavor_notes": ["bergamot", "stone fruit", "jasmine", "clean finish"],
+    "acidity": 4,
+    "body": 2,
+    "sweetness": 4,
+    "bitterness": 1,
+    "roast_intensity": 2
   },
   {
     "id": "onyx-southern-weather",
@@ -207,7 +277,12 @@
     "roaster_url": "https://onyxcoffeelab.com/products/southern-weather",
     "affiliate_tag": null,
     "best_brew_methods": ["pour over", "aeropress", "chemex"],
-    "flavor_notes": ["strawberry", "cream soda", "milk chocolate", "bright acidity"]
+    "flavor_notes": ["strawberry", "cream soda", "milk chocolate", "bright acidity"],
+    "acidity": 5,
+    "body": 2,
+    "sweetness": 4,
+    "bitterness": 1,
+    "roast_intensity": 1
   },
   {
     "id": "kirkland-colombian",
@@ -221,7 +296,12 @@
     "roaster_url": null,
     "affiliate_tag": "mycoffeebeans-20",
     "best_brew_methods": ["drip", "french press"],
-    "flavor_notes": ["mild chocolate", "caramel", "clean", "smooth"]
+    "flavor_notes": ["mild chocolate", "caramel", "clean", "smooth"],
+    "acidity": 2,
+    "body": 3,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 3
   },
   {
     "id": "eight-oclock-original",
@@ -235,7 +315,12 @@
     "roaster_url": null,
     "affiliate_tag": "mycoffeebeans-20",
     "best_brew_methods": ["drip", "french press", "pour over"],
-    "flavor_notes": ["mild", "balanced", "light chocolate", "nutty"]
+    "flavor_notes": ["mild", "balanced", "light chocolate", "nutty"],
+    "acidity": 2,
+    "body": 2,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 3
   },
   {
     "id": "don-franciscos-colombia",
@@ -249,7 +334,12 @@
     "roaster_url": null,
     "affiliate_tag": "mycoffeebeans-20",
     "best_brew_methods": ["drip", "pour over"],
-    "flavor_notes": ["light caramel", "mild citrus", "clean", "smooth body"]
+    "flavor_notes": ["light caramel", "mild citrus", "clean", "smooth body"],
+    "acidity": 3,
+    "body": 2,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 3
   },
   {
     "id": "community-coffee-medium-dark",
@@ -263,7 +353,12 @@
     "roaster_url": null,
     "affiliate_tag": "mycoffeebeans-20",
     "best_brew_methods": ["drip", "french press", "cold brew"],
-    "flavor_notes": ["bold", "chocolate", "mild smokiness", "full body"]
+    "flavor_notes": ["bold", "chocolate", "mild smokiness", "full body"],
+    "acidity": 1,
+    "body": 4,
+    "sweetness": 2,
+    "bitterness": 4,
+    "roast_intensity": 4
   },
   {
     "id": "cafe-bustelo-espresso",
@@ -277,6 +372,11 @@
     "roaster_url": null,
     "affiliate_tag": "mycoffeebeans-20",
     "best_brew_methods": ["espresso", "moka pot", "drip"],
-    "flavor_notes": ["intense", "dark chocolate", "tobacco", "thick body"]
+    "flavor_notes": ["intense", "dark chocolate", "tobacco", "thick body"],
+    "acidity": 1,
+    "body": 5,
+    "sweetness": 1,
+    "bitterness": 5,
+    "roast_intensity": 5
   }
 ]
