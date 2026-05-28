@@ -73,7 +73,8 @@ def clean_transcript(raw_parts: list[dict]) -> str:
 
 def fetch_transcript(video_id: str, language_preference: list[str]) -> Optional[str]:
     try:
-        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+        api = YouTubeTranscriptApi()
+        transcript_list = api.list(video_id)
 
         for lang in language_preference:
             try:
