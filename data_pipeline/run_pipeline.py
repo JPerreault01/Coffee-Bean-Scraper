@@ -7,6 +7,7 @@ Usage:
     python data_pipeline/run_pipeline.py --web
     python data_pipeline/run_pipeline.py --youtube
     python data_pipeline/run_pipeline.py --youtube --video-id <id>
+    python data_pipeline/run_pipeline.py --fresh      # ignore checkpoints, start from zero
 """
 
 import argparse
@@ -44,9 +45,14 @@ def main():
     parser.add_argument("--web", action="store_true", help="Run the web scraper only")
     parser.add_argument("--youtube", action="store_true", help="Run the YouTube scraper only")
     parser.add_argument("--video-id", metavar="VIDEO_ID", help="Scrape a single YouTube video by ID (use with --youtube)")
+    parser.add_argument(
+        "--fresh",
+        action="store_true",
+        help="Ignore existing checkpoint state and start from zero",
+    )
     args = parser.parse_args()
 
-    # If no flags given, run all scrapers
+    # If no source flags given, run all scrapers
     run_all = not (args.reddit or args.web or args.youtube)
 
     logging.basicConfig(
@@ -59,6 +65,7 @@ def main():
     config = load_config()
     run_summary = {
         "run_at": datetime.now(tz=timezone.utc).isoformat(),
+        "fresh": args.fresh,
         "reddit": {"posts": 0, "comments": 0, "subreddits": {}},
         "web": {"articles": 0, "by_site": {}},
         "youtube": {"transcripts": 0, "by_channel": {}},
@@ -66,7 +73,7 @@ def main():
 
     if run_all or args.reddit:
         try:
-            reddit_result = reddit_scraper.run(config)
+            reddit_result = reddit_scraper.run(config, fresh=args.fresh)
             run_summary["reddit"] = reddit_result
         except SystemExit:
             logger.error("Reddit scraper exited with an error — check credentials")
@@ -75,14 +82,14 @@ def main():
 
     if run_all or args.web:
         try:
-            web_result = web_scraper.run(config)
+            web_result = web_scraper.run(config, fresh=args.fresh)
             run_summary["web"] = web_result
         except Exception as e:
             logger.error(f"Web scraper failed: {e}")
 
     if run_all or args.youtube:
         try:
-            youtube_result = youtube_scraper.run(config, video_id_override=args.video_id)
+            youtube_result = youtube_scraper.run(config, video_id_override=args.video_id, fresh=args.fresh)
             run_summary["youtube"] = youtube_result
         except Exception as e:
             logger.error(f"YouTube scraper failed: {e}")
