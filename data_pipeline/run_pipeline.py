@@ -6,6 +6,7 @@ Usage:
     python data_pipeline/run_pipeline.py --reddit
     python data_pipeline/run_pipeline.py --web
     python data_pipeline/run_pipeline.py --youtube
+    python data_pipeline/run_pipeline.py --podcast
     python data_pipeline/run_pipeline.py --youtube --video-id <id>
     python data_pipeline/run_pipeline.py --fresh      # ignore checkpoints, start from zero
 """
@@ -20,7 +21,7 @@ from pathlib import Path
 # Allow running from repo root: python data_pipeline/run_pipeline.py
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from data_pipeline import reddit_scraper, web_scraper, youtube_scraper
+from data_pipeline import reddit_scraper, web_scraper, youtube_scraper, podcast_scraper
 
 logger = logging.getLogger("run_pipeline")
 
@@ -44,6 +45,7 @@ def main():
     parser.add_argument("--reddit", action="store_true", help="Run the Reddit scraper only")
     parser.add_argument("--web", action="store_true", help="Run the web scraper only")
     parser.add_argument("--youtube", action="store_true", help="Run the YouTube scraper only")
+    parser.add_argument("--podcast", action="store_true", help="Run the podcast scraper only")
     parser.add_argument("--video-id", metavar="VIDEO_ID", help="Scrape a single YouTube video by ID (use with --youtube)")
     parser.add_argument(
         "--fresh",
@@ -53,7 +55,7 @@ def main():
     args = parser.parse_args()
 
     # If no source flags given, run all scrapers
-    run_all = not (args.reddit or args.web or args.youtube)
+    run_all = not (args.reddit or args.web or args.youtube or args.podcast)
 
     logging.basicConfig(
         format="[run_pipeline] [%(levelname)s] %(asctime)s %(message)s",
@@ -69,6 +71,7 @@ def main():
         "reddit": {"posts": 0, "comments": 0, "subreddits": {}},
         "web": {"articles": 0, "by_site": {}},
         "youtube": {"transcripts": 0, "by_channel": {}},
+        "podcasts": {"episodes": 0, "by_feed": {}},
     }
 
     if run_all or args.reddit:
@@ -93,6 +96,13 @@ def main():
             run_summary["youtube"] = youtube_result
         except Exception as e:
             logger.error(f"YouTube scraper failed: {e}")
+
+    if run_all or args.podcast:
+        try:
+            podcast_result = podcast_scraper.run(config, fresh=args.fresh)
+            run_summary["podcasts"] = podcast_result
+        except Exception as e:
+            logger.error(f"Podcast scraper failed: {e}")
 
     write_summary(config, run_summary)
 

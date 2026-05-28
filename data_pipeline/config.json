@@ -85,6 +85,30 @@
         "start_url": "https://www.baristahustle.com/knowledgebase/",
         "pagination_type": "wordpress",
         "max_articles": 500
+      },
+      "christopher_feran": {
+        "base_url": "https://www.christopherferan.com",
+        "start_url": "https://www.christopherferan.com",
+        "pagination_type": "link_collection",
+        "max_articles": 200
+      },
+      "scott_rao": {
+        "base_url": "https://www.scottrao.com",
+        "start_url": "https://www.scottrao.com/blog",
+        "pagination_type": "link_collection",
+        "max_articles": 200
+      },
+      "coffeegeek": {
+        "base_url": "https://coffeegeek.com",
+        "start_url": "https://coffeegeek.com/",
+        "pagination_type": "wordpress",
+        "max_articles": 500
+      },
+      "pull_and_pour": {
+        "base_url": "https://pullandpourcoffee.com",
+        "start_url": "https://pullandpourcoffee.com/",
+        "pagination_type": "wordpress",
+        "max_articles": 300
       }
     },
     "min_article_chars": 500,
@@ -116,6 +140,26 @@
       "sprometheus": {
         "channel_id": "UCcBMbOTJwCmCFaos4e51s-g",
         "authority_weight": 0.8
+      },
+      "reviews_by_julian": {
+        "channel_id": "UCReviewsByJulianVerifyX",
+        "authority_weight": 0.8
+      },
+      "aramse": {
+        "channel_id": "UCARamseVerifyManuallyXX",
+        "authority_weight": 0.8
+      },
+      "coffee_chronicler": {
+        "channel_id": "UCWf5gHqAKmPfnPJpqq1R8lQ",
+        "authority_weight": 0.9
+      },
+      "brian_quan": {
+        "channel_id": "UCe3YCzxkOJ5LOzFb6JVJoRg",
+        "authority_weight": 0.8
+      },
+      "european_coffee_trip": {
+        "channel_id": "UCYMYGnpPbGzqKmpQEeAqI-Q",
+        "authority_weight": 0.9
       }
     },
     "default_authority_weight": 0.8,
@@ -146,6 +190,23 @@
       "la marzocco": "La Marzocco",
       "flair espresso": "Flair Espresso",
       "1zpresso": "1Zpresso"
+    }
+  },
+  "podcasts": {
+    "output_dir": "training_data/raw/podcasts",
+    "min_text_chars": 100,
+    "max_episodes_per_feed": 500,
+    "feeds": {
+      "buy_the_drip": {
+        "name": "buy_the_drip",
+        "rss_url": "https://feeds.buzzsprout.com/1864734.rss",
+        "authority_weight": 0.8
+      },
+      "buying_season": {
+        "name": "buying_season",
+        "rss_url": "https://anchor.fm/s/buying-season/podcast/rss",
+        "authority_weight": 0.8
+      }
     }
   },
   "domain_tags": {
