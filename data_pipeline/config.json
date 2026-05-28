@@ -2,12 +2,12 @@
   "reddit": {
     "subreddits": ["Coffee", "espresso", "JamesHoffmann", "pourover", "barista", "mokapot"],
     "subreddit_comment_caps": {
-        "Coffee": 250,
-        "espresso": 175,
-        "JamesHoffmann": 175,
-        "pourover": 100,
-        "barista": 100,
-        "mokapot": 50
+      "Coffee": 250,
+      "espresso": 175,
+      "JamesHoffmann": 175,
+      "pourover": 100,
+      "barista": 100,
+      "mokapot": 50
     },
     "fetch_filters": ["top_year", "top_all", "hot"],
     "min_score": 50,
@@ -15,6 +15,10 @@
     "short_post_min_chars": 50,
     "short_post_score_threshold": 200,
     "max_comments_per_post": 25,
+    "max_comment_posts": 200,
+    "burst_break_every": 30,
+    "burst_break_min_s": 25,
+    "burst_break_max_s": 40,
     "comment_reply_depth": 2,
     "max_replies_per_comment": 5,
     "min_comment_chars": 30,
@@ -56,7 +60,6 @@
         "pagination_type": "wordpress",
         "max_articles": 300
       }
-    },
     },
     "min_article_chars": 500,
     "request_delay_seconds": 2,
