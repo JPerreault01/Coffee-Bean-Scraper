@@ -2,7 +2,7 @@
 """
 Web scraper for coffee-focused sites.
 Uses Playwright (headless Chromium) to handle JS-rendered pages and Cloudflare challenges.
-Collects articles from Sprudge, Coffee Ad Astra, and Perfect Daily Grind.
+Collects articles from Sprudge, Coffee Ad Astra, Perfect Daily Grind, Home-Barista, and Barista Hustle.
 """
 
 import json
@@ -29,6 +29,29 @@ USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0",
 ]
 
+STATE_FILE = Path("training_data/state/web_state.json")
+
+
+# --- State management ---
+
+def _load_state() -> dict:
+    if STATE_FILE.exists():
+        try:
+            return json.loads(STATE_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return {
+        "scraped_urls": [],
+        "completed_sites": [],
+        "in_progress": None,
+        "last_run_at": None,
+    }
+
+
+def _save_state(state: dict):
+    STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    STATE_FILE.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+
 
 def setup_logging():
     logging.basicConfig(
@@ -41,11 +64,6 @@ def setup_logging():
 
 @contextmanager
 def make_browser_context():
-    """
-    Launch a headless Chromium browser and yield a context.
-    Single browser instance reused across all fetches in a run.
-    Images, fonts, and media are blocked to speed up fetching.
-    """
     with sync_playwright() as pw:
         browser = pw.chromium.launch(headless=True)
         context = browser.new_context(
@@ -58,7 +76,6 @@ def make_browser_context():
                 "DNT": "1",
             },
         )
-        # Block images, media, and fonts — we only need HTML text
         context.route(
             "**/*",
             lambda route: route.abort()
@@ -73,16 +90,10 @@ def make_browser_context():
 
 
 def fetch_page(context: BrowserContext, url: str, timeout: int = 30000) -> Optional[BeautifulSoup]:
-    """
-    Fetch a URL with a real browser (handles JS rendering and Cloudflare).
-    timeout is in milliseconds (Playwright convention).
-    Opens a new tab per request and closes it after — avoids cross-page state.
-    """
     page = None
     try:
         page = context.new_page()
         page.goto(url, timeout=timeout, wait_until="domcontentloaded")
-        # Brief wait for any late JS mutations (nav menus, lazy links)
         page.wait_for_timeout(1500)
         html = page.content()
         return BeautifulSoup(html, "lxml")
@@ -125,9 +136,6 @@ def compute_web_quality(title: str, body: str, soup: BeautifulSoup, config: dict
 
 
 def extract_article_text(soup: BeautifulSoup) -> tuple[str, str]:
-    """Return (title, body_text) after stripping boilerplate."""
-
-    # Extract title — prefer og:title, fall back to h1
     title = ""
     og_title = soup.find("meta", property="og:title")
     if og_title and og_title.get("content"):
@@ -137,7 +145,6 @@ def extract_article_text(soup: BeautifulSoup) -> tuple[str, str]:
         if h1:
             title = h1.get_text(strip=True)
 
-    # Strip boilerplate elements before extracting body
     for selector in [
         "nav", "header", "footer", "aside",
         ".sidebar", ".widget", ".newsletter", ".subscribe",
@@ -150,7 +157,6 @@ def extract_article_text(soup: BeautifulSoup) -> tuple[str, str]:
         for el in soup.select(selector):
             el.decompose()
 
-    # Try common article containers in priority order
     article = None
     for selector in [
         "article",
@@ -178,7 +184,6 @@ def extract_article_text(soup: BeautifulSoup) -> tuple[str, str]:
 
 
 def _is_article_url(href: str, base_parsed) -> bool:
-    """Return True if a URL looks like an article rather than nav/admin/media."""
     try:
         parsed = urlparse(href)
     except Exception:
@@ -219,7 +224,6 @@ def collect_wordpress_urls(
     max_articles: int,
     delay: float,
 ) -> list[str]:
-    """Collect article URLs from a WordPress-paginated blog index."""
     urls: set[str] = set()
     page = 1
     base_parsed = urlparse(base_url)
@@ -260,7 +264,6 @@ def collect_link_collection_urls(
     max_articles: int,
     delay: float,
 ) -> list[str]:
-    """Collect article URLs by scanning all links on a site's homepage/index page."""
     urls: set[str] = set()
     base_parsed = urlparse(base_url)
 
@@ -283,11 +286,6 @@ def collect_wordpress_category_urls(
     max_articles: int,
     delay: float,
 ) -> list[str]:
-    """
-    Collect article URLs from a list of WordPress category paths.
-    Each category is paginated as /category/slug/page/2/ etc.
-    Stops each category when pages return no new URLs.
-    """
     urls: set[str] = set()
     base_parsed = urlparse(base_url)
 
@@ -322,12 +320,142 @@ def collect_wordpress_category_urls(
     return list(urls)[:max_articles]
 
 
+def collect_forum_thread_urls(
+    context: BrowserContext,
+    index_urls: list[str],
+    base_url: str,
+    max_threads: int,
+    delay: float,
+    min_replies: int = 10,
+) -> list[str]:
+    """
+    Collect thread URLs from a forum index.
+    Only threads with >= min_replies are collected (high-signal discussions only).
+    Similar extraction logic to Reddit: thread title + top posts.
+    """
+    thread_urls: set[str] = set()
+    base_parsed = urlparse(base_url)
+
+    for index_url in index_urls:
+        if len(thread_urls) >= max_threads:
+            break
+
+        page = 1
+        consecutive_empty = 0
+
+        while len(thread_urls) < max_threads:
+            page_url = index_url if page == 1 else index_url.rstrip("/") + f"?page={page}"
+            logger.info(f"Collecting forum thread URLs from {page_url}")
+            soup = fetch_page(context, page_url)
+            if not soup:
+                break
+
+            found_on_page = 0
+
+            # Look for thread rows — common forum patterns
+            # Try phpBB-style structure (Home-Barista runs phpBB)
+            thread_links = []
+
+            # phpBB: <a class="topictitle"> or links in .forumrow / .topiclist
+            for a in soup.select("a.topictitle, .topictitle a, td.topic_title a"):
+                href = urljoin(base_url, a.get("href", "")).split("#")[0]
+                if href and href not in thread_urls:
+                    thread_links.append((href, a))
+
+            # Fall back: any link that looks like a thread (has /viewtopic or /t/ pattern)
+            if not thread_links:
+                for a in soup.find_all("a", href=True):
+                    href = urljoin(base_url, a["href"]).split("#")[0]
+                    parsed = urlparse(href)
+                    if parsed.netloc == base_parsed.netloc and (
+                        "viewtopic" in parsed.path or
+                        "/t/" in parsed.path or
+                        parsed.query.startswith("t=")
+                    ):
+                        if href not in thread_urls:
+                            thread_links.append((href, a))
+
+            # Check reply count where possible — look for adjacent reply counts
+            for href, a_tag in thread_links:
+                if len(thread_urls) >= max_threads:
+                    break
+
+                # Try to find reply count in sibling/parent cells
+                replies = None
+                parent = a_tag.find_parent("tr") or a_tag.find_parent("li")
+                if parent:
+                    for cell in parent.find_all(["td", "span", "div"]):
+                        text = cell.get_text(strip=True)
+                        if text.isdigit():
+                            try:
+                                replies = int(text)
+                                break
+                            except ValueError:
+                                pass
+
+                # If we can't determine reply count, include it (can't know without fetching)
+                if replies is None or replies >= min_replies:
+                    thread_urls.add(href)
+                    found_on_page += 1
+
+            if found_on_page == 0:
+                consecutive_empty += 1
+                if consecutive_empty >= 2:
+                    break
+            else:
+                consecutive_empty = 0
+
+            page += 1
+            time.sleep(delay + random.uniform(0, 1))
+
+    return list(thread_urls)[:max_threads]
+
+
+def extract_forum_thread_text(soup: BeautifulSoup) -> tuple[str, str]:
+    """Extract thread title and concatenated top posts from a forum thread page."""
+    title = ""
+
+    # Title
+    h1 = soup.find("h1")
+    if h1:
+        title = h1.get_text(strip=True)
+    if not title:
+        og = soup.find("meta", property="og:title")
+        if og and og.get("content"):
+            title = og["content"].strip()
+
+    # Strip boilerplate
+    for selector in ["nav", "header", "footer", ".advertisement", "script", "style", ".signature"]:
+        for el in soup.select(selector):
+            el.decompose()
+
+    # Collect post bodies — phpBB uses .postbody or div.content inside .post
+    posts = []
+    for selector in [".postbody", ".post-content", ".content", ".message"]:
+        found = soup.select(selector)
+        if found:
+            for el in found:
+                text = el.get_text(separator="\n", strip=True)
+                if text and len(text) > 30:
+                    posts.append(text)
+            break
+
+    body = "\n\n".join(posts) if posts else soup.get_text(separator="\n", strip=True)
+    lines = [line.strip() for line in body.splitlines() if line.strip()]
+    body = "\n".join(lines)
+
+    return title, body
+
+
 def scrape_articles(
     context: BrowserContext,
     urls: list[str],
     site_name: str,
     config: dict,
     output_path: Path,
+    scraped_urls_set: set,
+    state: dict,
+    is_forum: bool = False,
 ) -> int:
     wcfg = config["web"]
     delay = wcfg["request_delay_seconds"]
@@ -336,18 +464,30 @@ def scrape_articles(
     scraped_at = datetime.now(tz=timezone.utc).isoformat()
     count = 0
 
-    with open(output_path, "w", encoding="utf-8") as f:
+    with open(output_path, "a", encoding="utf-8") as f:
         for i, url in enumerate(urls):
+            if url in scraped_urls_set:
+                logger.debug(f"Skipping already-scraped URL: {url}")
+                continue
+
             try:
                 time.sleep(delay + random.uniform(0, 1.5))
-                soup = fetch_page(context, url, timeout=timeout * 1000)  # convert s → ms
+                soup = fetch_page(context, url, timeout=timeout * 1000)
                 if not soup:
                     continue
 
-                title, body = extract_article_text(soup)
+                if is_forum:
+                    title, body = extract_forum_thread_text(soup)
+                    content_type = "forum_thread"
+                else:
+                    title, body = extract_article_text(soup)
+                    content_type = "article"
 
                 if len(body) < min_chars:
-                    logger.debug(f"Skipping short article ({len(body)} chars): {url}")
+                    logger.debug(f"Skipping short content ({len(body)} chars): {url}")
+                    scraped_urls_set.add(url)
+                    state["scraped_urls"] = list(scraped_urls_set)
+                    _save_state(state)
                     continue
 
                 if not title:
@@ -358,7 +498,7 @@ def scrape_articles(
 
                 envelope = {
                     "source": "web",
-                    "content_type": "article",
+                    "content_type": content_type,
                     "domain_tags": domain_tags,
                     "quality_score": quality_score,
                     "raw": {
@@ -373,6 +513,12 @@ def scrape_articles(
                 f.write(json.dumps(envelope, ensure_ascii=False) + "\n")
                 count += 1
 
+                # Update state after each successful record
+                scraped_urls_set.add(url)
+                state["scraped_urls"] = list(scraped_urls_set)
+                state["last_run_at"] = datetime.now(tz=timezone.utc).isoformat()
+                _save_state(state)
+
                 if count % 25 == 0:
                     logger.info(f"{site_name}: {count} articles scraped so far...")
 
@@ -382,51 +528,160 @@ def scrape_articles(
     return count
 
 
-def run(config: dict) -> dict:
+def run(config: dict, fresh: bool = False) -> dict:
     setup_logging()
     wcfg = config["web"]
     output_dir = Path(wcfg["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    # Load or reset state
+    state = {"scraped_urls": [], "completed_sites": [], "in_progress": None, "last_run_at": None}
+    if not fresh:
+        state = _load_state()
+        if state.get("scraped_urls") or state.get("completed_sites"):
+            logger.info(
+                f"Resuming from checkpoint: {len(state['scraped_urls'])} URLs already scraped, "
+                f"{len(state['completed_sites'])} sites complete"
+            )
+    else:
+        logger.info("--fresh flag set — ignoring existing state")
+
+    scraped_urls_set: set[str] = set(state.get("scraped_urls", []))
+    completed_sites: set[str] = set(state.get("completed_sites", []))
+
     delay = wcfg["request_delay_seconds"]
     summary = {"articles": 0, "by_site": {}}
     sites = wcfg["sites"]
 
-    # Single browser for the entire run — launch once, reuse across all sites
     with make_browser_context() as context:
 
         # Sprudge — WordPress pagination
-        sp_cfg = sites["sprudge"]
-        logger.info("Collecting Sprudge article URLs...")
-        sp_urls = collect_wordpress_urls(
-            context, sp_cfg["start_url"], sp_cfg["base_url"], sp_cfg["max_articles"], delay
-        )
-        logger.info(f"Sprudge: {len(sp_urls)} URLs collected, scraping...")
-        sp_count = scrape_articles(context, sp_urls, "sprudge", config, output_dir / "sprudge.jsonl")
-        summary["by_site"]["sprudge"] = sp_count
-        summary["articles"] += sp_count
+        if "sprudge" not in completed_sites:
+            state["in_progress"] = "sprudge"
+            _save_state(state)
+            sp_cfg = sites["sprudge"]
+            logger.info("Collecting Sprudge article URLs...")
+            sp_urls = collect_wordpress_urls(
+                context, sp_cfg["start_url"], sp_cfg["base_url"], sp_cfg["max_articles"], delay
+            )
+            logger.info(f"Sprudge: {len(sp_urls)} URLs collected, scraping...")
+            sp_count = scrape_articles(
+                context, sp_urls, "sprudge", config,
+                output_dir / "sprudge.jsonl", scraped_urls_set, state
+            )
+            summary["by_site"]["sprudge"] = sp_count
+            summary["articles"] += sp_count
+            completed_sites.add("sprudge")
+            state["completed_sites"] = list(completed_sites)
+            state["in_progress"] = None
+            _save_state(state)
+        else:
+            logger.info("Sprudge: already completed, skipping")
 
         # Coffee Ad Astra — single-page link collection
-        caa_cfg = sites["coffee_ad_astra"]
-        logger.info("Collecting Coffee Ad Astra article URLs...")
-        caa_urls = collect_link_collection_urls(
-            context, caa_cfg["start_url"], caa_cfg["base_url"], caa_cfg["max_articles"], delay
-        )
-        logger.info(f"Coffee Ad Astra: {len(caa_urls)} URLs collected, scraping...")
-        caa_count = scrape_articles(context, caa_urls, "coffee_ad_astra", config, output_dir / "coffee_ad_astra.jsonl")
-        summary["by_site"]["coffee_ad_astra"] = caa_count
-        summary["articles"] += caa_count
+        if "coffee_ad_astra" not in completed_sites:
+            state["in_progress"] = "coffee_ad_astra"
+            _save_state(state)
+            caa_cfg = sites["coffee_ad_astra"]
+            logger.info("Collecting Coffee Ad Astra article URLs...")
+            caa_urls = collect_link_collection_urls(
+                context, caa_cfg["start_url"], caa_cfg["base_url"], caa_cfg["max_articles"], delay
+            )
+            logger.info(f"Coffee Ad Astra: {len(caa_urls)} URLs collected, scraping...")
+            caa_count = scrape_articles(
+                context, caa_urls, "coffee_ad_astra", config,
+                output_dir / "coffee_ad_astra.jsonl", scraped_urls_set, state
+            )
+            summary["by_site"]["coffee_ad_astra"] = caa_count
+            summary["articles"] += caa_count
+            completed_sites.add("coffee_ad_astra")
+            state["completed_sites"] = list(completed_sites)
+            state["in_progress"] = None
+            _save_state(state)
+        else:
+            logger.info("Coffee Ad Astra: already completed, skipping")
 
         # Perfect Daily Grind — WordPress category pagination
-        pdg_cfg = sites["perfect_daily_grind"]
-        logger.info("Collecting Perfect Daily Grind article URLs...")
-        pdg_urls = collect_wordpress_category_urls(
-            context, pdg_cfg["base_url"], pdg_cfg["categories"], pdg_cfg["max_articles"], delay
-        )
-        logger.info(f"Perfect Daily Grind: {len(pdg_urls)} URLs collected, scraping...")
-        pdg_count = scrape_articles(context, pdg_urls, "perfect_daily_grind", config, output_dir / "perfect_daily_grind.jsonl")
-        summary["by_site"]["perfect_daily_grind"] = pdg_count
-        summary["articles"] += pdg_count
+        if "perfect_daily_grind" not in completed_sites:
+            state["in_progress"] = "perfect_daily_grind"
+            _save_state(state)
+            pdg_cfg = sites["perfect_daily_grind"]
+            logger.info("Collecting Perfect Daily Grind article URLs...")
+            pdg_urls = collect_wordpress_category_urls(
+                context, pdg_cfg["base_url"], pdg_cfg["categories"], pdg_cfg["max_articles"], delay
+            )
+            logger.info(f"Perfect Daily Grind: {len(pdg_urls)} URLs collected, scraping...")
+            pdg_count = scrape_articles(
+                context, pdg_urls, "perfect_daily_grind", config,
+                output_dir / "perfect_daily_grind.jsonl", scraped_urls_set, state
+            )
+            summary["by_site"]["perfect_daily_grind"] = pdg_count
+            summary["articles"] += pdg_count
+            completed_sites.add("perfect_daily_grind")
+            state["completed_sites"] = list(completed_sites)
+            state["in_progress"] = None
+            _save_state(state)
+        else:
+            logger.info("Perfect Daily Grind: already completed, skipping")
+
+        # Home-Barista — forum scraper
+        if "home_barista" in sites and "home_barista" not in completed_sites:
+            state["in_progress"] = "home_barista"
+            _save_state(state)
+            hb_cfg = sites["home_barista"]
+            base_url = "https://www.home-barista.com"
+            logger.info("Collecting Home-Barista forum thread URLs...")
+            hb_urls = collect_forum_thread_urls(
+                context,
+                hb_cfg.get("article_list_urls", []),
+                base_url,
+                hb_cfg.get("max_articles", 500),
+                delay,
+                min_replies=hb_cfg.get("min_replies", 10),
+            )
+            logger.info(f"Home-Barista: {len(hb_urls)} thread URLs collected, scraping...")
+            hb_count = scrape_articles(
+                context, hb_urls, "home_barista", config,
+                output_dir / "home_barista.jsonl", scraped_urls_set, state,
+                is_forum=True,
+            )
+            summary["by_site"]["home_barista"] = hb_count
+            summary["articles"] += hb_count
+            completed_sites.add("home_barista")
+            state["completed_sites"] = list(completed_sites)
+            state["in_progress"] = None
+            _save_state(state)
+        else:
+            if "home_barista" in completed_sites:
+                logger.info("Home-Barista: already completed, skipping")
+
+        # Barista Hustle Pro — WordPress knowledgebase
+        if "barista_hustle_pro" in sites and "barista_hustle_pro" not in completed_sites:
+            state["in_progress"] = "barista_hustle_pro"
+            _save_state(state)
+            bh_cfg = sites["barista_hustle_pro"]
+            logger.info("Collecting Barista Hustle knowledgebase URLs...")
+            bh_urls = collect_wordpress_urls(
+                context,
+                bh_cfg["start_url"],
+                bh_cfg["base_url"],
+                bh_cfg.get("max_articles", 500),
+                delay,
+            )
+            logger.info(f"Barista Hustle: {len(bh_urls)} URLs collected, scraping...")
+            bh_count = scrape_articles(
+                context, bh_urls, "barista_hustle_pro", config,
+                output_dir / "barista_hustle_pro.jsonl", scraped_urls_set, state
+            )
+            summary["by_site"]["barista_hustle_pro"] = bh_count
+            summary["articles"] += bh_count
+            completed_sites.add("barista_hustle_pro")
+            state["completed_sites"] = list(completed_sites)
+            state["in_progress"] = None
+            _save_state(state)
+        else:
+            if "barista_hustle_pro" in completed_sites:
+                logger.info("Barista Hustle Pro: already completed, skipping")
 
     by_site_str = ", ".join(f"{k}: {v}" for k, v in summary["by_site"].items())
     print(f"Web complete:     {summary['articles']:,} articles ({by_site_str})")

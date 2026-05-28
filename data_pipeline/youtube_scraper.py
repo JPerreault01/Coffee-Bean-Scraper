@@ -17,6 +17,8 @@ from youtube_transcript_api import YouTubeTranscriptApi, NoTranscriptFound, Tran
 
 logger = logging.getLogger("youtube_scraper")
 
+STATE_FILE = Path("training_data/state/youtube_state.json")
+
 
 def load_config() -> dict:
     config_path = Path(__file__).parent / "config.json"
@@ -31,6 +33,27 @@ def setup_logging():
         level=logging.INFO,
         stream=sys.stdout,
     )
+
+
+# --- State management ---
+
+def _load_state() -> dict:
+    if STATE_FILE.exists():
+        try:
+            return json.loads(STATE_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return {
+        "scraped_video_ids": [],
+        "completed_channels": [],
+        "in_progress": None,
+        "last_run_at": None,
+    }
+
+
+def _save_state(state: dict):
+    STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    STATE_FILE.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def get_domain_tags(text: str, config: dict) -> list[str]:
@@ -64,8 +87,10 @@ def compute_youtube_quality(transcript: str, channel_name: str, config: dict) ->
 def clean_transcript(raw_parts: list[dict]) -> str:
     """Join transcript segments and remove auto-caption artifacts."""
     text = " ".join(part.get("text", "") for part in raw_parts)
-    # Remove auto-caption artifacts like [Music], [Applause], etc.
+    # Remove text in square brackets: [Music], [Applause], [Laughter], [Inaudible], [CC], etc.
     text = re.sub(r"\[.*?\]", "", text)
+    # Remove filler transcription artifacts as standalone words
+    text = re.sub(r"\b(um|uh|hmm)\b", "", text, flags=re.IGNORECASE)
     # Normalize whitespace
     text = re.sub(r"\s+", " ", text).strip()
     return text
@@ -114,7 +139,6 @@ def get_channel_video_ids(channel_id: str, channel_name: str, max_videos: int, a
     try:
         youtube = build("youtube", "v3", developerKey=api_key)
 
-        # Get the uploads playlist ID
         channels_resp = youtube.channels().list(
             part="contentDetails",
             id=channel_id,
@@ -212,7 +236,7 @@ def scrape_video(video_meta: dict, channel_name: str, config: dict, output_file)
     return True
 
 
-def run(config: dict, video_id_override: Optional[str] = None) -> dict:
+def run(config: dict, video_id_override: Optional[str] = None, fresh: bool = False) -> dict:
     setup_logging()
     ycfg = config["youtube"]
     output_dir = Path(ycfg["output_dir"])
@@ -221,7 +245,7 @@ def run(config: dict, video_id_override: Optional[str] = None) -> dict:
     api_key = os.environ.get("YOUTUBE_API_KEY")
     summary = {"transcripts": 0, "by_channel": {}}
 
-    # Single video mode (--video-id flag)
+    # Single video mode (--video-id flag) — no checkpointing needed for one-off
     if video_id_override:
         logger.info(f"Single video mode: {video_id_override}")
         video_meta = {
@@ -252,29 +276,70 @@ def run(config: dict, video_id_override: Optional[str] = None) -> dict:
         print("YouTube complete: 0 transcripts (no API key)")
         return summary
 
+    # Load or reset state
+    state = {"scraped_video_ids": [], "completed_channels": [], "in_progress": None, "last_run_at": None}
+    if not fresh:
+        state = _load_state()
+        if state.get("scraped_video_ids") or state.get("completed_channels"):
+            logger.info(
+                f"Resuming from checkpoint: {len(state['scraped_video_ids'])} videos already scraped, "
+                f"{len(state['completed_channels'])} channels complete"
+            )
+    else:
+        logger.info("--fresh flag set — ignoring existing state")
+
+    scraped_ids_set: set[str] = set(state.get("scraped_video_ids", []))
+    completed_channels: set[str] = set(state.get("completed_channels", []))
+
     for channel_name, channel_cfg in ycfg["channels"].items():
+        if channel_name in completed_channels:
+            logger.info(f"{channel_name}: already completed, skipping")
+            continue
+
         channel_id = channel_cfg["channel_id"]
         max_videos = ycfg["max_videos_per_channel"]
+
+        state["in_progress"] = channel_name
+        state["last_run_at"] = datetime.now(tz=timezone.utc).isoformat()
+        _save_state(state)
 
         logger.info(f"Fetching video list for {channel_name} ({channel_id})...")
         videos = get_channel_video_ids(channel_id, channel_name, max_videos, api_key)
         logger.info(f"{channel_name}: {len(videos)} videos found, fetching transcripts...")
 
         out_path = output_dir / f"{channel_name}.jsonl"
+        open_mode = "a" if out_path.exists() and not fresh else "w"
         channel_count = 0
 
-        with open(out_path, "w", encoding="utf-8") as f:
+        with open(out_path, open_mode, encoding="utf-8") as f:
             for video_meta in videos:
+                video_id = video_meta.get("video_id", "")
+                if video_id in scraped_ids_set:
+                    logger.debug(f"Skipping already-scraped video {video_id}")
+                    continue
+
                 try:
                     success = scrape_video(video_meta, channel_name, config, f)
                     if success:
                         channel_count += 1
+
+                    # Update state after each video (success or skip)
+                    scraped_ids_set.add(video_id)
+                    state["scraped_video_ids"] = list(scraped_ids_set)
+                    state["last_run_at"] = datetime.now(tz=timezone.utc).isoformat()
+                    _save_state(state)
+
                 except Exception as e:
                     logger.error(f"Error processing video {video_meta.get('video_id', '?')}: {e}")
 
         summary["by_channel"][channel_name] = channel_count
         summary["transcripts"] += channel_count
         logger.info(f"{channel_name}: {channel_count} transcripts written → {out_path}")
+
+        completed_channels.add(channel_name)
+        state["completed_channels"] = list(completed_channels)
+        state["in_progress"] = None
+        _save_state(state)
 
     by_channel_str = ", ".join(f"{k}: {v}" for k, v in summary["by_channel"].items())
     print(f"YouTube complete: {summary['transcripts']:,} transcripts ({by_channel_str})")
