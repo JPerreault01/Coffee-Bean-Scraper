@@ -31,9 +31,9 @@
   },
   "web": {
     "sites": {
-      "barista_hustle": {
-        "base_url": "https://baristahustle.com",
-        "start_url": "https://baristahustle.com/blog/",
+      "sprudge": {
+        "base_url": "https://sprudge.com",
+        "start_url": "https://sprudge.com/",
         "pagination_type": "wordpress",
         "max_articles": 300
       },
@@ -45,10 +45,18 @@
       },
       "perfect_daily_grind": {
         "base_url": "https://perfectdailygrind.com",
-        "categories": ["/category/read/", "/category/roast/", "/category/brew/"],
+        "categories": [
+          "/category/espresso/",
+          "/category/filter-coffee/",
+          "/category/brewing-essentials/",
+          "/category/brew-guides-recipes/",
+          "/category/origins/",
+          "/category/roasting-fundamentals/"
+        ],
         "pagination_type": "wordpress",
         "max_articles": 300
       }
+    },
     },
     "min_article_chars": 500,
     "request_delay_seconds": 2,
