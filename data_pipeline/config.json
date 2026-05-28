@@ -1,6 +1,14 @@
 {
   "reddit": {
-    "subreddits": ["Coffee", "espresso", "pourover", "CoffeePH"],
+    "subreddits": ["Coffee", "espresso", "JamesHoffmann", "pourover", "barista", "mokapot"],
+    "subreddit_comment_caps": {
+        "Coffee": 250,
+        "espresso": 175,
+        "JamesHoffmann": 175,
+        "pourover": 100,
+        "barista": 100,
+        "mokapot": 50
+    },
     "fetch_filters": ["top_year", "top_all", "hot"],
     "min_score": 50,
     "min_comments": 10,
