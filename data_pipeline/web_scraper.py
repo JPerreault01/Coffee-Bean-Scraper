@@ -1,6 +1,7 @@
 # data_pipeline/web_scraper.py
 """
 Web scraper for coffee-focused sites.
+Uses Playwright (headless Chromium) to handle JS-rendered pages and Cloudflare challenges.
 Collects articles from Sprudge, Coffee Ad Astra, and Perfect Daily Grind.
 """
 
@@ -9,13 +10,14 @@ import logging
 import random
 import sys
 import time
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 from urllib.parse import urljoin, urlparse
 
-import requests
 from bs4 import BeautifulSoup
+from playwright.sync_api import sync_playwright, BrowserContext
 
 logger = logging.getLogger("web_scraper")
 
@@ -35,6 +37,64 @@ def setup_logging():
         level=logging.INFO,
         stream=sys.stdout,
     )
+
+
+@contextmanager
+def make_browser_context():
+    """
+    Launch a headless Chromium browser and yield a context.
+    Single browser instance reused across all fetches in a run.
+    Images, fonts, and media are blocked to speed up fetching.
+    """
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch(headless=True)
+        context = browser.new_context(
+            user_agent=random.choice(USER_AGENTS),
+            viewport={"width": 1280, "height": 800},
+            locale="en-US",
+            extra_http_headers={
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.9",
+                "DNT": "1",
+            },
+        )
+        # Block images, media, and fonts — we only need HTML text
+        context.route(
+            "**/*",
+            lambda route: route.abort()
+            if route.request.resource_type in ("image", "media", "font", "stylesheet")
+            else route.continue_(),
+        )
+        try:
+            yield context
+        finally:
+            context.close()
+            browser.close()
+
+
+def fetch_page(context: BrowserContext, url: str, timeout: int = 30000) -> Optional[BeautifulSoup]:
+    """
+    Fetch a URL with a real browser (handles JS rendering and Cloudflare).
+    timeout is in milliseconds (Playwright convention).
+    Opens a new tab per request and closes it after — avoids cross-page state.
+    """
+    page = None
+    try:
+        page = context.new_page()
+        page.goto(url, timeout=timeout, wait_until="domcontentloaded")
+        # Brief wait for any late JS mutations (nav menus, lazy links)
+        page.wait_for_timeout(1500)
+        html = page.content()
+        return BeautifulSoup(html, "lxml")
+    except Exception as e:
+        logger.warning(f"Error fetching {url}: {e}")
+        return None
+    finally:
+        if page:
+            try:
+                page.close()
+            except Exception:
+                pass
 
 
 def get_domain_tags(text: str, config: dict) -> list[str]:
@@ -62,37 +122,6 @@ def compute_web_quality(title: str, body: str, soup: BeautifulSoup, config: dict
         + tech_score * qcfg["tech_vocab_weight"]
     )
     return round(quality, 4)
-
-
-def make_session() -> requests.Session:
-    session = requests.Session()
-    session.headers.update({
-        "User-Agent": random.choice(USER_AGENTS),
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip, deflate, br",
-        "DNT": "1",
-        "Connection": "keep-alive",
-    })
-    return session
-
-
-def fetch_page(session: requests.Session, url: str, timeout: int = 30) -> Optional[BeautifulSoup]:
-    try:
-        # Rotate User-Agent on every fetch
-        session.headers.update({"User-Agent": random.choice(USER_AGENTS)})
-        resp = session.get(url, timeout=timeout)
-        resp.raise_for_status()
-        return BeautifulSoup(resp.text, "lxml")
-    except requests.exceptions.HTTPError as e:
-        logger.warning(f"HTTP {e.response.status_code} fetching {url}")
-    except requests.exceptions.ConnectionError:
-        logger.warning(f"Connection error fetching {url}")
-    except requests.exceptions.Timeout:
-        logger.warning(f"Timeout fetching {url}")
-    except Exception as e:
-        logger.warning(f"Unexpected error fetching {url}: {e}")
-    return None
 
 
 def extract_article_text(soup: BeautifulSoup) -> tuple[str, str]:
@@ -142,7 +171,6 @@ def extract_article_text(soup: BeautifulSoup) -> tuple[str, str]:
     else:
         body = soup.get_text(separator="\n", strip=True)
 
-    # Normalize whitespace
     lines = [line.strip() for line in body.splitlines() if line.strip()]
     body = "\n".join(lines)
 
@@ -151,7 +179,10 @@ def extract_article_text(soup: BeautifulSoup) -> tuple[str, str]:
 
 def _is_article_url(href: str, base_parsed) -> bool:
     """Return True if a URL looks like an article rather than nav/admin/media."""
-    parsed = urlparse(href)
+    try:
+        parsed = urlparse(href)
+    except Exception:
+        return False
 
     if parsed.netloc != base_parsed.netloc:
         return False
@@ -182,7 +213,7 @@ def _is_article_url(href: str, base_parsed) -> bool:
 
 
 def collect_wordpress_urls(
-    session: requests.Session,
+    context: BrowserContext,
     start_url: str,
     base_url: str,
     max_articles: int,
@@ -198,7 +229,7 @@ def collect_wordpress_urls(
         page_url = start_url if page == 1 else start_url.rstrip("/") + f"/page/{page}/"
 
         logger.info(f"Collecting URLs from {page_url}")
-        soup = fetch_page(session, page_url)
+        soup = fetch_page(context, page_url)
         if not soup:
             break
 
@@ -223,7 +254,7 @@ def collect_wordpress_urls(
 
 
 def collect_link_collection_urls(
-    session: requests.Session,
+    context: BrowserContext,
     start_url: str,
     base_url: str,
     max_articles: int,
@@ -233,7 +264,7 @@ def collect_link_collection_urls(
     urls: set[str] = set()
     base_parsed = urlparse(base_url)
 
-    soup = fetch_page(session, start_url)
+    soup = fetch_page(context, start_url)
     if not soup:
         return []
 
@@ -246,7 +277,7 @@ def collect_link_collection_urls(
 
 
 def collect_wordpress_category_urls(
-    session: requests.Session,
+    context: BrowserContext,
     base_url: str,
     categories: list[str],
     max_articles: int,
@@ -271,7 +302,7 @@ def collect_wordpress_category_urls(
             page_url = category_url if page == 1 else category_url.rstrip("/") + f"/page/{page}/"
 
             logger.info(f"Collecting PDG URLs from {page_url}")
-            soup = fetch_page(session, page_url)
+            soup = fetch_page(context, page_url)
             if not soup:
                 break
 
@@ -282,7 +313,6 @@ def collect_wordpress_category_urls(
                     urls.add(href)
                     found_on_page += 1
 
-            # If no new articles found on page 2+, this category is exhausted
             if found_on_page == 0 and page > 1:
                 break
 
@@ -293,7 +323,7 @@ def collect_wordpress_category_urls(
 
 
 def scrape_articles(
-    session: requests.Session,
+    context: BrowserContext,
     urls: list[str],
     site_name: str,
     config: dict,
@@ -310,7 +340,7 @@ def scrape_articles(
         for i, url in enumerate(urls):
             try:
                 time.sleep(delay + random.uniform(0, 1.5))
-                soup = fetch_page(session, url, timeout=timeout)
+                soup = fetch_page(context, url, timeout=timeout * 1000)  # convert s → ms
                 if not soup:
                     continue
 
@@ -358,44 +388,45 @@ def run(config: dict) -> dict:
     output_dir = Path(wcfg["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    session = make_session()
     delay = wcfg["request_delay_seconds"]
-    timeout = wcfg["request_timeout"]
     summary = {"articles": 0, "by_site": {}}
     sites = wcfg["sites"]
 
-    # Sprudge — WordPress pagination
-    sp_cfg = sites["sprudge"]
-    logger.info("Collecting Sprudge article URLs...")
-    sp_urls = collect_wordpress_urls(
-        session, sp_cfg["start_url"], sp_cfg["base_url"], sp_cfg["max_articles"], delay
-    )
-    logger.info(f"Sprudge: {len(sp_urls)} URLs collected, scraping...")
-    sp_count = scrape_articles(session, sp_urls, "sprudge", config, output_dir / "sprudge.jsonl")
-    summary["by_site"]["sprudge"] = sp_count
-    summary["articles"] += sp_count
+    # Single browser for the entire run — launch once, reuse across all sites
+    with make_browser_context() as context:
 
-    # Coffee Ad Astra — single-page link collection
-    caa_cfg = sites["coffee_ad_astra"]
-    logger.info("Collecting Coffee Ad Astra article URLs...")
-    caa_urls = collect_link_collection_urls(
-        session, caa_cfg["start_url"], caa_cfg["base_url"], caa_cfg["max_articles"], delay
-    )
-    logger.info(f"Coffee Ad Astra: {len(caa_urls)} URLs collected, scraping...")
-    caa_count = scrape_articles(session, caa_urls, "coffee_ad_astra", config, output_dir / "coffee_ad_astra.jsonl")
-    summary["by_site"]["coffee_ad_astra"] = caa_count
-    summary["articles"] += caa_count
+        # Sprudge — WordPress pagination
+        sp_cfg = sites["sprudge"]
+        logger.info("Collecting Sprudge article URLs...")
+        sp_urls = collect_wordpress_urls(
+            context, sp_cfg["start_url"], sp_cfg["base_url"], sp_cfg["max_articles"], delay
+        )
+        logger.info(f"Sprudge: {len(sp_urls)} URLs collected, scraping...")
+        sp_count = scrape_articles(context, sp_urls, "sprudge", config, output_dir / "sprudge.jsonl")
+        summary["by_site"]["sprudge"] = sp_count
+        summary["articles"] += sp_count
 
-    # Perfect Daily Grind — WordPress category pagination
-    pdg_cfg = sites["perfect_daily_grind"]
-    logger.info("Collecting Perfect Daily Grind article URLs...")
-    pdg_urls = collect_wordpress_category_urls(
-        session, pdg_cfg["base_url"], pdg_cfg["categories"], pdg_cfg["max_articles"], delay
-    )
-    logger.info(f"Perfect Daily Grind: {len(pdg_urls)} URLs collected, scraping...")
-    pdg_count = scrape_articles(session, pdg_urls, "perfect_daily_grind", config, output_dir / "perfect_daily_grind.jsonl")
-    summary["by_site"]["perfect_daily_grind"] = pdg_count
-    summary["articles"] += pdg_count
+        # Coffee Ad Astra — single-page link collection
+        caa_cfg = sites["coffee_ad_astra"]
+        logger.info("Collecting Coffee Ad Astra article URLs...")
+        caa_urls = collect_link_collection_urls(
+            context, caa_cfg["start_url"], caa_cfg["base_url"], caa_cfg["max_articles"], delay
+        )
+        logger.info(f"Coffee Ad Astra: {len(caa_urls)} URLs collected, scraping...")
+        caa_count = scrape_articles(context, caa_urls, "coffee_ad_astra", config, output_dir / "coffee_ad_astra.jsonl")
+        summary["by_site"]["coffee_ad_astra"] = caa_count
+        summary["articles"] += caa_count
+
+        # Perfect Daily Grind — WordPress category pagination
+        pdg_cfg = sites["perfect_daily_grind"]
+        logger.info("Collecting Perfect Daily Grind article URLs...")
+        pdg_urls = collect_wordpress_category_urls(
+            context, pdg_cfg["base_url"], pdg_cfg["categories"], pdg_cfg["max_articles"], delay
+        )
+        logger.info(f"Perfect Daily Grind: {len(pdg_urls)} URLs collected, scraping...")
+        pdg_count = scrape_articles(context, pdg_urls, "perfect_daily_grind", config, output_dir / "perfect_daily_grind.jsonl")
+        summary["by_site"]["perfect_daily_grind"] = pdg_count
+        summary["articles"] += pdg_count
 
     by_site_str = ", ".join(f"{k}: {v}" for k, v in summary["by_site"].items())
     print(f"Web complete:     {summary['articles']:,} articles ({by_site_str})")
