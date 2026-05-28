@@ -683,6 +683,102 @@ def run(config: dict, fresh: bool = False) -> dict:
             if "barista_hustle_pro" in completed_sites:
                 logger.info("Barista Hustle Pro: already completed, skipping")
 
+        # Christopher Feran — single-page link collection
+        if "christopher_feran" in sites and "christopher_feran" not in completed_sites:
+            state["in_progress"] = "christopher_feran"
+            _save_state(state)
+            cf_cfg = sites["christopher_feran"]
+            logger.info("Collecting Christopher Feran article URLs...")
+            cf_urls = collect_link_collection_urls(
+                context, cf_cfg["start_url"], cf_cfg["base_url"], cf_cfg["max_articles"], delay
+            )
+            logger.info(f"Christopher Feran: {len(cf_urls)} URLs collected, scraping...")
+            cf_count = scrape_articles(
+                context, cf_urls, "christopher_feran", config,
+                output_dir / "christopher_feran.jsonl", scraped_urls_set, state
+            )
+            summary["by_site"]["christopher_feran"] = cf_count
+            summary["articles"] += cf_count
+            completed_sites.add("christopher_feran")
+            state["completed_sites"] = list(completed_sites)
+            state["in_progress"] = None
+            _save_state(state)
+        else:
+            if "christopher_feran" in completed_sites:
+                logger.info("Christopher Feran: already completed, skipping")
+
+        # Scott Rao — single-page link collection
+        if "scott_rao" in sites and "scott_rao" not in completed_sites:
+            state["in_progress"] = "scott_rao"
+            _save_state(state)
+            sr_cfg = sites["scott_rao"]
+            logger.info("Collecting Scott Rao article URLs...")
+            sr_urls = collect_link_collection_urls(
+                context, sr_cfg["start_url"], sr_cfg["base_url"], sr_cfg["max_articles"], delay
+            )
+            logger.info(f"Scott Rao: {len(sr_urls)} URLs collected, scraping...")
+            sr_count = scrape_articles(
+                context, sr_urls, "scott_rao", config,
+                output_dir / "scott_rao.jsonl", scraped_urls_set, state
+            )
+            summary["by_site"]["scott_rao"] = sr_count
+            summary["articles"] += sr_count
+            completed_sites.add("scott_rao")
+            state["completed_sites"] = list(completed_sites)
+            state["in_progress"] = None
+            _save_state(state)
+        else:
+            if "scott_rao" in completed_sites:
+                logger.info("Scott Rao: already completed, skipping")
+
+        # CoffeeGeek — WordPress pagination
+        if "coffeegeek" in sites and "coffeegeek" not in completed_sites:
+            state["in_progress"] = "coffeegeek"
+            _save_state(state)
+            cg_cfg = sites["coffeegeek"]
+            logger.info("Collecting CoffeeGeek article URLs...")
+            cg_urls = collect_wordpress_urls(
+                context, cg_cfg["start_url"], cg_cfg["base_url"], cg_cfg["max_articles"], delay
+            )
+            logger.info(f"CoffeeGeek: {len(cg_urls)} URLs collected, scraping...")
+            cg_count = scrape_articles(
+                context, cg_urls, "coffeegeek", config,
+                output_dir / "coffeegeek.jsonl", scraped_urls_set, state
+            )
+            summary["by_site"]["coffeegeek"] = cg_count
+            summary["articles"] += cg_count
+            completed_sites.add("coffeegeek")
+            state["completed_sites"] = list(completed_sites)
+            state["in_progress"] = None
+            _save_state(state)
+        else:
+            if "coffeegeek" in completed_sites:
+                logger.info("CoffeeGeek: already completed, skipping")
+
+        # Pull & Pour — WordPress pagination
+        if "pull_and_pour" in sites and "pull_and_pour" not in completed_sites:
+            state["in_progress"] = "pull_and_pour"
+            _save_state(state)
+            pp_cfg = sites["pull_and_pour"]
+            logger.info("Collecting Pull & Pour article URLs...")
+            pp_urls = collect_wordpress_urls(
+                context, pp_cfg["start_url"], pp_cfg["base_url"], pp_cfg["max_articles"], delay
+            )
+            logger.info(f"Pull & Pour: {len(pp_urls)} URLs collected, scraping...")
+            pp_count = scrape_articles(
+                context, pp_urls, "pull_and_pour", config,
+                output_dir / "pull_and_pour.jsonl", scraped_urls_set, state
+            )
+            summary["by_site"]["pull_and_pour"] = pp_count
+            summary["articles"] += pp_count
+            completed_sites.add("pull_and_pour")
+            state["completed_sites"] = list(completed_sites)
+            state["in_progress"] = None
+            _save_state(state)
+        else:
+            if "pull_and_pour" in completed_sites:
+                logger.info("Pull & Pour: already completed, skipping")
+
     by_site_str = ", ".join(f"{k}: {v}" for k, v in summary["by_site"].items())
     print(f"Web complete:     {summary['articles']:,} articles ({by_site_str})")
     return summary
