@@ -364,6 +364,17 @@ def run(config: dict) -> dict:
     output_dir = Path(rcfg["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    # How many posts (sorted by score desc) to fetch comments for.
+    # Fetching comments for every post is the primary cause of 429s.
+    # Lower-scored posts contribute little training signal anyway.
+    max_comment_posts = rcfg.get("max_comment_posts", 200)
+
+    # Fire a proactive pause every N comment requests to stay under
+    # Reddit's ~100 req/10min unauthenticated window before hitting it.
+    burst_break_every = rcfg.get("burst_break_every", 30)
+    burst_break_min = rcfg.get("burst_break_min_s", 25)
+    burst_break_max = rcfg.get("burst_break_max_s", 40)
+
     summary = {"posts": 0, "comments": 0, "subreddits": {}}
     scraped_at = datetime.now(tz=timezone.utc).isoformat()
 
@@ -371,16 +382,33 @@ def run(config: dict) -> dict:
     for idx, subreddit_name in enumerate(subreddits):
         logger.info(f"Starting r/{subreddit_name} ({idx + 1}/{len(subreddits)})")
         posts = fetch_subreddit_posts(subreddit_name, config)
-        logger.info(f"r/{subreddit_name}: {len(posts)} posts — fetching comments...")
+
+        # Sort by score descending and cap — highest-value posts only
+        sub_cap = rcfg.get("subreddit_comment_caps", {}).get(subreddit_name, max_comment_posts)
+        posts_for_comments = sorted(posts, key=lambda p: p["score"], reverse=True)[:sub_cap]
+        skipped = len(posts) - len(posts_for_comments)
+        logger.info(
+            f"r/{subreddit_name}: {len(posts)} posts collected, "
+            f"fetching comments for top {len(posts_for_comments)} by score "
+            f"({skipped} below threshold skipped)"
+        )
 
         out_path = output_dir / f"{subreddit_name}.jsonl"
         post_count = 0
         comment_count = 0
+        comment_requests = 0
 
         with open(out_path, "w", encoding="utf-8") as f:
-            for post_data in posts:
+            for post_data in posts_for_comments:
+                # Proactive burst break — pause before hitting the rate limit
+                if comment_requests > 0 and comment_requests % burst_break_every == 0:
+                    pause = random.uniform(burst_break_min, burst_break_max)
+                    logger.info(f"Burst break after {comment_requests} comment requests — pausing {pause:.0f}s")
+                    time.sleep(pause)
+
                 try:
                     comments = fetch_comments_for_post(post_data["post_id"], subreddit_name, config)
+                    comment_requests += 1
                     post_data["comments"] = comments
 
                     text = post_data["title"] + " " + post_data["body"]
