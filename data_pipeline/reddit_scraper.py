@@ -343,11 +343,21 @@ def fetch_subreddit_posts(subreddit: str, config: dict) -> list[dict]:
     seen_ids: set[str] = set()
     posts: list[dict] = []
 
-    fetch_jobs = [
-        ("top", {"t": "year", "max_fetch": 500}),
-        ("top", {"t": "all",  "max_fetch": 500}),
-        ("hot", {"max_fetch": 200}),
-    ]
+    large_subreddits = {"Coffee", "espresso", "JamesHoffmann"}
+    
+    if subreddit in large_subreddits:
+        fetch_jobs = [
+            ("top", {"t": "year",  "max_fetch": 1000}),
+            ("top", {"t": "all",   "max_fetch": 1000}),
+            ("top", {"t": "month", "max_fetch": 500}),
+            ("hot", {"max_fetch":  300}),
+        ]
+    else:
+        fetch_jobs = [
+            ("top", {"t": "year", "max_fetch": 500}),
+            ("top", {"t": "all",  "max_fetch": 500}),
+            ("hot", {"max_fetch": 200}),
+        ]
 
     for sort, params in fetch_jobs:
         logger.info(f"r/{subreddit}: fetching {sort} (t={params.get('t', 'n/a')})")
