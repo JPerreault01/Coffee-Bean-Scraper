@@ -84,9 +84,22 @@ def compute_youtube_quality(transcript: str, channel_name: str, config: dict) ->
     return round(quality, 4)
 
 
-def clean_transcript(raw_parts: list[dict]) -> str:
-    """Join transcript segments and remove auto-caption artifacts."""
-    text = " ".join(part.get("text", "") for part in raw_parts)
+def clean_transcript(raw_parts) -> str:
+    """Join transcript segments and remove auto-caption artifacts.
+
+    In youtube-transcript-api >= 0.6.0, fetch() returns FetchedTranscriptSnippet
+    objects that have a .text attribute and support part["text"] via __getitem__,
+    but do NOT have a .get() method. This handles both that format and plain dicts
+    from older versions.
+    """
+    parts = []
+    for part in raw_parts:
+        if isinstance(part, dict):
+            parts.append(part.get("text", ""))
+        else:
+            # FetchedTranscriptSnippet (youtube-transcript-api >= 0.6.0)
+            parts.append(getattr(part, "text", ""))
+    text = " ".join(parts)
     # Remove text in square brackets: [Music], [Applause], [Laughter], [Inaudible], [CC], etc.
     text = re.sub(r"\[.*?\]", "", text)
     # Remove filler transcription artifacts as standalone words
@@ -97,10 +110,18 @@ def clean_transcript(raw_parts: list[dict]) -> str:
 
 
 def fetch_transcript(video_id: str, language_preference: list[str]) -> Optional[str]:
+    """Fetch and clean a transcript for the given YouTube video ID.
+
+    Compatible with youtube-transcript-api >= 0.6.0 (instance-based API:
+    YouTubeTranscriptApi().list(video_id)). In v0.6.x+, fetch() returns
+    FetchedTranscriptSnippet objects rather than plain dicts — see clean_transcript.
+    """
     try:
+        # youtube-transcript-api >= 0.6.0: instantiate, then call .list()
         api = YouTubeTranscriptApi()
         transcript_list = api.list(video_id)
 
+        # Try each preferred language (manually created transcripts first)
         for lang in language_preference:
             try:
                 transcript = transcript_list.find_transcript([lang])
@@ -109,13 +130,23 @@ def fetch_transcript(video_id: str, language_preference: list[str]) -> Optional[
             except NoTranscriptFound:
                 continue
 
-        # Fall back to any available transcript and translate
+        # Fallback: auto-generated transcript in any preferred language
         try:
             transcript = transcript_list.find_generated_transcript(language_preference)
             parts = transcript.fetch()
             return clean_transcript(parts)
-        except Exception:
+        except NoTranscriptFound:
             pass
+        except Exception as e:
+            logger.debug(f"Generated transcript fallback failed for {video_id}: {e}")
+
+        # Last resort: first available transcript regardless of language
+        for transcript in transcript_list:
+            try:
+                parts = transcript.fetch()
+                return clean_transcript(parts)
+            except Exception:
+                continue
 
     except TranscriptsDisabled:
         logger.debug(f"Transcripts disabled for video {video_id}")
