@@ -1,10 +1,12 @@
+# data_pipeline/web_scraper.py
 """
 Web scraper for coffee-focused sites.
-Collects articles from Barista Hustle, Coffee Ad Astra, and Perfect Daily Grind.
+Collects articles from Sprudge, Coffee Ad Astra, and Perfect Daily Grind.
 """
 
 import json
 import logging
+import random
 import sys
 import time
 from datetime import datetime, timezone
@@ -17,11 +19,13 @@ from bs4 import BeautifulSoup
 
 logger = logging.getLogger("web_scraper")
 
-
-def load_config() -> dict:
-    config_path = Path(__file__).parent / "config.json"
-    with open(config_path) as f:
-        return json.load(f)
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0",
+]
 
 
 def setup_logging():
@@ -41,7 +45,7 @@ def get_domain_tags(text: str, config: dict) -> list[str]:
 
 def compute_web_quality(title: str, body: str, soup: BeautifulSoup, config: dict) -> float:
     qcfg = config["web"]["quality"]
-    tech_vocab = config["tech_vocabulary"]
+    tech_vocab = config.get("tech_vocabulary", [])
 
     length_score = min(len(body), qcfg["length_normalize_cap"]) / qcfg["length_normalize_cap"]
 
@@ -49,8 +53,6 @@ def compute_web_quality(title: str, body: str, soup: BeautifulSoup, config: dict
     heading_score = min(len(headings), qcfg["min_headings_for_boost"]) / qcfg["min_headings_for_boost"]
 
     text_lower = body.lower()
-    words = text_lower.split()
-    word_count = max(len(words), 1)
     tech_hits = sum(1 for term in tech_vocab if term.lower() in text_lower)
     tech_score = min(tech_hits / 5, 1.0)
 
@@ -62,23 +64,30 @@ def compute_web_quality(title: str, body: str, soup: BeautifulSoup, config: dict
     return round(quality, 4)
 
 
-def make_session(timeout: int = 30) -> requests.Session:
+def make_session() -> requests.Session:
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; CoffeePipeline/1.0; +https://github.com/JPerreault01/Coffee-Bean-Scraper)"
+        "User-Agent": random.choice(USER_AGENTS),
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
+        "DNT": "1",
+        "Connection": "keep-alive",
     })
     return session
 
 
 def fetch_page(session: requests.Session, url: str, timeout: int = 30) -> Optional[BeautifulSoup]:
     try:
+        # Rotate User-Agent on every fetch
+        session.headers.update({"User-Agent": random.choice(USER_AGENTS)})
         resp = session.get(url, timeout=timeout)
         resp.raise_for_status()
         return BeautifulSoup(resp.text, "lxml")
     except requests.exceptions.HTTPError as e:
-        logger.warning(f"HTTP error fetching {url}: {e}")
-    except requests.exceptions.ConnectionError as e:
-        logger.warning(f"Connection error fetching {url}: {e}")
+        logger.warning(f"HTTP {e.response.status_code} fetching {url}")
+    except requests.exceptions.ConnectionError:
+        logger.warning(f"Connection error fetching {url}")
     except requests.exceptions.Timeout:
         logger.warning(f"Timeout fetching {url}")
     except Exception as e:
@@ -88,7 +97,8 @@ def fetch_page(session: requests.Session, url: str, timeout: int = 30) -> Option
 
 def extract_article_text(soup: BeautifulSoup) -> tuple[str, str]:
     """Return (title, body_text) after stripping boilerplate."""
-    # Extract title
+
+    # Extract title — prefer og:title, fall back to h1
     title = ""
     og_title = soup.find("meta", property="og:title")
     if og_title and og_title.get("content"):
@@ -98,21 +108,31 @@ def extract_article_text(soup: BeautifulSoup) -> tuple[str, str]:
         if h1:
             title = h1.get_text(strip=True)
 
-    # Remove boilerplate elements
+    # Strip boilerplate elements before extracting body
     for selector in [
         "nav", "header", "footer", "aside",
         ".sidebar", ".widget", ".newsletter", ".subscribe",
         ".comment", ".comments", ".comment-section",
         ".advertisement", ".ad", ".ads",
-        "[class*='cookie']", "[class*='popup']",
+        "[class*='cookie']", "[class*='popup']", "[class*='banner']",
+        "[class*='related']", "[class*='share']", "[class*='social']",
         "script", "style", "noscript",
     ]:
         for el in soup.select(selector):
             el.decompose()
 
-    # Try common article containers first
+    # Try common article containers in priority order
     article = None
-    for selector in ["article", ".entry-content", ".post-content", ".article-content", "main"]:
+    for selector in [
+        "article",
+        ".entry-content",
+        ".post-content",
+        ".article-content",
+        ".article-body",
+        ".post-body",
+        '[class*="article"]',
+        "main",
+    ]:
         article = soup.select_one(selector)
         if article:
             break
@@ -129,45 +149,87 @@ def extract_article_text(soup: BeautifulSoup) -> tuple[str, str]:
     return title, body
 
 
-def collect_wordpress_urls(session: requests.Session, start_url: str, base_url: str, max_articles: int, delay: float) -> list[str]:
-    """Collect article URLs from a WordPress-paginated blog."""
+def _is_article_url(href: str, base_parsed) -> bool:
+    """Return True if a URL looks like an article rather than nav/admin/media."""
+    parsed = urlparse(href)
+
+    if parsed.netloc != base_parsed.netloc:
+        return False
+    if parsed.path in ("", "/"):
+        return False
+    if parsed.query:
+        return False
+    if parsed.fragment:
+        return False
+
+    skip_segments = [
+        "/tag/", "/category/", "/author/", "/page/",
+        "/wp-content/", "/wp-admin/", "/wp-json/",
+        "/feed/", "/cdn-cgi/", "/cart/", "/checkout/",
+        "/account/", "/login/", "/register/", "/search/",
+        "/about", "/contact", "/advertise", "/privacy",
+        "/terms", "/jobs/", "/events/", "/subscribe",
+    ]
+    if any(seg in parsed.path for seg in skip_segments):
+        return False
+
+    skip_extensions = (".jpg", ".jpeg", ".png", ".gif", ".webp", ".pdf",
+                       ".xml", ".json", ".css", ".js")
+    if parsed.path.lower().endswith(skip_extensions):
+        return False
+
+    return True
+
+
+def collect_wordpress_urls(
+    session: requests.Session,
+    start_url: str,
+    base_url: str,
+    max_articles: int,
+    delay: float,
+) -> list[str]:
+    """Collect article URLs from a WordPress-paginated blog index."""
     urls: set[str] = set()
     page = 1
     base_parsed = urlparse(base_url)
+    consecutive_empty = 0
 
     while len(urls) < max_articles:
-        if page == 1:
-            page_url = start_url
-        else:
-            page_url = start_url.rstrip("/") + f"/page/{page}/"
+        page_url = start_url if page == 1 else start_url.rstrip("/") + f"/page/{page}/"
 
         logger.info(f"Collecting URLs from {page_url}")
         soup = fetch_page(session, page_url)
         if not soup:
             break
 
-        found = False
+        found_on_page = 0
         for a in soup.find_all("a", href=True):
-            href = urljoin(base_url, a["href"])
-            parsed = urlparse(href)
-            if (parsed.netloc == base_parsed.netloc
-                    and parsed.path not in ("", "/")
-                    and href not in urls
-                    and not any(x in parsed.path for x in ["/tag/", "/category/", "/author/", "/page/", "?"])):
+            href = urljoin(base_url, a["href"]).split("#")[0]
+            if _is_article_url(href, base_parsed) and href not in urls:
                 urls.add(href)
-                found = True
+                found_on_page += 1
 
-        if not found and page > 1:
-            break
+        if found_on_page == 0:
+            consecutive_empty += 1
+            if consecutive_empty >= 2 or page > 1:
+                break
+        else:
+            consecutive_empty = 0
 
         page += 1
-        time.sleep(delay)
+        time.sleep(delay + random.uniform(0, 1))
 
     return list(urls)[:max_articles]
 
 
-def collect_link_collection_urls(session: requests.Session, start_url: str, base_url: str, max_articles: int, delay: float) -> list[str]:
-    """Collect article URLs by scanning all links on a site's homepage/index."""
+def collect_link_collection_urls(
+    session: requests.Session,
+    start_url: str,
+    base_url: str,
+    max_articles: int,
+    delay: float,
+) -> list[str]:
+    """Collect article URLs by scanning all links on a site's homepage/index page."""
     urls: set[str] = set()
     base_parsed = urlparse(base_url)
 
@@ -176,76 +238,85 @@ def collect_link_collection_urls(session: requests.Session, start_url: str, base
         return []
 
     for a in soup.find_all("a", href=True):
-        href = urljoin(base_url, a["href"])
-        parsed = urlparse(href)
-        if (parsed.netloc == base_parsed.netloc
-                and len(parsed.path) > 1
-                and not parsed.path.endswith(("/", ".xml", ".json"))
-                and "?" not in href
-                and href != start_url):
+        href = urljoin(base_url, a["href"]).split("#")[0]
+        if _is_article_url(href, base_parsed) and href != start_url:
             urls.add(href)
 
     return list(urls)[:max_articles]
 
 
-def collect_perfect_daily_grind_urls(session: requests.Session, site_cfg: dict, max_articles: int, delay: float) -> list[str]:
-    """Collect URLs from PDG's category pages with WordPress pagination."""
+def collect_wordpress_category_urls(
+    session: requests.Session,
+    base_url: str,
+    categories: list[str],
+    max_articles: int,
+    delay: float,
+) -> list[str]:
+    """
+    Collect article URLs from a list of WordPress category paths.
+    Each category is paginated as /category/slug/page/2/ etc.
+    Stops each category when pages return no new URLs.
+    """
     urls: set[str] = set()
-    base_url = site_cfg["base_url"]
     base_parsed = urlparse(base_url)
 
-    for category in site_cfg["categories"]:
+    for category in categories:
+        if len(urls) >= max_articles:
+            break
+
+        category_url = base_url.rstrip("/") + "/" + category.lstrip("/")
         page = 1
-        category_url = base_url + category
 
         while len(urls) < max_articles:
-            if page == 1:
-                page_url = category_url
-            else:
-                page_url = category_url.rstrip("/") + f"/page/{page}/"
+            page_url = category_url if page == 1 else category_url.rstrip("/") + f"/page/{page}/"
 
             logger.info(f"Collecting PDG URLs from {page_url}")
             soup = fetch_page(session, page_url)
             if not soup:
                 break
 
-            found = False
+            found_on_page = 0
             for a in soup.find_all("a", href=True):
-                href = urljoin(base_url, a["href"])
-                parsed = urlparse(href)
-                if (parsed.netloc == base_parsed.netloc
-                        and len(parsed.path) > 1
-                        and not any(x in parsed.path for x in ["/category/", "/tag/", "/author/", "/page/"])
-                        and "?" not in href
-                        and href not in urls):
+                href = urljoin(base_url, a["href"]).split("#")[0]
+                if _is_article_url(href, base_parsed) and href not in urls:
                     urls.add(href)
-                    found = True
+                    found_on_page += 1
 
-            if not found and page > 1:
+            # If no new articles found on page 2+, this category is exhausted
+            if found_on_page == 0 and page > 1:
                 break
 
             page += 1
-            time.sleep(delay)
+            time.sleep(delay + random.uniform(0, 1))
 
     return list(urls)[:max_articles]
 
 
-def scrape_articles(session: requests.Session, urls: list[str], site_name: str, config: dict, output_path: Path) -> int:
+def scrape_articles(
+    session: requests.Session,
+    urls: list[str],
+    site_name: str,
+    config: dict,
+    output_path: Path,
+) -> int:
     wcfg = config["web"]
     delay = wcfg["request_delay_seconds"]
+    timeout = wcfg["request_timeout"]
+    min_chars = wcfg["min_article_chars"]
     scraped_at = datetime.now(tz=timezone.utc).isoformat()
     count = 0
 
     with open(output_path, "w", encoding="utf-8") as f:
-        for url in urls:
+        for i, url in enumerate(urls):
             try:
-                time.sleep(delay)
-                soup = fetch_page(session, url, timeout=wcfg["request_timeout"])
+                time.sleep(delay + random.uniform(0, 1.5))
+                soup = fetch_page(session, url, timeout=timeout)
                 if not soup:
                     continue
 
                 title, body = extract_article_text(soup)
-                if len(body) < wcfg["min_article_chars"]:
+
+                if len(body) < min_chars:
                     logger.debug(f"Skipping short article ({len(body)} chars): {url}")
                     continue
 
@@ -255,27 +326,28 @@ def scrape_articles(session: requests.Session, urls: list[str], site_name: str, 
                 domain_tags = get_domain_tags(title + " " + body, config)
                 quality_score = compute_web_quality(title, body, soup, config)
 
-                raw = {
-                    "url": url,
-                    "title": title,
-                    "body": body,
-                    "site": site_name,
-                }
-
                 envelope = {
                     "source": "web",
                     "content_type": "article",
                     "domain_tags": domain_tags,
                     "quality_score": quality_score,
-                    "raw": raw,
+                    "raw": {
+                        "url": url,
+                        "title": title,
+                        "body": body,
+                        "site": site_name,
+                    },
                     "scraped_at": scraped_at,
                 }
 
                 f.write(json.dumps(envelope, ensure_ascii=False) + "\n")
                 count += 1
 
+                if count % 25 == 0:
+                    logger.info(f"{site_name}: {count} articles scraped so far...")
+
             except Exception as e:
-                logger.error(f"Error scraping article {url}: {e}")
+                logger.error(f"Error scraping {url}: {e}")
 
     return count
 
@@ -286,24 +358,24 @@ def run(config: dict) -> dict:
     output_dir = Path(wcfg["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    session = make_session(timeout=wcfg["request_timeout"])
+    session = make_session()
     delay = wcfg["request_delay_seconds"]
+    timeout = wcfg["request_timeout"]
     summary = {"articles": 0, "by_site": {}}
-
     sites = wcfg["sites"]
 
-    # Barista Hustle — WordPress pagination
-    bh_cfg = sites["barista_hustle"]
-    logger.info("Collecting Barista Hustle article URLs...")
-    bh_urls = collect_wordpress_urls(
-        session, bh_cfg["start_url"], bh_cfg["base_url"], bh_cfg["max_articles"], delay
+    # Sprudge — WordPress pagination
+    sp_cfg = sites["sprudge"]
+    logger.info("Collecting Sprudge article URLs...")
+    sp_urls = collect_wordpress_urls(
+        session, sp_cfg["start_url"], sp_cfg["base_url"], sp_cfg["max_articles"], delay
     )
-    logger.info(f"Barista Hustle: {len(bh_urls)} URLs collected, scraping...")
-    bh_count = scrape_articles(session, bh_urls, "barista_hustle", config, output_dir / "barista_hustle.jsonl")
-    summary["by_site"]["barista_hustle"] = bh_count
-    summary["articles"] += bh_count
+    logger.info(f"Sprudge: {len(sp_urls)} URLs collected, scraping...")
+    sp_count = scrape_articles(session, sp_urls, "sprudge", config, output_dir / "sprudge.jsonl")
+    summary["by_site"]["sprudge"] = sp_count
+    summary["articles"] += sp_count
 
-    # Coffee Ad Astra — generic link collection
+    # Coffee Ad Astra — single-page link collection
     caa_cfg = sites["coffee_ad_astra"]
     logger.info("Collecting Coffee Ad Astra article URLs...")
     caa_urls = collect_link_collection_urls(
@@ -314,10 +386,12 @@ def run(config: dict) -> dict:
     summary["by_site"]["coffee_ad_astra"] = caa_count
     summary["articles"] += caa_count
 
-    # Perfect Daily Grind — category pages
+    # Perfect Daily Grind — WordPress category pagination
     pdg_cfg = sites["perfect_daily_grind"]
     logger.info("Collecting Perfect Daily Grind article URLs...")
-    pdg_urls = collect_perfect_daily_grind_urls(session, pdg_cfg, pdg_cfg["max_articles"], delay)
+    pdg_urls = collect_wordpress_category_urls(
+        session, pdg_cfg["base_url"], pdg_cfg["categories"], pdg_cfg["max_articles"], delay
+    )
     logger.info(f"Perfect Daily Grind: {len(pdg_urls)} URLs collected, scraping...")
     pdg_count = scrape_articles(session, pdg_urls, "perfect_daily_grind", config, output_dir / "perfect_daily_grind.jsonl")
     summary["by_site"]["perfect_daily_grind"] = pdg_count
@@ -326,3 +400,8 @@ def run(config: dict) -> dict:
     by_site_str = ", ".join(f"{k}: {v}" for k, v in summary["by_site"].items())
     print(f"Web complete:     {summary['articles']:,} articles ({by_site_str})")
     return summary
+
+
+if __name__ == "__main__":
+    cfg = json.loads((Path(__file__).parent / "config.json").read_text())
+    run(cfg)
