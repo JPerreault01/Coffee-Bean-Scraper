@@ -1001,3 +1001,315 @@ h1, h2, h3 {
   .buy-box { position: static; }
   .bean-grid { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   HOMEPAGE  (front-page.php)
+   Paste this block at the END of style.css.
+   Uses the existing :root tokens — no new variables needed.
+   ============================================================ */
+
+.cbi-home { background: var(--cbi-bg); }
+
+/* ---- Hero ---- */
+.home-hero {
+  position: relative;
+  background:
+    radial-gradient(120% 80% at 80% -10%, var(--cbi-accent-glow), transparent 60%),
+    linear-gradient(180deg, var(--cbi-bg-2), var(--cbi-bg));
+  border-bottom: 1px solid var(--cbi-border);
+  padding: 96px 0 80px;
+  overflow: hidden;
+}
+.home-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--cbi-border-light) 0.5px, transparent 0.5px);
+  background-size: 22px 22px;
+  opacity: 0.25;
+  pointer-events: none;
+}
+.home-hero__inner { position: relative; z-index: 1; text-align: center; }
+
+.home-hero__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cbi-accent);
+  margin-bottom: 22px;
+  animation: cbiRise 0.6s ease both;
+}
+.home-hero__title {
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  line-height: 1.05;
+  max-width: 14ch;
+  margin: 0 auto 22px;
+  animation: cbiRise 0.6s ease 0.08s both;
+}
+.home-hero__lede {
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  color: var(--cbi-text-muted);
+  max-width: 54ch;
+  margin: 0 auto 34px;
+  animation: cbiRise 0.6s ease 0.16s both;
+}
+.home-hero__cta {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 56px;
+  animation: cbiRise 0.6s ease 0.24s both;
+}
+
+.home-btn {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 13px 26px;
+  border-radius: var(--radius);
+  transition: transform 0.15s, background 0.15s, border-color 0.15s, color 0.15s;
+}
+.home-btn:hover { transform: translateY(-1px); }
+.home-btn--primary {
+  background: var(--cbi-accent);
+  color: var(--cbi-bg) !important;
+}
+.home-btn--primary:hover { background: var(--cbi-accent-light); }
+.home-btn--ghost {
+  border: 1px solid var(--cbi-border-light);
+  color: var(--cbi-text) !important;
+}
+.home-btn--ghost:hover { border-color: var(--cbi-accent); color: var(--cbi-accent-light) !important; }
+
+.home-hero__stats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+  animation: cbiRise 0.6s ease 0.32s both;
+}
+.home-hero__stats li { display: flex; flex-direction: column; gap: 4px; }
+.home-hero__stats strong {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--cbi-accent-light);
+  line-height: 1;
+}
+.home-hero__stats span {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cbi-text-dim);
+}
+
+@keyframes cbiRise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Generic section header ---- */
+.home-section { padding: 72px 0; }
+.home-section__head { margin-bottom: 36px; }
+.home-section__head h2 { margin-bottom: 6px; }
+.home-section__head--row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+}
+.home-section__more {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+/* ---- Browse-by grid ---- */
+.browse-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+.browse-card {
+  background: var(--cbi-bg-2);
+  border: 1px solid var(--cbi-border);
+  border-radius: var(--radius-lg);
+  padding: 26px 24px;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.browse-card:hover { border-color: var(--cbi-border-light); transform: translateY(-2px); }
+.browse-card__title { font-size: 1.15rem; margin-bottom: 4px; }
+.browse-card__blurb {
+  font-size: 0.85rem;
+  color: var(--cbi-text-dim);
+  margin-bottom: 18px;
+}
+.browse-card__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 5px 11px;
+  border-radius: 100px;
+  background: var(--cbi-surface);
+  border: 1px solid var(--cbi-border);
+  color: var(--cbi-text-muted) !important;
+  transition: border-color 0.15s, color 0.15s;
+}
+.chip:hover { border-color: var(--cbi-accent); color: var(--cbi-accent-light) !important; }
+.chip--empty { color: var(--cbi-text-dim) !important; font-style: italic; }
+.chip--empty:hover { border-color: var(--cbi-border); color: var(--cbi-text-dim) !important; }
+
+/* ---- Latest reviews grid ---- */
+.home-review-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+}
+.home-review-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--cbi-bg-2);
+  border: 1px solid var(--cbi-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.home-review-card:hover { border-color: var(--cbi-accent-dim); transform: translateY(-3px); }
+.home-review-card__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--cbi-bg-3);
+}
+.home-review-card__img { width: 100%; height: 100%; object-fit: cover; }
+.home-review-card__img--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: var(--cbi-text-dim);
+}
+.home-review-card__rating {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--cbi-bg);
+  border: 1px solid var(--cbi-accent-dim);
+  color: var(--cbi-accent-light);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 4px 9px;
+  border-radius: var(--radius);
+}
+.home-review-card__rating small { color: var(--cbi-text-dim); font-size: 0.7rem; }
+.home-review-card__body { padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.home-review-card__roaster {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cbi-text-dim);
+}
+.home-review-card__title { font-size: 1.15rem; line-height: 1.25; margin: 0; }
+.home-review-card__verdict { font-size: 0.88rem; color: var(--cbi-text-muted); margin: 2px 0 0; }
+.home-review-card__price {
+  margin-top: auto;
+  padding-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--cbi-accent-light);
+}
+
+/* ---- Why trust ---- */
+.home-trust {
+  background: var(--cbi-bg-2);
+  border-top: 1px solid var(--cbi-border);
+  border-bottom: 1px solid var(--cbi-border);
+  padding: 80px 0;
+}
+.home-trust h2 { margin-bottom: 40px; }
+.home-trust__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 36px;
+}
+.home-trust__num {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--cbi-accent);
+  display: block;
+  margin-bottom: 12px;
+}
+.home-trust__item h3 { font-family: var(--font-body); font-weight: 600; font-size: 1.15rem; margin-bottom: 8px; }
+.home-trust__item p { font-size: 0.92rem; color: var(--cbi-text-muted); margin: 0; }
+
+/* ---- Newsletter band ---- */
+.home-cta-band { padding: 80px 0; }
+.home-cta-band__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  background:
+    radial-gradient(100% 120% at 0% 0%, var(--cbi-accent-glow), transparent 55%),
+    var(--cbi-bg-3);
+  border: 1px solid var(--cbi-border-light);
+  border-radius: var(--radius-lg);
+  padding: 48px;
+}
+.home-cta-band__copy h2 { margin-bottom: 8px; }
+.home-cta-band__copy p { color: var(--cbi-text-muted); margin: 0; }
+.home-cta-band__form input[type="email"],
+.home-cta-band__form input[type="text"] {
+  background: var(--cbi-bg);
+  border: 1px solid var(--cbi-border-light);
+  border-radius: var(--radius);
+  color: var(--cbi-text);
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  width: 100%;
+}
+.home-cta-band__form button,
+.home-cta-band__form .wpforms-submit {
+  background: var(--cbi-accent) !important;
+  color: var(--cbi-bg) !important;
+  border: none !important;
+  font-weight: 600 !important;
+  padding: 12px 24px !important;
+  border-radius: var(--radius) !important;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .home-hero { padding: 64px 0 56px; }
+  .home-hero__stats { gap: 28px; }
+  .home-section { padding: 56px 0; }
+  .home-cta-band__inner { grid-template-columns: 1fr; padding: 32px; }
+  .home-section__head--row { flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================================
+   ROBUSTNESS FIX — stop untemplated pages rendering edge-to-edge
+   Your global rule `.entry-content { max-width:none !important; padding:0 !important }`
+   was stripping width/padding from EVERY page, including default Pages/Posts
+   (About, Contact, Affiliate Disclosure) that have no custom template.
+   This restores a readable centered column on those pages only. Bean single,
+   bean archive, taxonomy archives, and the homepage are excluded so their
+   full-bleed layouts are untouched.
+   ============================================================ */
+
+body:not(.single-bean):not(.post-type-archive-bean):not(.home):not(.tax-flavor-note):not(.tax-origin):not(.tax-roast-level):not(.tax-process-method):not(.tax-brew-method):not(.tax-roaster) .entry-content {
+  max-width: var(--content-width) !important;
+  margin: 0 auto !important;
+  padding: 48px 24px !important;
+}
