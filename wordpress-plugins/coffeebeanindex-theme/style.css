@@ -98,14 +98,46 @@ hr {
 }
 
 /* ============================================================
-   GENERATEPRESS OVERRIDES
+   GENERATEPRESS OVERRIDES — aggressive dark background
    ============================================================ */
 
-.site-main { background: var(--cbi-bg); }
-.inside-article { padding: 0; }
-.entry-content { max-width: none; }
-.separate-containers .inside-article { padding: 0; }
-.separate-containers .site-content { padding: 0; }
+html, body,
+.site, .site-content, .site-inner,
+.site-main, .content-area,
+.inside-article, .entry-content,
+.page-content, .post-content,
+.separate-containers .site-content,
+.separate-containers .inside-article,
+.container, .grid-container,
+.one-container .site-content,
+.inside-right-sidebar,
+.widget-area {
+  background: var(--cbi-bg) !important;
+  background-color: var(--cbi-bg) !important;
+}
+
+.inside-article { padding: 0 !important; }
+.entry-content { max-width: none !important; padding: 0 !important; }
+.separate-containers .inside-article { padding: 0 !important; }
+.separate-containers .site-content { padding: 0 !important; }
+
+/* Remove GP's white card styling on articles */
+article.bean, .post, .page {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Full width — disable GP sidebar */
+.content-area { width: 100% !important; float: none !important; }
+.site-content .content-area { padding: 0 !important; }
+
+/* Remove GP container padding */
+.separate-containers .inside-article,
+.one-container .inside-article {
+  padding: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
 
 /* ============================================================
    HEADER & NAV
