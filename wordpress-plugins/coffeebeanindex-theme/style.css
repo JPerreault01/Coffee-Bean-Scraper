@@ -131,12 +131,36 @@ article.bean, .post, .page {
 .content-area { width: 100% !important; float: none !important; }
 .site-content .content-area { padding: 0 !important; }
 
-/* Remove GP container padding */
+/* Remove GP container padding and borders */
 .separate-containers .inside-article,
 .one-container .inside-article {
   padding: 0 !important;
   box-shadow: none !important;
   border-radius: 0 !important;
+  border: none !important;
+}
+
+/* Remove GP's outer container constraints so hero is truly full width */
+.post-type-archive-bean .site-content,
+.single-bean .site-content,
+.tax-flavor-note .site-content,
+.tax-origin .site-content,
+.tax-roast-level .site-content,
+.tax-process-method .site-content,
+.tax-brew-method .site-content,
+.tax-roaster .site-content {
+  max-width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Fix title word-break — never break mid-word */
+.bean-hero__title,
+h1, h2, h3 {
+  word-break: keep-all;
+  overflow-wrap: normal;
+  hyphens: none;
+  -webkit-hyphens: none;
 }
 
 /* ============================================================
