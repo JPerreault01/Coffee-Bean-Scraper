@@ -1,6 +1,7 @@
 # data_pipeline/reddit_scraper.py
 """
-Reddit scraper using direct JSON endpoints — no API credentials required.
+Reddit scraper — hits old.reddit.com JSON endpoints with browser headers.
+No API credentials required.
 """
 
 import json
@@ -60,7 +61,15 @@ def _resolve_comment_limit(num_comments: int, tiers: list[dict]) -> int:
 
 # --- HTTP helpers ---
 
-REDDIT_BASE = "https://www.reddit.com"
+REDDIT_BASE = "https://old.reddit.com"
+
+# Rotate through a small set of real browser UAs to reduce fingerprinting
+_USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Safari/605.1.15",
+]
 
 def setup_logging():
     logging.basicConfig(
@@ -77,8 +86,19 @@ def get_session() -> requests.Session:
     if _SESSION is None:
         _SESSION = requests.Session()
         _SESSION.headers.update({
-            "User-Agent": "coffee-pipeline/1.0 (training data collector; github.com/JPerreault01/Coffee-Bean-Scraper)"
+            "User-Agent": random.choice(_USER_AGENTS),
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
         })
+        # Seed session cookies so subsequent JSON requests look like browser navigation
+        try:
+            _SESSION.get("https://old.reddit.com", timeout=15)
+            logger.debug("Session seeded with cookies from old.reddit.com")
+        except Exception:
+            pass
     return _SESSION
 
 def _jitter_sleep(min_s: float, max_s: float):
@@ -104,7 +124,8 @@ def _get(url: str, params: dict = None, retries: int = 4) -> Optional[dict]:
         session = get_session()
         _jitter_sleep(DELAY_MIN, DELAY_MAX)
         try:
-            resp = session.get(url, params=params, timeout=20)
+            resp = session.get(url, params=params, timeout=20,
+                               headers={"Referer": "https://old.reddit.com/"})
 
             if resp.status_code == 429:
                 retry_after = int(resp.headers.get("Retry-After", 60))
