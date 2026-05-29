@@ -232,39 +232,47 @@ get_header(); ?>
                     <canvas id="<?php echo esc_attr( $radar_id ); ?>" style="max-height:260px;max-width:340px;"></canvas>
                 </div>
                 <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    var ctx = document.getElementById('<?php echo esc_js( $radar_id ); ?>');
-                    if (!ctx) return;
-                    new Chart(ctx, {
-                        type: 'radar',
-                        data: {
-                            labels: ['Acidity','Body','Sweetness','Bitterness','Roast'],
-                            datasets: [{
-                                data: <?php echo $radar_data; ?>,
-                                backgroundColor: 'rgba(200,146,42,0.15)',
-                                borderColor: 'rgba(200,146,42,0.8)',
-                                borderWidth: 2,
-                                pointBackgroundColor: '#c8922a',
-                                pointRadius: 4,
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                r: {
-                                    min: 0, max: 5,
-                                    ticks: { stepSize: 1, display: false },
-                                    grid: { color: 'rgba(255,255,255,0.08)' },
-                                    angleLines: { color: 'rgba(255,255,255,0.08)' },
-                                    pointLabels: {
-                                        color: '#8a8178',
-                                        font: { family: "'DM Mono', monospace", size: 11 }
-                                    }
-                                }
+                (function() {
+                    function renderRadar() {
+                        var ctx = document.getElementById('<?php echo esc_js( $radar_id ); ?>');
+                        if (!ctx || typeof Chart === 'undefined') return;
+                        new Chart(ctx, {
+                            type: 'radar',
+                            data: {
+                                labels: ['Acidity','Body','Sweetness','Bitterness','Roast'],
+                                datasets: [{
+                                    data: <?php echo $radar_data; ?>,
+                                    backgroundColor: 'rgba(200,146,42,0.15)',
+                                    borderColor: 'rgba(200,146,42,0.8)',
+                                    borderWidth: 2,
+                                    pointBackgroundColor: '#c8922a',
+                                    pointRadius: 4,
+                                }]
                             },
-                            plugins: { legend: { display: false } }
-                        }
-                    });
-                });
+                            options: {
+                                scales: {
+                                    r: {
+                                        min: 0, max: 5,
+                                        ticks: { stepSize: 1, display: false },
+                                        grid: { color: 'rgba(255,255,255,0.08)' },
+                                        angleLines: { color: 'rgba(255,255,255,0.08)' },
+                                        pointLabels: {
+                                            color: '#8a8178',
+                                            font: { family: "'DM Mono', monospace", size: 11 }
+                                        }
+                                    }
+                                },
+                                plugins: { legend: { display: false } }
+                            }
+                        });
+                    }
+                    // Wait for Chart.js to be available
+                    if (typeof Chart !== 'undefined') {
+                        renderRadar();
+                    } else {
+                        window.addEventListener('load', renderRadar);
+                    }
+                })();
                 </script>
             </div>
             <?php endif; ?>

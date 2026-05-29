@@ -154,6 +154,26 @@ article.bean, .post, .page {
   margin: 0 !important;
 }
 
+/* GP container width — force full width on all pages */
+.site-content,
+.grid-container,
+.container {
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Remove the boxed layout border/shadow GP adds */
+.inside-article,
+.page-hero-section,
+.site-main > article {
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
 /* Fix title word-break — never break mid-word */
 .bean-hero__title,
 h1, h2, h3 {
