@@ -1,15 +1,6 @@
 # data_pipeline/reddit_scraper.py
 """
 Reddit scraper using direct JSON endpoints — no API credentials required.
-
-Anti-ban measures:
-  - Randomized delays with jitter (never a fixed pattern)
-  - User-Agent rotation across realistic desktop browser strings
-  - Exponential backoff with jitter on errors and rate limits
-  - Circuit breaker: pauses the whole run after N consecutive failures
-  - Per-subreddit cooldown to avoid burst patterns
-  - Retry-After header respected on 429s
-  - Connection errors handled separately from HTTP errors
 """
 
 import json
@@ -25,8 +16,6 @@ import requests
 
 logger = logging.getLogger("reddit_scraper")
 
-REDDIT_BASE = "https://old.reddit.com"
-
 # --- Timing constants (all in seconds) ---
 DELAY_MIN = 2.0          # minimum wait between any two requests
 DELAY_MAX = 5.0          # maximum wait (randomized in this range)
@@ -34,15 +23,6 @@ SUBREDDIT_BREAK_MIN = 8  # pause between subreddits
 SUBREDDIT_BREAK_MAX = 15
 CIRCUIT_BREAK_THRESHOLD = 5   # consecutive failures before pausing
 CIRCUIT_BREAK_PAUSE = 120     # how long to pause when circuit breaks (2 min)
-
-USER_AGENTS = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0",
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-]
 
 _consecutive_failures = 0
 
@@ -80,6 +60,8 @@ def _resolve_comment_limit(num_comments: int, tiers: list[dict]) -> int:
 
 # --- HTTP helpers ---
 
+REDDIT_BASE = "https://www.reddit.com"
+
 def setup_logging():
     logging.basicConfig(
         format="[reddit_scraper] [%(levelname)s] %(asctime)s %(message)s",
@@ -88,24 +70,21 @@ def setup_logging():
         stream=sys.stdout,
     )
 
+_SESSION: Optional[requests.Session] = None
 
-def _make_session() -> requests.Session:
-    session = requests.Session()
-    session.headers.update({
-        "User-Agent": random.choice(USER_AGENTS),
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Connection": "keep-alive",
-    })
-    return session
-
+def get_session() -> requests.Session:
+    global _SESSION
+    if _SESSION is None:
+        _SESSION = requests.Session()
+        _SESSION.headers.update({
+            "User-Agent": "coffee-pipeline/1.0 (training data collector; github.com/JPerreault01/Coffee-Bean-Scraper)"
+        })
+    return _SESSION
 
 def _jitter_sleep(min_s: float, max_s: float):
     delay = random.uniform(min_s, max_s)
     logger.debug(f"Sleeping {delay:.1f}s")
     time.sleep(delay)
-
 
 def _backoff_sleep(attempt: int, base: float = 3.0, cap: float = 60.0):
     ceiling = min(cap, base * (2 ** attempt))
@@ -113,29 +92,24 @@ def _backoff_sleep(attempt: int, base: float = 3.0, cap: float = 60.0):
     logger.info(f"Backoff: sleeping {delay:.1f}s (attempt {attempt + 1})")
     time.sleep(delay)
 
-
 def _get(url: str, params: dict = None, retries: int = 4) -> Optional[dict]:
     global _consecutive_failures
 
     if _consecutive_failures >= CIRCUIT_BREAK_THRESHOLD:
-        logger.warning(
-            f"Circuit breaker tripped ({_consecutive_failures} consecutive failures) — "
-            f"pausing {CIRCUIT_BREAK_PAUSE}s before retrying"
-        )
+        logger.warning(f"Circuit breaker tripped — pausing {CIRCUIT_BREAK_PAUSE}s")
         time.sleep(CIRCUIT_BREAK_PAUSE)
         _consecutive_failures = 0
 
     for attempt in range(retries):
-        session = _make_session()
+        session = get_session()
         _jitter_sleep(DELAY_MIN, DELAY_MAX)
-
         try:
             resp = session.get(url, params=params, timeout=20)
 
             if resp.status_code == 429:
                 retry_after = int(resp.headers.get("Retry-After", 60))
                 wait = retry_after + random.uniform(5, 15)
-                logger.warning(f"429 rate limit — waiting {wait:.0f}s (Retry-After: {retry_after}s)")
+                logger.warning(f"429 rate limit — waiting {wait:.0f}s")
                 time.sleep(wait)
                 _consecutive_failures += 1
                 continue
@@ -147,7 +121,7 @@ def _get(url: str, params: dict = None, retries: int = 4) -> Optional[dict]:
                 continue
 
             if resp.status_code == 503:
-                logger.warning(f"503 service unavailable — {url} (Reddit overloaded)")
+                logger.warning(f"503 service unavailable — {url}")
                 _backoff_sleep(attempt, base=10.0)
                 _consecutive_failures += 1
                 continue
@@ -161,17 +135,14 @@ def _get(url: str, params: dict = None, retries: int = 4) -> Optional[dict]:
             logger.warning(f"Connection error (attempt {attempt + 1}/{retries}): {e}")
             _consecutive_failures += 1
             _backoff_sleep(attempt)
-
         except requests.exceptions.Timeout:
             logger.warning(f"Timeout (attempt {attempt + 1}/{retries}): {url}")
             _consecutive_failures += 1
             _backoff_sleep(attempt)
-
         except requests.exceptions.JSONDecodeError:
             logger.warning(f"Invalid JSON response from {url} — skipping")
             _consecutive_failures += 1
             return None
-
         except requests.exceptions.RequestException as e:
             logger.warning(f"Request error (attempt {attempt + 1}/{retries}): {url} — {e}")
             _consecutive_failures += 1
