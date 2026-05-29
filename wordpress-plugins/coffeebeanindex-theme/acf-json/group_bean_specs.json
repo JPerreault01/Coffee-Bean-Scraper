@@ -1,0 +1,238 @@
+[
+  {
+    "key": "group_bean_specs",
+    "title": "Bean Specs & Review Fields",
+    "fields": [
+      {
+        "key": "field_verdict",
+        "label": "One-Line Verdict",
+        "name": "verdict",
+        "type": "text",
+        "instructions": "Direct, specific, no hedge words. This appears prominently on the page.",
+        "required": 1,
+        "maxlength": 160
+      },
+      {
+        "key": "field_rating",
+        "label": "Rating (out of 10)",
+        "name": "rating",
+        "type": "number",
+        "instructions": "X/10 — one decimal allowed (e.g. 7.5)",
+        "required": 1,
+        "min": 1,
+        "max": 10,
+        "step": 0.5
+      },
+      {
+        "key": "field_tasting_notes",
+        "label": "Tasting Notes",
+        "name": "tasting_notes",
+        "type": "repeater",
+        "instructions": "3–5 specific tasting note bullets. No vague descriptors without context.",
+        "min": 3,
+        "max": 5,
+        "layout": "table",
+        "sub_fields": [
+          {
+            "key": "field_tasting_note_item",
+            "label": "Note",
+            "name": "note",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "key": "field_whos_for",
+        "label": "Who It's For",
+        "name": "whos_for",
+        "type": "textarea",
+        "instructions": "1–2 sentences. Specific — 'espresso drinkers who want low acidity' not 'coffee lovers'.",
+        "rows": 3,
+        "maxlength": 300
+      },
+      {
+        "key": "field_whos_not_for",
+        "label": "Who Should Skip It",
+        "name": "whos_not_for",
+        "type": "textarea",
+        "instructions": "1–2 sentences. Honest.",
+        "rows": 3,
+        "maxlength": 300
+      },
+      {
+        "key": "field_price_analysis",
+        "label": "Price Analysis",
+        "name": "price_analysis",
+        "type": "textarea",
+        "instructions": "Current price vs 30-day average, value judgment, when to buy.",
+        "rows": 4
+      },
+      {
+        "key": "field_divider_specs",
+        "label": "— Specs —",
+        "name": "divider_specs",
+        "type": "message",
+        "message": ""
+      },
+      {
+        "key": "field_weight_oz",
+        "label": "Weight (oz)",
+        "name": "weight_oz",
+        "type": "number",
+        "step": 0.1
+      },
+      {
+        "key": "field_price_per_oz",
+        "label": "Price Per Oz ($)",
+        "name": "price_per_oz",
+        "type": "number",
+        "step": 0.01
+      },
+      {
+        "key": "field_current_price",
+        "label": "Current Price ($)",
+        "name": "current_price",
+        "type": "number",
+        "step": 0.01
+      },
+      {
+        "key": "field_amazon_asin",
+        "label": "Amazon ASIN",
+        "name": "amazon_asin",
+        "type": "text",
+        "instructions": "10-character ASIN from Amazon product URL"
+      },
+      {
+        "key": "field_amazon_affiliate_url",
+        "label": "Amazon Affiliate URL",
+        "name": "amazon_affiliate_url",
+        "type": "url",
+        "instructions": "Full URL with affiliate tag"
+      },
+      {
+        "key": "field_roaster_url",
+        "label": "Roaster Direct URL",
+        "name": "roaster_url",
+        "type": "url",
+        "instructions": "Direct purchase URL from roaster (affiliate if available)"
+      },
+      {
+        "key": "field_product_id",
+        "label": "Product ID (SQLite)",
+        "name": "product_id",
+        "type": "text",
+        "instructions": "Must match the id in products.json and prices.db (e.g. lavazza-super-crema)"
+      },
+      {
+        "key": "field_divider_sensory",
+        "label": "— Sensory Profile —",
+        "name": "divider_sensory",
+        "type": "message",
+        "message": ""
+      },
+      {
+        "key": "field_acidity",
+        "label": "Acidity (1–5)",
+        "name": "acidity",
+        "type": "number",
+        "min": 1,
+        "max": 5,
+        "step": 1
+      },
+      {
+        "key": "field_body",
+        "label": "Body (1–5)",
+        "name": "body",
+        "type": "number",
+        "min": 1,
+        "max": 5,
+        "step": 1
+      },
+      {
+        "key": "field_sweetness",
+        "label": "Sweetness (1–5)",
+        "name": "sweetness",
+        "type": "number",
+        "min": 1,
+        "max": 5,
+        "step": 1
+      },
+      {
+        "key": "field_bitterness",
+        "label": "Bitterness (1–5)",
+        "name": "bitterness",
+        "type": "number",
+        "min": 1,
+        "max": 5,
+        "step": 1
+      },
+      {
+        "key": "field_roast_intensity",
+        "label": "Roast Intensity (1–5)",
+        "name": "roast_intensity",
+        "type": "number",
+        "min": 1,
+        "max": 5,
+        "step": 1
+      },
+      {
+        "key": "field_divider_meta",
+        "label": "— Additional Info —",
+        "name": "divider_meta",
+        "type": "message",
+        "message": ""
+      },
+      {
+        "key": "field_linked_recipes",
+        "label": "Linked Recipes",
+        "name": "linked_recipes",
+        "type": "relationship",
+        "instructions": "Link to recipe posts that use this bean",
+        "post_type": ["post"],
+        "filters": ["search"],
+        "return_format": "id"
+      },
+      {
+        "key": "field_linked_guides",
+        "label": "Linked Guides",
+        "name": "linked_guides",
+        "type": "relationship",
+        "instructions": "Link to relevant origin or brew method guide pages",
+        "post_type": ["page", "post"],
+        "filters": ["search"],
+        "return_format": "id"
+      },
+      {
+        "key": "field_last_reviewed",
+        "label": "Last Reviewed Date",
+        "name": "last_reviewed",
+        "type": "date_picker",
+        "display_format": "F j, Y",
+        "return_format": "Y-m-d"
+      },
+      {
+        "key": "field_personal_mode",
+        "label": "Personal Mode (I tasted this)",
+        "name": "personal_mode",
+        "type": "true_false",
+        "instructions": "Check this if this review was written in personal --personal mode",
+        "default_value": 0
+      }
+    ],
+    "location": [
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "bean"
+        }
+      ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true
+  }
+]
