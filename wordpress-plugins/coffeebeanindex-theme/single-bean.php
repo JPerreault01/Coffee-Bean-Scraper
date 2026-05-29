@@ -33,6 +33,8 @@ get_header(); ?>
     $linked_guides  = get_field( 'linked_guides' );
     $last_reviewed  = get_field( 'last_reviewed' );
 
+    $tasting_notes = get_field( 'tasting_notes' );
+
     // Taxonomy terms
     $roasters       = get_the_terms( $post_id, 'roaster' );
     $origins        = get_the_terms( $post_id, 'origin' );
@@ -228,8 +230,8 @@ get_header(); ?>
             <div class="cbi-section">
                 <div class="cbi-section__heading">Tasting Notes</div>
                 <ul class="tasting-notes">
-                    <?php foreach ( $tasting_notes as $note ) : ?>
-                        <li><?php echo esc_html( $note['note'] ); ?></li>
+                    <?php foreach ( array_filter( explode( "\n", $tasting_notes ) ) as $note ) : ?>
+                        <li><?php echo esc_html( trim( $note ) ); ?></li>
                     <?php endforeach; ?>
                 </ul>
             </div>
