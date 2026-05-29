@@ -215,13 +215,57 @@ get_header(); ?>
             </div>
             <?php endif; ?>
 
-            <!-- Radar Chart -->
-            <?php if ( $product_id ) : ?>
+            <!-- Radar Chart — inline Chart.js from ACF data -->
+            <?php if ( $acidity || $body || $sweetness || $bitterness || $roast_int ) :
+                $radar_id = 'bean-radar-' . $post_id;
+                $radar_data = json_encode( [
+                    intval( $acidity ),
+                    intval( $body ),
+                    intval( $sweetness ),
+                    intval( $bitterness ),
+                    intval( $roast_int ),
+                ] );
+            ?>
             <div class="cbi-section">
                 <div class="cbi-section__heading">Flavor Radar</div>
-                <div class="radar-wrap">
-                    <?php echo do_shortcode( '[coffee_bean_profile product_id="' . esc_attr( $product_id ) . '"]' ); ?>
+                <div class="radar-wrap" style="position:relative;height:280px;display:flex;align-items:center;justify-content:center;">
+                    <canvas id="<?php echo esc_attr( $radar_id ); ?>" style="max-height:260px;max-width:340px;"></canvas>
                 </div>
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var ctx = document.getElementById('<?php echo esc_js( $radar_id ); ?>');
+                    if (!ctx) return;
+                    new Chart(ctx, {
+                        type: 'radar',
+                        data: {
+                            labels: ['Acidity','Body','Sweetness','Bitterness','Roast'],
+                            datasets: [{
+                                data: <?php echo $radar_data; ?>,
+                                backgroundColor: 'rgba(200,146,42,0.15)',
+                                borderColor: 'rgba(200,146,42,0.8)',
+                                borderWidth: 2,
+                                pointBackgroundColor: '#c8922a',
+                                pointRadius: 4,
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                r: {
+                                    min: 0, max: 5,
+                                    ticks: { stepSize: 1, display: false },
+                                    grid: { color: 'rgba(255,255,255,0.08)' },
+                                    angleLines: { color: 'rgba(255,255,255,0.08)' },
+                                    pointLabels: {
+                                        color: '#8a8178',
+                                        font: { family: "'DM Mono', monospace", size: 11 }
+                                    }
+                                }
+                            },
+                            plugins: { legend: { display: false } }
+                        }
+                    });
+                });
+                </script>
             </div>
             <?php endif; ?>
 

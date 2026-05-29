@@ -20,6 +20,16 @@ function cbi_enqueue_styles() {
         [ 'generatepress-parent' ],
         '1.0.0'
     );
+    // Chart.js for radar charts on bean pages
+    if ( is_singular( 'bean' ) ) {
+        wp_enqueue_script(
+            'chartjs',
+            'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js',
+            [],
+            '4.4.1',
+            true
+        );
+    }
 }
 
 // ============================================================
