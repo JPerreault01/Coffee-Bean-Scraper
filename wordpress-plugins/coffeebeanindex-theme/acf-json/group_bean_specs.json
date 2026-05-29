@@ -27,19 +27,11 @@
         "key": "field_tasting_notes",
         "label": "Tasting Notes",
         "name": "tasting_notes",
-        "type": "repeater",
-        "instructions": "3–5 specific tasting note bullets. No vague descriptors without context.",
-        "min": 3,
-        "max": 5,
-        "layout": "table",
-        "sub_fields": [
-          {
-            "key": "field_tasting_note_item",
-            "label": "Note",
-            "name": "note",
-            "type": "text"
-          }
-        ]
+        "type": "textarea",
+        "instructions": "3–5 specific tasting note bullets, one per line. No vague descriptors without context.",
+        "required": 0,
+        "rows": 6,
+        "new_lines": ""
       },
       {
         "key": "field_whos_for",
