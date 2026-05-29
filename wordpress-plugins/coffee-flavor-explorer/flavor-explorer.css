@@ -1,0 +1,290 @@
+:root {
+  --cfe-radar-fill:        rgba(139, 90, 43, 0.25);
+  --cfe-radar-border:      rgba(139, 90, 43, 0.8);
+  --cfe-tag-bg:            #f5f0eb;
+  --cfe-tag-active-bg:     #8b5a2b;
+  --cfe-tag-active-color:  #fff;
+  --cfe-card-border:       #e0d5c8;
+  --cfe-card-shadow:       0 2px 8px rgba(0, 0, 0, 0.06);
+  --cfe-btn-review-bg:     #3a3a3a;
+  --cfe-btn-price-bg:      #8b5a2b;
+  --cfe-family-color:      #8b5a2b;
+}
+
+/* ---- Explorer container ---- */
+
+#coffee-flavor-explorer {
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+#coffee-flavor-explorer *,
+#coffee-flavor-explorer *::before,
+#coffee-flavor-explorer *::after {
+  box-sizing: inherit;
+}
+
+/* ---- Family filter bar ---- */
+
+.cfe-family-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.cfe-family-btn {
+  padding: 6px 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--cfe-family-color);
+  background: transparent;
+  color: var(--cfe-family-color);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1.4;
+}
+
+.cfe-family-btn.active,
+.cfe-family-btn:hover {
+  background: var(--cfe-family-color);
+  color: #fff;
+}
+
+/* ---- Note tag filter bar ---- */
+
+.cfe-note-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+  min-height: 28px;
+}
+
+.cfe-note-tag {
+  padding: 4px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--cfe-card-border);
+  background: var(--cfe-tag-bg);
+  color: #555;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  line-height: 1.4;
+}
+
+.cfe-note-tag.active,
+.cfe-note-tag:hover {
+  background: var(--cfe-tag-active-bg);
+  color: var(--cfe-tag-active-color);
+  border-color: var(--cfe-tag-active-bg);
+}
+
+/* ---- Sort controls ---- */
+
+.cfe-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.cfe-sort-label {
+  font-size: 0.875rem;
+  color: #555;
+}
+
+.cfe-sort-btn {
+  padding: 4px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--cfe-card-border);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: inherit;
+  color: #555;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  line-height: 1.4;
+}
+
+.cfe-sort-btn.active {
+  background: var(--cfe-tag-bg);
+  border-color: #999;
+  color: #333;
+  font-weight: 600;
+}
+
+.cfe-sort-btn:hover:not(.active) {
+  border-color: #999;
+  color: #333;
+}
+
+/* ---- Count line ---- */
+
+.cfe-count {
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 18px;
+}
+
+/* ---- Product grid ---- */
+
+.cfe-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .cfe-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 580px) {
+  .cfe-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Product card ---- */
+
+.cfe-card {
+  border: 1px solid var(--cfe-card-border);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: var(--cfe-card-shadow);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.cfe-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10);
+}
+
+.cfe-card-name {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.cfe-card-name a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cfe-card-name a:hover {
+  text-decoration: underline;
+}
+
+.cfe-card-meta {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: -4px;
+}
+
+.cfe-radar-canvas {
+  display: block;
+  margin: 4px auto;
+}
+
+/* ---- Note pills on card ---- */
+
+.cfe-card-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cfe-note-pill {
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: none;
+  background: var(--cfe-tag-bg);
+  color: #555;
+  font-size: 0.75rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1.4;
+}
+
+.cfe-note-pill:hover {
+  background: var(--cfe-tag-active-bg);
+  color: var(--cfe-tag-active-color);
+}
+
+/* ---- Card action buttons ---- */
+
+.cfe-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+.cfe-btn {
+  display: inline-block;
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-family: inherit;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s;
+  line-height: 1.4;
+}
+
+.cfe-btn:hover {
+  opacity: 0.85;
+  text-decoration: none;
+}
+
+.cfe-btn-review {
+  background: var(--cfe-btn-review-bg);
+  color: #fff;
+}
+
+.cfe-btn-price {
+  background: var(--cfe-btn-price-bg);
+  color: #fff;
+}
+
+/* ---- Standalone radar (coffee_profile shortcode) ---- */
+
+.coffee-radar-chart {
+  text-align: center;
+  margin: 20px auto;
+}
+
+.cfe-standalone-canvas {
+  display: block;
+  margin: 0 auto;
+}
+
+.cfe-standalone-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.cfe-standalone-note {
+  display: inline-block;
+  padding: 4px 13px;
+  border-radius: 999px;
+  background: var(--cfe-tag-bg);
+  color: #555;
+  font-size: 0.8rem;
+}
