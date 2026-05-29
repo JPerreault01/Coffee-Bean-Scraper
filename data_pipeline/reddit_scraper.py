@@ -25,7 +25,7 @@ import requests
 
 logger = logging.getLogger("reddit_scraper")
 
-REDDIT_BASE = "https://www.reddit.com"
+REDDIT_BASE = "https://old.reddit.com"
 
 # --- Timing constants (all in seconds) ---
 DELAY_MIN = 2.0          # minimum wait between any two requests
@@ -93,10 +93,9 @@ def _make_session() -> requests.Session:
     session = requests.Session()
     session.headers.update({
         "User-Agent": random.choice(USER_AGENTS),
-        "Accept": "application/json, text/javascript, */*; q=0.01",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.9",
         "Accept-Encoding": "gzip, deflate, br",
-        "DNT": "1",
         "Connection": "keep-alive",
     })
     return session
