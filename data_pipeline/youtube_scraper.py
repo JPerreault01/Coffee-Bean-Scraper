@@ -1,12 +1,11 @@
 """
 YouTube transcript scraper.
 Fetches video transcripts from coffee channels via youtube-transcript-api.
-Optional: uses YouTube Data API v3 to enumerate channel videos if YOUTUBE_API_KEY is set.
+Uses yt-dlp to enumerate channel videos — no API key required.
 """
 
 import json
 import logging
-import os
 import re
 import sys
 from datetime import datetime, timezone
@@ -158,68 +157,56 @@ def fetch_transcript(video_id: str, language_preference: list[str]) -> Optional[
     return None
 
 
-def get_channel_video_ids(channel_id: str, channel_name: str, max_videos: int, api_key: str) -> list[dict]:
-    """Use YouTube Data API v3 to list all videos from a channel's uploads playlist."""
+def get_channel_video_ids(channel_id: str, channel_name: str, max_videos: int) -> list:
     try:
-        from googleapiclient.discovery import build
-        from googleapiclient.errors import HttpError
+        import yt_dlp
     except ImportError:
-        logger.error("google-api-python-client is not installed. Run: pip install google-api-python-client")
+        logger.error("yt-dlp is not installed. Run: pip install yt-dlp")
         return []
+
+    channel_url = f"https://www.youtube.com/channel/{channel_id}/videos"
+
+    ydl_opts = {
+        "extract_flat": "in_playlist",
+        "quiet": True,
+        "no_warnings": True,
+        "playlist_end": max_videos,
+        "ignoreerrors": True,
+    }
 
     try:
-        youtube = build("youtube", "v3", developerKey=api_key)
-
-        channels_resp = youtube.channels().list(
-            part="contentDetails",
-            id=channel_id,
-        ).execute()
-
-        items = channels_resp.get("items", [])
-        if not items:
-            logger.warning(f"No channel found for ID {channel_id}")
-            return []
-
-        uploads_playlist_id = items[0]["contentDetails"]["relatedPlaylists"]["uploads"]
-
-        videos = []
-        next_page_token = None
-
-        while len(videos) < max_videos:
-            try:
-                playlist_resp = youtube.playlistItems().list(
-                    part="snippet",
-                    playlistId=uploads_playlist_id,
-                    maxResults=min(50, max_videos - len(videos)),
-                    pageToken=next_page_token,
-                ).execute()
-            except HttpError as e:
-                logger.error(f"YouTube API error listing playlist for {channel_name}: {e}")
-                break
-
-            for item in playlist_resp.get("items", []):
-                snippet = item.get("snippet", {})
-                video_id = snippet.get("resourceId", {}).get("videoId")
-                if not video_id:
-                    continue
-                videos.append({
-                    "video_id": video_id,
-                    "title": snippet.get("title", ""),
-                    "published_at": snippet.get("publishedAt", ""),
-                    "description": snippet.get("description", "")[:500],
-                    "channel_name": channel_name,
-                    "url": f"https://www.youtube.com/watch?v={video_id}",
-                })
-
-            next_page_token = playlist_resp.get("nextPageToken")
-            if not next_page_token:
-                break
-
-        return videos
-
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(channel_url, download=False)
     except Exception as e:
-        logger.error(f"Unexpected error fetching video list for {channel_name}: {e}")
+        logger.error(f"yt-dlp failed to fetch channel {channel_name}: {e}")
         return []
+
+    if not info or "entries" not in info:
+        logger.warning(f"No videos found for channel {channel_name} ({channel_id})")
+        return []
+
+    videos = []
+    for entry in (info["entries"] or []):
+        if not entry:
+            continue
+        video_id = entry.get("id")
+        if not video_id:
+            continue
+        upload_date = entry.get("upload_date", "")
+        if upload_date and len(upload_date) == 8:
+            upload_date = f"{upload_date[:4]}-{upload_date[4:6]}-{upload_date[6:8]}"
+        videos.append({
+            "video_id": video_id,
+            "title": entry.get("title", ""),
+            "published_at": upload_date,
+            "description": (entry.get("description") or "")[:500],
+            "channel_name": channel_name,
+            "url": f"https://www.youtube.com/watch?v={video_id}",
+        })
+        if len(videos) >= max_videos:
+            break
+
+    return videos
 
 
 def scrape_video(video_meta: dict, channel_name: str, config: dict, output_file) -> bool:
@@ -273,7 +260,6 @@ def run(config: dict, video_id_override: Optional[str] = None, fresh: bool = Fal
     output_dir = Path(ycfg["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    api_key = os.environ.get("YOUTUBE_API_KEY")
     summary = {"transcripts": 0, "by_channel": {}}
 
     # Single video mode (--video-id flag) — no checkpointing needed for one-off
@@ -297,14 +283,6 @@ def run(config: dict, video_id_override: Optional[str] = None, fresh: bool = Fal
         else:
             logger.warning(f"No transcript available for video {video_id_override}")
         print(f"YouTube complete: {summary['transcripts']} transcripts (manual)")
-        return summary
-
-    if not api_key:
-        logger.warning(
-            "YOUTUBE_API_KEY is not set — skipping channel-level video fetching. "
-            "Use --video-id <id> to scrape individual videos."
-        )
-        print("YouTube complete: 0 transcripts (no API key)")
         return summary
 
     # Load or reset state
@@ -335,7 +313,7 @@ def run(config: dict, video_id_override: Optional[str] = None, fresh: bool = Fal
         _save_state(state)
 
         logger.info(f"Fetching video list for {channel_name} ({channel_id})...")
-        videos = get_channel_video_ids(channel_id, channel_name, max_videos, api_key)
+        videos = get_channel_video_ids(channel_id, channel_name, max_videos)
         logger.info(f"{channel_name}: {len(videos)} videos found, fetching transcripts...")
 
         out_path = output_dir / f"{channel_name}.jsonl"

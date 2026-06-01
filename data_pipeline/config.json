@@ -141,14 +141,6 @@
         "channel_id": "UCcBMbOTJwCmCFaos4e51s-g",
         "authority_weight": 0.8
       },
-      "reviews_by_julian": {
-        "channel_id": "UCReviewsByJulianVerifyX",
-        "authority_weight": 0.8
-      },
-      "aramse": {
-        "channel_id": "UCARamseVerifyManuallyXX",
-        "authority_weight": 0.8
-      },
       "coffee_chronicler": {
         "channel_id": "UCWf5gHqAKmPfnPJpqq1R8lQ",
         "authority_weight": 0.9
