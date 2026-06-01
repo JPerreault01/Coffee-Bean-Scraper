@@ -29,8 +29,9 @@
         "name": "tasting_notes",
         "type": "textarea",
         "instructions": "3–5 specific tasting note bullets, one per line. No vague descriptors without context.",
+        "required": 0,
         "rows": 6,
-        "new_lines": "br"
+        "new_lines": ""
       },
       {
         "key": "field_whos_for",
