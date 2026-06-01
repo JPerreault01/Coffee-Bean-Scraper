@@ -196,16 +196,8 @@
     "output_dir": "training_data/raw/podcasts",
     "min_text_chars": 100,
     "max_episodes_per_feed": 500,
-    "feeds": {
-      "buy_the_drip": {
-        "name": "buy_the_drip",
-        "rss_url": "https://feeds.buzzsprout.com/1864734.rss",
-        "authority_weight": 0.8
-      },
-      "buying_season": {
-        "name": "buying_season",
-        "rss_url": "https://anchor.fm/s/buying-season/podcast/rss",
-        "authority_weight": 0.8
+    "feeds": {}
+  },
       }
     }
   },
