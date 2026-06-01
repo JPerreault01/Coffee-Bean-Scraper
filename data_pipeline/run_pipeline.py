@@ -52,6 +52,11 @@ def main():
         action="store_true",
         help="Ignore existing checkpoint state and start from zero",
     )
+    parser.add_argument(
+        "--reset-youtube",
+        action="store_true",
+        help="Clear the YouTube scraper checkpoint and start YouTube collection from scratch",
+    )
     args = parser.parse_args()
 
     # If no source flags given, run all scrapers
@@ -63,6 +68,14 @@ def main():
         level=logging.INFO,
         stream=sys.stdout,
     )
+
+    if args.reset_youtube:
+        state_file = Path("training_data/state/youtube_state.json")
+        if state_file.exists():
+            state_file.unlink()
+            logger.info("YouTube state reset — all channels will be re-scraped")
+        else:
+            logger.info("No YouTube state file found — nothing to reset")
 
     config = load_config()
     run_summary = {
