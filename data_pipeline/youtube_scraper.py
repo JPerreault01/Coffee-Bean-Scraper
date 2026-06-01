@@ -143,6 +143,7 @@ def fetch_transcript(video_id: str, lang_pref: list) -> Optional[str]:
             "no_warnings": True,
             "outtmpl": os.path.join(tmpdir, "%(id)s"),
             "subtitlesformat": "vtt",
+            "socket_timeout": 30,
         }
 
         try:
@@ -150,11 +151,13 @@ def fetch_transcript(video_id: str, lang_pref: list) -> Optional[str]:
                 ydl.download([url])
         except Exception as e:
             err = str(e).lower()
-            if any(term in err for term in ["blocked", "http error 429",
-                                             "too many requests", "network",
-                                             "connection", "timeout"]):
+            transient_terms = [
+                "blocked", "http error 429", "too many requests",
+                "network", "connection", "timeout", "timed out",
+                "ssl", "read error",
+            ]
+            if any(term in err for term in transient_terms):
                 raise TransientFetchError(f"Transient error for {video_id}: {e}") from e
-            # Non-network errors (private video, deleted, etc.) → permanent
             logger.debug(f"yt-dlp non-transient error for {video_id}: {e}")
             return None
 
@@ -338,8 +341,10 @@ def run(config: dict, video_id_override: Optional[str] = None, fresh: bool = Fal
         channel_count = 0
 
         with open(out_path, open_mode, encoding="utf-8") as f:
-            for video_meta in videos:
+            for idx, video_meta in enumerate(videos, 1):
                 video_id = video_meta.get("video_id", "")
+                title_preview = video_meta.get("title", "")[:60] or video_id
+                logger.info(f"{channel_name}: [{idx}/{len(videos)}] {title_preview}")
                 if video_id in scraped_ids_set:
                     logger.debug(f"Skipping already-scraped video {video_id}")
                     continue
