@@ -1,35 +1,55 @@
 <?php
 /**
  * Coffee Bean Index — Child Theme Functions
- * Registers: bean CPT, all taxonomies, ACF field sync, enqueues
+ * Registers: bean CPT, all taxonomies, ACF field sync, enqueues, schema
  */
 
 // ============================================================
-// 1. ENQUEUE PARENT + CHILD STYLES
+// 1. ENQUEUE STYLES & SCRIPTS
+//    Fonts loaded with preconnect — no render-blocking @import
 // ============================================================
 
 add_action( 'wp_enqueue_scripts', 'cbi_enqueue_styles' );
 function cbi_enqueue_styles() {
+    // Google Fonts — enqueued properly so WP can manage load order
+    wp_enqueue_style(
+        'cbi-fonts',
+        'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap',
+        [],
+        null
+    );
+
+    // Parent theme
     wp_enqueue_style(
         'generatepress-parent',
         get_template_directory_uri() . '/style.css'
     );
+
+    // Child theme
     wp_enqueue_style(
         'cbi-child',
         get_stylesheet_directory_uri() . '/style.css',
-        [ 'generatepress-parent' ],
-        '1.0.0'
+        [ 'generatepress-parent', 'cbi-fonts' ],
+        '2.0.0'
     );
-    // Chart.js for radar charts on bean pages
+
+    // Chart.js — only on bean pages (reduces page weight everywhere else)
     if ( is_singular( 'bean' ) ) {
         wp_enqueue_script(
             'chartjs',
             'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js',
             [],
             '4.4.1',
-            true
+            true // footer
         );
     }
+}
+
+// Preconnect hints for Google Fonts (output before any render-blocking resources)
+add_action( 'wp_head', 'cbi_font_preconnect', 1 );
+function cbi_font_preconnect() {
+    echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
+    echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
 }
 
 // ============================================================
@@ -67,9 +87,9 @@ function cbi_register_bean_cpt() {
         'menu_icon'          => 'dashicons-coffee',
         'supports'           => [
             'title',
-            'editor',       // review body
+            'editor',      // review body
             'thumbnail',
-            'excerpt',      // one-line verdict
+            'excerpt',     // one-line verdict fallback
             'revisions',
             'custom-fields',
         ],
@@ -83,20 +103,9 @@ function cbi_register_bean_cpt() {
 add_action( 'init', 'cbi_register_taxonomies' );
 function cbi_register_taxonomies() {
 
-    // Flavor Notes — the Fragrantica core
     register_taxonomy( 'flavor-note', 'bean', [
-        'labels' => [
-            'name'              => 'Flavor Notes',
-            'singular_name'     => 'Flavor Note',
-            'search_items'      => 'Search Flavor Notes',
-            'all_items'         => 'All Flavor Notes',
-            'edit_item'         => 'Edit Flavor Note',
-            'update_item'       => 'Update Flavor Note',
-            'add_new_item'      => 'Add New Flavor Note',
-            'new_item_name'     => 'New Flavor Note Name',
-            'menu_name'         => 'Flavor Notes',
-        ],
-        'hierarchical'      => true,   // parent families, child notes
+        'labels'            => [ 'name' => 'Flavor Notes', 'singular_name' => 'Flavor Note', 'menu_name' => 'Flavor Notes' ],
+        'hierarchical'      => true,
         'public'            => true,
         'show_ui'           => true,
         'show_in_rest'      => true,
@@ -104,14 +113,9 @@ function cbi_register_taxonomies() {
         'rewrite'           => [ 'slug' => 'flavor', 'with_front' => false ],
     ] );
 
-    // Origin
     register_taxonomy( 'origin', 'bean', [
-        'labels' => [
-            'name'          => 'Origins',
-            'singular_name' => 'Origin',
-            'menu_name'     => 'Origins',
-        ],
-        'hierarchical'      => true,   // e.g. Africa → Ethiopia
+        'labels'            => [ 'name' => 'Origins', 'singular_name' => 'Origin', 'menu_name' => 'Origins' ],
+        'hierarchical'      => true,
         'public'            => true,
         'show_ui'           => true,
         'show_in_rest'      => true,
@@ -119,13 +123,8 @@ function cbi_register_taxonomies() {
         'rewrite'           => [ 'slug' => 'origin', 'with_front' => false ],
     ] );
 
-    // Roast Level
     register_taxonomy( 'roast-level', 'bean', [
-        'labels' => [
-            'name'          => 'Roast Levels',
-            'singular_name' => 'Roast Level',
-            'menu_name'     => 'Roast Levels',
-        ],
+        'labels'            => [ 'name' => 'Roast Levels', 'singular_name' => 'Roast Level', 'menu_name' => 'Roast Levels' ],
         'hierarchical'      => false,
         'public'            => true,
         'show_ui'           => true,
@@ -134,13 +133,8 @@ function cbi_register_taxonomies() {
         'rewrite'           => [ 'slug' => 'roast', 'with_front' => false ],
     ] );
 
-    // Process Method
     register_taxonomy( 'process-method', 'bean', [
-        'labels' => [
-            'name'          => 'Process Methods',
-            'singular_name' => 'Process Method',
-            'menu_name'     => 'Process',
-        ],
+        'labels'            => [ 'name' => 'Process Methods', 'singular_name' => 'Process Method', 'menu_name' => 'Process' ],
         'hierarchical'      => false,
         'public'            => true,
         'show_ui'           => true,
@@ -149,13 +143,8 @@ function cbi_register_taxonomies() {
         'rewrite'           => [ 'slug' => 'process', 'with_front' => false ],
     ] );
 
-    // Brew Method
     register_taxonomy( 'brew-method', 'bean', [
-        'labels' => [
-            'name'          => 'Brew Methods',
-            'singular_name' => 'Brew Method',
-            'menu_name'     => 'Brew Methods',
-        ],
+        'labels'            => [ 'name' => 'Brew Methods', 'singular_name' => 'Brew Method', 'menu_name' => 'Brew Methods' ],
         'hierarchical'      => false,
         'public'            => true,
         'show_ui'           => true,
@@ -164,13 +153,8 @@ function cbi_register_taxonomies() {
         'rewrite'           => [ 'slug' => 'brew', 'with_front' => false ],
     ] );
 
-    // Roaster
     register_taxonomy( 'roaster', 'bean', [
-        'labels' => [
-            'name'          => 'Roasters',
-            'singular_name' => 'Roaster',
-            'menu_name'     => 'Roasters',
-        ],
+        'labels'            => [ 'name' => 'Roasters', 'singular_name' => 'Roaster', 'menu_name' => 'Roasters' ],
         'hierarchical'      => false,
         'public'            => true,
         'show_ui'           => true,
@@ -192,7 +176,7 @@ function cbi_flush_rewrites() {
 }
 
 // ============================================================
-// 5. ACF — POINT TO LOCAL JSON
+// 5. ACF — LOCAL JSON SYNC
 // ============================================================
 
 add_filter( 'acf/settings/save_json', 'cbi_acf_json_save_point' );
@@ -208,12 +192,12 @@ function cbi_acf_json_load_point( $paths ) {
 }
 
 // ============================================================
-// 6. BEAN PAGE TITLE — use excerpt as verdict in <head>
+// 6. EXCERPT — use verdict field as fallback for beans
 // ============================================================
 
 add_filter( 'the_excerpt', 'cbi_bean_excerpt' );
 function cbi_bean_excerpt( $excerpt ) {
-    if ( get_post_type() === 'bean' && ! $excerpt ) {
+    if ( function_exists( 'get_field' ) && get_post_type() === 'bean' && ! $excerpt ) {
         $verdict = get_field( 'verdict' );
         return $verdict ? esc_html( $verdict ) : $excerpt;
     }
@@ -221,7 +205,7 @@ function cbi_bean_excerpt( $excerpt ) {
 }
 
 // ============================================================
-// 7. CUSTOM COLUMN — RATING in admin list
+// 7. ADMIN COLUMNS — rating + roaster in bean list
 // ============================================================
 
 add_filter( 'manage_bean_posts_columns', 'cbi_bean_columns' );
@@ -234,12 +218,12 @@ function cbi_bean_columns( $cols ) {
 add_action( 'manage_bean_posts_custom_column', 'cbi_bean_column_content', 10, 2 );
 function cbi_bean_column_content( $col, $post_id ) {
     if ( $col === 'rating' ) {
-        $r = get_field( 'rating', $post_id );
+        $r = function_exists( 'get_field' ) ? get_field( 'rating', $post_id ) : '';
         echo $r ? esc_html( $r ) . '/10' : '—';
     }
     if ( $col === 'roaster' ) {
         $terms = get_the_terms( $post_id, 'roaster' );
-        echo $terms ? esc_html( $terms[0]->name ) : '—';
+        echo ( $terms && ! is_wp_error( $terms ) ) ? esc_html( $terms[0]->name ) : '—';
     }
 }
 
@@ -248,40 +232,52 @@ function cbi_bean_column_content( $col, $post_id ) {
 // ============================================================
 
 function cbi_sensory_bar( $label, $value, $max = 5 ) {
-    $pct = ( intval( $value ) / $max ) * 100;
+    $pct = round( ( intval( $value ) / $max ) * 100 );
     printf(
         '<div class="sensory-bar">
             <span class="sensory-bar__label">%s</span>
-            <div class="sensory-bar__track">
+            <div class="sensory-bar__track" role="meter" aria-valuenow="%s" aria-valuemin="0" aria-valuemax="%s">
                 <div class="sensory-bar__fill" style="width:%s%%"></div>
             </div>
             <span class="sensory-bar__value">%s</span>
         </div>',
         esc_html( $label ),
+        esc_attr( $value ),
+        esc_attr( $max ),
         esc_attr( $pct ),
         esc_html( $value )
     );
 }
 
 // ============================================================
-// 9. HELPER — BEAN CARD HTML (used in archive + similar beans)
+// 9. HELPER — BEAN CARD HTML (used in archives + homepage)
 // ============================================================
 
 function cbi_bean_card( $post_id ) {
     $title   = get_the_title( $post_id );
     $link    = get_permalink( $post_id );
-    $verdict = get_field( 'verdict', $post_id ) ?: get_the_excerpt( $post_id );
-    $rating  = get_field( 'rating', $post_id );
+    $verdict = function_exists( 'get_field' ) ? get_field( 'verdict', $post_id ) : '';
+    if ( ! $verdict ) $verdict = get_the_excerpt( $post_id );
+    $rating  = function_exists( 'get_field' ) ? get_field( 'rating', $post_id ) : '';
 
     $roasters = get_the_terms( $post_id, 'roaster' );
-    $roaster  = $roasters ? $roasters[0]->name : '';
+    $roaster  = ( $roasters && ! is_wp_error( $roasters ) ) ? $roasters[0]->name : '';
 
-    $flavors  = get_the_terms( $post_id, 'flavor-note' );
-    $roasts   = get_the_terms( $post_id, 'roast-level' );
-    $origins  = get_the_terms( $post_id, 'origin' );
+    $flavors = get_the_terms( $post_id, 'flavor-note' );
+    $roasts  = get_the_terms( $post_id, 'roast-level' );
+    $origins = get_the_terms( $post_id, 'origin' );
 
-    ob_start(); ?>
+    ob_start();
+    ?>
     <div class="bean-card">
+        <?php if ( has_post_thumbnail( $post_id ) ) : ?>
+        <div class="bean-card__image">
+            <?php echo get_the_post_thumbnail( $post_id, 'medium', [ 'loading' => 'lazy', 'width' => '400', 'height' => '225' ] ); ?>
+            <?php if ( $rating !== '' && $rating !== null ) : ?>
+                <span class="bean-card__rating-badge"><?php echo esc_html( $rating ); ?>/10</span>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
         <div class="bean-card__body">
             <?php if ( $roaster ) : ?>
                 <div class="bean-card__roaster"><?php echo esc_html( $roaster ); ?></div>
@@ -291,38 +287,95 @@ function cbi_bean_card( $post_id ) {
                 <div class="bean-card__verdict"><?php echo esc_html( $verdict ); ?></div>
             <?php endif; ?>
             <div class="bean-card__tags">
-                <?php if ( $roasts && ! is_wp_error( $roasts ) ) :
-                    foreach ( array_slice( $roasts, 0, 1 ) as $term ) : ?>
-                        <a href="<?php echo get_term_link( $term ); ?>" class="bean-tag bean-tag--roast"><?php echo esc_html( $term->name ); ?></a>
-                    <?php endforeach;
-                endif; ?>
-                <?php if ( $origins && ! is_wp_error( $origins ) ) :
-                    foreach ( array_slice( $origins, 0, 1 ) as $term ) : ?>
-                        <a href="<?php echo get_term_link( $term ); ?>" class="bean-tag bean-tag--origin"><?php echo esc_html( $term->name ); ?></a>
-                    <?php endforeach;
-                endif; ?>
-                <?php if ( $flavors && ! is_wp_error( $flavors ) ) :
-                    foreach ( array_slice( $flavors, 0, 2 ) as $term ) : ?>
-                        <a href="<?php echo get_term_link( $term ); ?>" class="bean-tag bean-tag--flavor"><?php echo esc_html( $term->name ); ?></a>
-                    <?php endforeach;
-                endif; ?>
+                <?php
+                if ( $roasts && ! is_wp_error( $roasts ) ) {
+                    foreach ( array_slice( $roasts, 0, 1 ) as $term ) {
+                        printf( '<a href="%s" class="bean-tag bean-tag--roast">%s</a>', esc_url( get_term_link( $term ) ), esc_html( $term->name ) );
+                    }
+                }
+                if ( $origins && ! is_wp_error( $origins ) ) {
+                    foreach ( array_slice( $origins, 0, 1 ) as $term ) {
+                        printf( '<a href="%s" class="bean-tag bean-tag--origin">%s</a>', esc_url( get_term_link( $term ) ), esc_html( $term->name ) );
+                    }
+                }
+                if ( $flavors && ! is_wp_error( $flavors ) ) {
+                    foreach ( array_slice( $flavors, 0, 2 ) as $term ) {
+                        printf( '<a href="%s" class="bean-tag bean-tag--flavor">%s</a>', esc_url( get_term_link( $term ) ), esc_html( $term->name ) );
+                    }
+                }
+                ?>
             </div>
         </div>
         <div class="bean-card__footer">
             <div>
-                <?php if ( $rating ) : ?>
-                    <div class="bean-card__rating"><?php echo esc_html( $rating ); ?></div>
+                <?php if ( $rating !== '' && $rating !== null ) : ?>
+                    <div class="bean-card__rating tabular-nums"><?php echo esc_html( $rating ); ?></div>
                     <div class="bean-card__rating-label">/ 10</div>
                 <?php endif; ?>
             </div>
-            <a href="<?php echo esc_url( $link ); ?>" class="bean-card__link">Full Review →</a>
+            <a href="<?php echo esc_url( $link ); ?>" class="bean-card__link">Full Review &rarr;</a>
         </div>
     </div>
-    <?php return ob_get_clean();
+    <?php
+    return ob_get_clean();
 }
 
 // ============================================================
-// 10. SCHEMA MARKUP — Product + Review schema on bean pages
+// 10. HELPER — SVG coffee cup placeholder (no emoji)
+// ============================================================
+
+function cbi_coffee_placeholder( $class = 'cbi-img-placeholder' ) {
+    ?>
+    <div class="<?php echo esc_attr( $class ); ?>">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M17 8h1a4 4 0 0 1 0 8h-1"/>
+            <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
+            <line x1="6" x2="6" y1="2" y2="4"/>
+            <line x1="10" x2="10" y1="2" y2="4"/>
+            <line x1="14" x2="14" y1="2" y2="4"/>
+        </svg>
+    </div>
+    <?php
+}
+
+// ============================================================
+// 11. HELPER — BREADCRUMB HTML
+// ============================================================
+
+function cbi_breadcrumb( $items = [] ) {
+    if ( empty( $items ) ) return;
+    $schema_items = [];
+    $position     = 1;
+    ?>
+    <nav class="cbi-breadcrumb" aria-label="Breadcrumb">
+        <?php foreach ( $items as $i => $item ) :
+            $is_last = ( $i === count( $items ) - 1 );
+            if ( ! $is_last ) {
+                $schema_items[] = [
+                    '@type'    => 'ListItem',
+                    'position' => $position++,
+                    'name'     => $item['label'],
+                    'item'     => $item['url'],
+                ];
+                printf( '<a href="%s">%s</a>', esc_url( $item['url'] ), esc_html( $item['label'] ) );
+                echo '<span class="cbi-breadcrumb__sep">/</span>';
+            } else {
+                printf( '<span>%s</span>', esc_html( $item['label'] ) );
+            }
+        endforeach; ?>
+    </nav>
+    <script type="application/ld+json"><?php
+        echo wp_json_encode( [
+            '@context'        => 'https://schema.org',
+            '@type'           => 'BreadcrumbList',
+            'itemListElement' => $schema_items,
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+    ?></script>
+    <?php
+}
+
+// ============================================================
+// 12. SCHEMA MARKUP — bean pages (Product + Review + Rating)
 // ============================================================
 
 add_action( 'wp_head', 'cbi_bean_schema' );
@@ -331,39 +384,59 @@ function cbi_bean_schema() {
 
     $post_id     = get_the_ID();
     $title       = get_the_title();
-    $description = get_field( 'verdict' ) ?: get_the_excerpt();
-    $rating      = get_field( 'rating' );
-    $price       = get_field( 'current_price' );
-    $asin        = get_field( 'amazon_asin' );
+    $has_acf     = function_exists( 'get_field' );
+    $description = $has_acf ? get_field( 'verdict' ) : get_the_excerpt();
+    $rating      = $has_acf ? get_field( 'rating' ) : null;
+    $price       = $has_acf ? get_field( 'current_price' ) : null;
+    $asin        = $has_acf ? get_field( 'amazon_asin' ) : '';
     $url         = get_permalink();
 
+    $roasters   = get_the_terms( $post_id, 'roaster' );
+    $brand_name = ( $roasters && ! is_wp_error( $roasters ) ) ? $roasters[0]->name : '';
+
     $schema = [
-        '@context' => 'https://schema.org',
-        '@type'    => 'Product',
-        'name'     => $title,
-        'description' => $description,
-        'url'      => $url,
+        '@context'    => 'https://schema.org',
+        '@type'       => 'Product',
+        'name'        => $title,
+        'description' => $description ?: '',
+        'url'         => $url,
     ];
 
+    if ( $brand_name ) {
+        $schema['brand'] = [ '@type' => 'Brand', 'name' => $brand_name ];
+    }
+
+    if ( has_post_thumbnail( $post_id ) ) {
+        $schema['image'] = get_the_post_thumbnail_url( $post_id, 'large' );
+    }
+
     if ( $rating ) {
+        $schema['review'] = [
+            '@type'        => 'Review',
+            'reviewRating' => [
+                '@type'       => 'Rating',
+                'ratingValue' => floatval( $rating ),
+                'bestRating'  => 10,
+                'worstRating' => 1,
+            ],
+            'author'       => [ '@type' => 'Organization', 'name' => 'Coffee Bean Index' ],
+        ];
         $schema['aggregateRating'] = [
             '@type'       => 'AggregateRating',
-            'ratingValue' => $rating,
-            'bestRating'  => '10',
-            'worstRating' => '1',
-            'ratingCount' => '1',
+            'ratingValue' => floatval( $rating ),
+            'bestRating'  => 10,
+            'worstRating' => 1,
+            'reviewCount' => 1,
         ];
     }
 
     if ( $price ) {
         $schema['offers'] = [
             '@type'         => 'Offer',
-            'price'         => $price,
+            'price'         => number_format( floatval( $price ), 2, '.', '' ),
             'priceCurrency' => 'USD',
             'availability'  => 'https://schema.org/InStock',
-            'url'           => $asin
-                ? 'https://www.amazon.com/dp/' . $asin
-                : $url,
+            'url'           => $asin ? 'https://www.amazon.com/dp/' . $asin : $url,
         ];
     }
 
@@ -371,7 +444,39 @@ function cbi_bean_schema() {
 }
 
 // ============================================================
-// 11. ROUTE TAXONOMY ARCHIVES TO OUR TEMPLATE
+// 13. SCHEMA MARKUP — site-wide Organization + WebSite
+// ============================================================
+
+add_action( 'wp_head', 'cbi_site_schema' );
+function cbi_site_schema() {
+    $schema = [
+        '@context' => 'https://schema.org',
+        '@graph'   => [
+            [
+                '@type' => 'Organization',
+                '@id'   => home_url( '/#organization' ),
+                'name'  => get_bloginfo( 'name' ),
+                'url'   => home_url(),
+            ],
+            [
+                '@type'           => 'WebSite',
+                '@id'             => home_url( '/#website' ),
+                'url'             => home_url(),
+                'name'            => get_bloginfo( 'name' ),
+                'publisher'       => [ '@id' => home_url( '/#organization' ) ],
+                'potentialAction' => [
+                    '@type'       => 'SearchAction',
+                    'target'      => home_url( '/?s={search_term_string}' ),
+                    'query-input' => 'required name=search_term_string',
+                ],
+            ],
+        ],
+    ];
+    echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+}
+
+// ============================================================
+// 14. ROUTE TAXONOMY ARCHIVES TO OUR TEMPLATE
 // ============================================================
 
 add_filter( 'template_include', 'cbi_taxonomy_template' );
@@ -385,65 +490,98 @@ function cbi_taxonomy_template( $template ) {
 }
 
 // ============================================================
-// 12. CUSTOM FOOTER CONTENT
+// 15. FOOTER — content hooked into GeneratePress generate_footer
 // ============================================================
 
 add_action( 'generate_footer', 'cbi_footer_content' );
-function cbi_footer_content() { ?>
-<div class="footer-inner">
-    <div class="footer-disclosure">
-        Coffee Bean Index participates in the Amazon Services LLC Associates Program and other affiliate programs. We earn commissions on qualifying purchases at no extra cost to you. Prices are updated daily and may differ from those shown.
+function cbi_footer_content() {
+    // Safe helper: returns term link or fallback '#'
+    $safe_term_link = function( $slug, $taxonomy ) {
+        $term = get_term_by( 'slug', $slug, $taxonomy );
+        if ( $term && ! is_wp_error( $term ) ) {
+            return get_term_link( $term );
+        }
+        return home_url( '/' );
+    };
+
+    $beans_url   = get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' );
+    $espresso    = $safe_term_link( 'espresso', 'brew-method' );
+    $frenchpress = $safe_term_link( 'french-press', 'brew-method' );
+    $pourover    = $safe_term_link( 'pour-over', 'brew-method' );
+    ?>
+    <div class="footer-inner">
+        <div class="footer-disclosure">
+            Coffee Bean Index participates in the Amazon Services LLC Associates Program and other affiliate programs. We earn commissions on qualifying purchases at no extra cost to you. Prices are updated daily and may differ from those shown. Some content is generated or assisted by AI systems using structured product and review data.
+        </div>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="footer-brand__name">Coffee Bean Index</div>
+                <div class="footer-brand__desc">Data-driven coffee reviews. Price tracking, flavor profiles, and honest recommendations.</div>
+            </div>
+            <div class="footer-col">
+                <div class="footer-col__heading">Reviews</div>
+                <ul>
+                    <li><a href="<?php echo esc_url( $beans_url ); ?>">All Beans</a></li>
+                    <li><a href="<?php echo esc_url( $espresso ); ?>">Espresso</a></li>
+                    <li><a href="<?php echo esc_url( $frenchpress ); ?>">French Press</a></li>
+                    <li><a href="<?php echo esc_url( $pourover ); ?>">Pour Over</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <div class="footer-col__heading">Explore</div>
+                <ul>
+                    <li><a href="<?php echo esc_url( home_url( '/flavor/' ) ); ?>">By Flavor</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/origin/' ) ); ?>">By Origin</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/roast/' ) ); ?>">By Roast</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/roaster/' ) ); ?>">By Roaster</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <div class="footer-col__heading">Info</div>
+                <ul>
+                    <li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>">About</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/affiliate-disclosure/' ) ); ?>">Affiliate Disclosure</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/editorial-standards/' ) ); ?>">How We Review</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; <?php echo esc_html( date( 'Y' ) ); ?> Coffee Bean Index</span>
+            <span>
+                <a href="<?php echo esc_url( home_url( '/affiliate-disclosure/' ) ); ?>" style="color:inherit;">Affiliate Disclosure</a>
+                &nbsp;&middot;&nbsp;
+                <a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>" style="color:inherit;">Privacy</a>
+            </span>
+        </div>
     </div>
-    <div class="footer-grid">
-        <div class="footer-brand">
-            <div class="footer-brand__name">Coffee Bean Index</div>
-            <div class="footer-brand__desc">Data-driven coffee reviews. Price tracking, flavor profiles, and honest recommendations — no marketing fluff.</div>
-        </div>
-        <div class="footer-col">
-            <div class="footer-col__heading">Reviews</div>
-            <ul>
-                <li><a href="<?php echo get_post_type_archive_link('bean'); ?>">All Beans</a></li>
-                <li><a href="<?php echo get_term_link('espresso', 'brew-method'); ?>">Espresso</a></li>
-                <li><a href="<?php echo get_term_link('french-press', 'brew-method'); ?>">French Press</a></li>
-                <li><a href="<?php echo get_term_link('pour-over', 'brew-method'); ?>">Pour Over</a></li>
-            </ul>
-        </div>
-        <div class="footer-col">
-            <div class="footer-col__heading">Explore</div>
-            <ul>
-                <li><a href="<?php echo home_url('/flavor/'); ?>">By Flavor</a></li>
-                <li><a href="<?php echo home_url('/origin/'); ?>">By Origin</a></li>
-                <li><a href="<?php echo home_url('/roast/'); ?>">By Roast</a></li>
-                <li><a href="<?php echo home_url('/explore/'); ?>">Flavor Explorer</a></li>
-            </ul>
-        </div>
-        <div class="footer-col">
-            <div class="footer-col__heading">Learn</div>
-            <ul>
-                <li><a href="<?php echo home_url('/price-tracker/'); ?>">Price Tracker</a></li>
-                <li><a href="<?php echo home_url('/ethiopia-coffee/'); ?>">Ethiopian Coffee</a></li>
-                <li><a href="<?php echo home_url('/best-espresso-beans/'); ?>">Best Espresso Beans</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <span>© <?php echo date('Y'); ?> Coffee Bean Index</span>
-        <span>Rotterdam, NL</span>
-    </div>
-</div>
-<?php }
+    <?php
+}
 
 // ============================================================
-// 13. ADD BEAN CPT TO MAIN QUERY ON ARCHIVE PAGES
+// 16. INCLUDE BEANS IN MAIN QUERY ON BLOG/FEED
 // ============================================================
 
 add_action( 'pre_get_posts', 'cbi_include_beans_in_queries' );
 function cbi_include_beans_in_queries( $query ) {
     if ( is_admin() || ! $query->is_main_query() ) return;
     if ( $query->is_home() || $query->is_feed() ) {
-        $types = $query->get( 'post_type' );
-        if ( ! $types ) {
+        if ( ! $query->get( 'post_type' ) ) {
             $query->set( 'post_type', [ 'post', 'bean' ] );
         }
     }
+}
+
+// ============================================================
+// 17. GP — remove default page title on our custom templates
+//     (we render our own hero headings)
+// ============================================================
+
+add_filter( 'generate_show_title', 'cbi_hide_title_on_custom_templates' );
+function cbi_hide_title_on_custom_templates( $show ) {
+    if ( is_singular( 'bean' ) ) return false;
+    if ( is_post_type_archive( 'bean' ) ) return false;
+    if ( is_tax( [ 'flavor-note', 'origin', 'roast-level', 'process-method', 'brew-method', 'roaster' ] ) ) return false;
+    if ( is_page_template( [ 'template-roundup.php', 'template-comparison.php', 'template-guide.php' ] ) ) return false;
+    return $show;
 }
