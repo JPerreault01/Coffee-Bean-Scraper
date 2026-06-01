@@ -190,9 +190,6 @@
     "max_episodes_per_feed": 500,
     "feeds": {}
   },
-      }
-    }
-  },
   "domain_tags": {
     "grinders": ["grinder", "burr", "retention", "workflow", "single-dose", "grind size", "particle distribution"],
     "espresso": ["espresso", "shot", "extraction", "puck", "channeling", "pressure", "preinfusion", "dial in"],
