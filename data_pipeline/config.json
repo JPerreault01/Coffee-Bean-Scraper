@@ -156,6 +156,7 @@
     },
     "default_authority_weight": 0.8,
     "max_videos_per_channel": 500,
+    "sleep_between_videos_seconds": 3,
     "min_transcript_chars": 300,
     "transcript_language_preference": ["en", "en-US", "en-GB"],
     "description_max_chars": 500,

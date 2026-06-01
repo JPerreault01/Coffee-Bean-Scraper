@@ -1,18 +1,19 @@
 """
 YouTube transcript scraper.
-Fetches video transcripts from coffee channels via youtube-transcript-api.
-Uses yt-dlp to enumerate channel videos — no API key required.
+Fetches video transcripts from coffee channels via yt-dlp subtitle download.
+Uses yt-dlp to enumerate channel videos and fetch subtitles — no API key required.
 """
 
 import json
 import logging
+import os
 import re
 import sys
+import tempfile
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
-
-from youtube_transcript_api import YouTubeTranscriptApi, NoTranscriptFound, TranscriptsDisabled
 
 logger = logging.getLogger("youtube_scraper")
 
@@ -83,76 +84,74 @@ def compute_youtube_quality(transcript: str, channel_name: str, config: dict) ->
     return round(quality, 4)
 
 
-def clean_transcript(raw_parts) -> str:
-    """Join transcript segments and remove auto-caption artifacts.
+def _parse_vtt(vtt_text: str) -> str:
+    """Extract clean text from WebVTT subtitle format, deduplicating rolling captions."""
+    lines = vtt_text.splitlines()
+    text_lines = []
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        # Skip header, NOTE blocks, numeric cue IDs, and timing lines
+        if (line.startswith("WEBVTT") or line.startswith("NOTE")
+                or "-->" in line or re.match(r"^\d+$", line)):
+            continue
+        # Strip inline tags like <00:00:01.000> and <c>...</c>
+        line = re.sub(r"<[^>]+>", "", line).strip()
+        if line:
+            text_lines.append(line)
 
-    In youtube-transcript-api >= 0.6.0, fetch() returns FetchedTranscriptSnippet
-    objects that have a .text attribute and support part["text"] via __getitem__,
-    but do NOT have a .get() method. This handles both that format and plain dicts
-    from older versions.
-    """
-    parts = []
-    for part in raw_parts:
-        if isinstance(part, dict):
-            parts.append(part.get("text", ""))
-        else:
-            # FetchedTranscriptSnippet (youtube-transcript-api >= 0.6.0)
-            parts.append(getattr(part, "text", ""))
-    text = " ".join(parts)
-    # Remove text in square brackets: [Music], [Applause], [Laughter], [Inaudible], [CC], etc.
-    text = re.sub(r"\[.*?\]", "", text)
-    # Remove filler transcription artifacts as standalone words
-    text = re.sub(r"\b(um|uh|hmm)\b", "", text, flags=re.IGNORECASE)
-    # Normalize whitespace
-    text = re.sub(r"\s+", " ", text).strip()
-    return text
+    # Deduplicate consecutive identical lines (rolling caption artifact)
+    deduped = []
+    for line in text_lines:
+        if not deduped or line != deduped[-1]:
+            deduped.append(line)
+
+    return " ".join(deduped)
 
 
-def fetch_transcript(video_id: str, language_preference: list[str]) -> Optional[str]:
-    """Fetch and clean a transcript for the given YouTube video ID.
-
-    Compatible with youtube-transcript-api >= 0.6.0 (instance-based API:
-    YouTubeTranscriptApi().list(video_id)). In v0.6.x+, fetch() returns
-    FetchedTranscriptSnippet objects rather than plain dicts — see clean_transcript.
-    """
+def fetch_transcript(video_id: str, lang_pref: list) -> Optional[str]:
+    """Fetch transcript via yt-dlp subtitle download. No API key required."""
     try:
-        # youtube-transcript-api >= 0.6.0: instantiate, then call .list()
-        api = YouTubeTranscriptApi()
-        transcript_list = api.list(video_id)
+        import yt_dlp
+    except ImportError:
+        logger.error("yt-dlp is not installed. Run: pip install yt-dlp")
+        return None
 
-        # Try each preferred language (manually created transcripts first)
-        for lang in language_preference:
-            try:
-                transcript = transcript_list.find_transcript([lang])
-                parts = transcript.fetch()
-                return clean_transcript(parts)
-            except NoTranscriptFound:
-                continue
+    url = f"https://www.youtube.com/watch?v={video_id}"
 
-        # Fallback: auto-generated transcript in any preferred language
+    with tempfile.TemporaryDirectory() as tmpdir:
+        ydl_opts = {
+            "writesubtitles": True,
+            "writeautomaticsub": True,
+            "subtitleslangs": lang_pref,
+            "skip_download": True,
+            "quiet": True,
+            "no_warnings": True,
+            "outtmpl": os.path.join(tmpdir, "%(id)s"),
+            "subtitlesformat": "vtt",
+            "ignoreerrors": True,
+        }
+
         try:
-            transcript = transcript_list.find_generated_transcript(language_preference)
-            parts = transcript.fetch()
-            return clean_transcript(parts)
-        except NoTranscriptFound:
-            pass
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([url])
         except Exception as e:
-            logger.debug(f"Generated transcript fallback failed for {video_id}: {e}")
+            logger.debug(f"yt-dlp subtitle error for {video_id}: {e}")
+            return None
 
-        # Last resort: first available transcript regardless of language
-        for transcript in transcript_list:
-            try:
-                parts = transcript.fetch()
-                return clean_transcript(parts)
-            except Exception:
-                continue
-
-    except TranscriptsDisabled:
-        logger.debug(f"Transcripts disabled for video {video_id}")
-    except NoTranscriptFound:
-        logger.debug(f"No transcript found for video {video_id}")
-    except Exception as e:
-        logger.warning(f"Error fetching transcript for video {video_id}: {e}")
+        # Try each preferred language — check both manual and auto-generated suffixes
+        for lang in lang_pref:
+            for suffix in [f".{lang}.vtt", f".{lang}-orig.vtt"]:
+                sub_path = os.path.join(tmpdir, f"{video_id}{suffix}")
+                if os.path.exists(sub_path):
+                    try:
+                        raw = open(sub_path, encoding="utf-8").read()
+                        text = _parse_vtt(raw)
+                        if text:
+                            return text
+                    except Exception as e:
+                        logger.debug(f"VTT parse error for {video_id}: {e}")
 
     return None
 
@@ -337,6 +336,9 @@ def run(config: dict, video_id_override: Optional[str] = None, fresh: bool = Fal
                     state["scraped_video_ids"] = list(scraped_ids_set)
                     state["last_run_at"] = datetime.now(tz=timezone.utc).isoformat()
                     _save_state(state)
+
+                    sleep_secs = ycfg.get("sleep_between_videos_seconds", 3)
+                    time.sleep(sleep_secs)
 
                 except Exception as e:
                     logger.error(f"Error processing video {video_meta.get('video_id', '?')}: {e}")
