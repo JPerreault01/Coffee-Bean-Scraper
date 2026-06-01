@@ -20,6 +20,12 @@ logger = logging.getLogger("youtube_scraper")
 STATE_FILE = Path("training_data/state/youtube_state.json")
 
 
+class TransientFetchError(Exception):
+    """Raised when a transcript fetch fails due to a transient condition
+    (IP block, network error) that may succeed on retry."""
+    pass
+
+
 def load_config() -> dict:
     config_path = Path(__file__).parent / "config.json"
     with open(config_path) as f:
@@ -111,7 +117,14 @@ def _parse_vtt(vtt_text: str) -> str:
 
 
 def fetch_transcript(video_id: str, lang_pref: list) -> Optional[str]:
-    """Fetch transcript via yt-dlp subtitle download. No API key required."""
+    """Fetch transcript via yt-dlp subtitle download.
+
+    Returns:
+        str: transcript text if found
+        None: video has no subtitles (permanent — do not retry)
+    Raises:
+        TransientFetchError: network/IP issue (transient — retry next run)
+    """
     try:
         import yt_dlp
     except ImportError:
@@ -130,17 +143,21 @@ def fetch_transcript(video_id: str, lang_pref: list) -> Optional[str]:
             "no_warnings": True,
             "outtmpl": os.path.join(tmpdir, "%(id)s"),
             "subtitlesformat": "vtt",
-            "ignoreerrors": True,
         }
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
         except Exception as e:
-            logger.debug(f"yt-dlp subtitle error for {video_id}: {e}")
+            err = str(e).lower()
+            if any(term in err for term in ["blocked", "http error 429",
+                                             "too many requests", "network",
+                                             "connection", "timeout"]):
+                raise TransientFetchError(f"Transient error for {video_id}: {e}") from e
+            # Non-network errors (private video, deleted, etc.) → permanent
+            logger.debug(f"yt-dlp non-transient error for {video_id}: {e}")
             return None
 
-        # Try each preferred language — check both manual and auto-generated suffixes
         for lang in lang_pref:
             for suffix in [f".{lang}.vtt", f".{lang}-orig.vtt"]:
                 sub_path = os.path.join(tmpdir, f"{video_id}{suffix}")
@@ -153,6 +170,7 @@ def fetch_transcript(video_id: str, lang_pref: list) -> Optional[str]:
                     except Exception as e:
                         logger.debug(f"VTT parse error for {video_id}: {e}")
 
+    # yt-dlp ran cleanly but found no subtitle files → no captions available
     return None
 
 
@@ -331,17 +349,25 @@ def run(config: dict, video_id_override: Optional[str] = None, fresh: bool = Fal
                     if success:
                         channel_count += 1
 
-                    # Update state after each video (success or skip)
+                    # Permanent outcome (success or confirmed no-captions) — safe to checkpoint
                     scraped_ids_set.add(video_id)
                     state["scraped_video_ids"] = list(scraped_ids_set)
                     state["last_run_at"] = datetime.now(tz=timezone.utc).isoformat()
                     _save_state(state)
 
-                    sleep_secs = ycfg.get("sleep_between_videos_seconds", 3)
-                    time.sleep(sleep_secs)
+                except TransientFetchError as e:
+                    # Do NOT checkpoint — transient failure, retry on next run
+                    logger.warning(f"Transient failure for {video_id}, will retry: {e}")
 
                 except Exception as e:
-                    logger.error(f"Error processing video {video_meta.get('video_id', '?')}: {e}")
+                    # Unexpected error — checkpoint to avoid infinite retries on broken videos
+                    logger.error(f"Unexpected error for {video_id}: {e}")
+                    scraped_ids_set.add(video_id)
+                    state["scraped_video_ids"] = list(scraped_ids_set)
+                    _save_state(state)
+
+                sleep_secs = ycfg.get("sleep_between_videos_seconds", 3)
+                time.sleep(sleep_secs)
 
         summary["by_channel"][channel_name] = channel_count
         summary["transcripts"] += channel_count
