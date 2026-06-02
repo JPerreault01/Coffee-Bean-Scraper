@@ -180,6 +180,12 @@ def chunk_transcript(text: str, chunk_size: int = 3200, overlap: int = 200) -> l
     return chunks
 
 
+def score_chunk_by_vocab(chunk: str, tech_vocab: list[str]) -> int:
+    """Count distinct tech vocabulary terms found in the chunk (case-insensitive)."""
+    chunk_lower = chunk.lower()
+    return sum(1 for term in tech_vocab if term.lower() in chunk_lower)
+
+
 # ---------------------------------------------------------------------------
 # Cost estimation
 # ---------------------------------------------------------------------------
@@ -521,6 +527,8 @@ def process_youtube(
     dry_run: bool,
     pairs: list[dict],
     api_calls_ref: list[int],
+    max_chunks_per_video: int = 3,
+    tech_vocab: list[str] | None = None,
 ) -> None:
     """Process YouTube JSONL files and append instruction pairs to `pairs`."""
     youtube_dir = cleaned_dir / "youtube"
@@ -567,9 +575,16 @@ def process_youtube(
             domain_tags = record.get("domain_tags", [])
             category = assign_category(domain_tags)
             quality_score = float(record.get("quality_score", 0.0))
-            chunks = chunk_transcript(transcript)
+            all_chunks = chunk_transcript(transcript)
+            vocab = tech_vocab or []
+            scored = sorted(
+                enumerate(all_chunks),
+                key=lambda ic: score_chunk_by_vocab(ic[1], vocab),
+                reverse=True,
+            )
+            selected_chunks = scored[:max_chunks_per_video]
 
-            for chunk_index, chunk in enumerate(chunks):
+            for chunk_index, chunk in selected_chunks:
                 source_id = f"{video_id}_{chunk_index}"
                 assistant_text = chunk[:2500]
 
@@ -648,6 +663,38 @@ def process_youtube(
                 end="",
                 flush=True,
             )
+
+
+# ---------------------------------------------------------------------------
+# Category cap
+# ---------------------------------------------------------------------------
+
+
+def apply_category_cap(
+    pairs: list[dict], max_pairs: int
+) -> tuple[list[dict], dict[str, int]]:
+    """
+    Cap pairs per non-'general' category to max_pairs, sampling with seed 42.
+
+    Returns (capped_pairs, pre_cap_counts_by_category).
+    """
+    rng = random.Random(42)
+    by_category: dict[str, list[dict]] = {}
+    for pair in pairs:
+        cat = pair["meta"]["category"]
+        by_category.setdefault(cat, []).append(pair)
+
+    result: list[dict] = []
+    pre_cap: dict[str, int] = {}
+
+    for cat, cat_pairs in by_category.items():
+        pre_cap[cat] = len(cat_pairs)
+        if cat == "general" or len(cat_pairs) <= max_pairs:
+            result.extend(cat_pairs)
+        else:
+            result.extend(rng.sample(cat_pairs, max_pairs))
+
+    return result, pre_cap
 
 
 # ---------------------------------------------------------------------------
@@ -760,7 +807,31 @@ def main() -> None:
         action="store_true",
         help="Count pairs without making API calls or writing output files",
     )
+    parser.add_argument(
+        "--max-chunks-per-video",
+        type=int,
+        default=3,
+        metavar="N",
+        help="Max chunks to keep per YouTube video, scored by tech vocab density (default: 3)",
+    )
+    parser.add_argument(
+        "--max-pairs-per-category",
+        type=int,
+        default=500,
+        metavar="N",
+        help="Cap per category (excluding 'general') before train/val split (default: 500)",
+    )
     args = parser.parse_args()
+
+    config_path = Path(__file__).parent / "config.json"
+    tech_vocab: list[str] = []
+    if config_path.exists():
+        try:
+            with open(config_path, encoding="utf-8") as f:
+                config = json.load(f)
+            tech_vocab = config.get("tech_vocabulary", [])
+        except (json.JSONDecodeError, OSError) as exc:
+            logger.warning(f"Could not load config.json: {exc}")
 
     api_key = os.environ.get("CLAUDE_API_KEY")
     if not args.dry_run and not api_key:
@@ -809,7 +880,7 @@ def main() -> None:
     }
 
     for source in sources:
-        process_fns[source](
+        call_kwargs: dict[str, Any] = dict(
             cleaned_dir=cleaned_dir,
             finetune_dir=finetune_dir,
             client=client,
@@ -820,10 +891,22 @@ def main() -> None:
             pairs=pairs,
             api_calls_ref=api_calls_ref,
         )
+        if source == "youtube":
+            call_kwargs["max_chunks_per_video"] = args.max_chunks_per_video
+            call_kwargs["tech_vocab"] = tech_vocab
+        process_fns[source](**call_kwargs)
 
     cost = estimate_cost(api_calls_ref[0])
 
     if args.dry_run:
+        pre_cap_by_cat: dict[str, int] = {}
+        for pair in pairs:
+            cat = pair["meta"]["category"]
+            pre_cap_by_cat[cat] = pre_cap_by_cat.get(cat, 0) + 1
+        pre_cap_total = len(pairs)
+
+        pairs, _ = apply_category_cap(pairs, args.max_pairs_per_category)
+
         by_source: dict[str, int] = {}
         by_cat: dict[str, int] = {}
         for pair in pairs:
@@ -833,15 +916,25 @@ def main() -> None:
             by_cat[cat] = by_cat.get(cat, 0) + 1
 
         print("\nDry-run breakdown:")
-        print(f"  Total pairs that would be generated: {len(pairs)}")
+        print(f"  Total pairs (pre-cap):  {pre_cap_total}")
+        print(f"  Total pairs (post-cap): {len(pairs)}")
         print("  By source:")
         for src, count in sorted(by_source.items()):
             print(f"    {src}: {count}")
-        print("  By category:")
-        for cat, count in sorted(by_cat.items()):
-            print(f"    {cat}: {count}")
+        print("  By category (pre-cap → post-cap):")
+        for cat in sorted(pre_cap_by_cat.keys()):
+            pre = pre_cap_by_cat[cat]
+            post = by_cat.get(cat, 0)
+            if cat == "general":
+                print(f"    {cat}: {pre} (uncapped)")
+            elif pre != post:
+                print(f"    {cat}: {pre} → {post} (trimmed {pre - post})")
+            else:
+                print(f"    {cat}: {post}")
         print(f"  Estimated cost: ${cost:.3f}")
         return
+
+    pairs, _ = apply_category_cap(pairs, args.max_pairs_per_category)
 
     if not pairs:
         print("\nNo new pairs generated.")
