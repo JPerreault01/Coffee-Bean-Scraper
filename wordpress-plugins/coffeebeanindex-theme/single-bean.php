@@ -359,13 +359,50 @@ get_header(); ?>
             </div>
             <?php endif; ?>
 
-            <!-- Linked Guides -->
-            <?php if ( ! empty( $linked_guides ) ) : ?>
+            <!-- Related Guides — dynamically built from the bean's taxonomy terms -->
+            <?php
+            // Build guide links from each of the bean's taxonomy terms that have descriptions (= guide content)
+            $guide_sections = [
+                'origin'         => $origins,
+                'roast-level'    => $roast_levels,
+                'process-method' => $processes,
+                'brew-method'    => $brew_methods,
+            ];
+            $dynamic_guide_links = [];
+            foreach ( $guide_sections as $tax => $terms_list ) {
+                if ( ! $terms_list || is_wp_error( $terms_list ) ) {
+                    continue;
+                }
+                $tax_obj   = get_taxonomy( $tax );
+                $tax_label = $tax_obj ? $tax_obj->labels->singular_name : $tax;
+                foreach ( $terms_list as $gt ) {
+                    if ( empty( $gt->description ) ) {
+                        continue; // Only link if there is guide content
+                    }
+                    $dynamic_guide_links[] = [
+                        'label' => $tax_label . ' Guide: ' . $gt->name,
+                        'url'   => get_term_link( $gt ),
+                    ];
+                }
+            }
+            // Also include any manually linked guides from ACF (legacy / editorial overrides)
+            if ( ! empty( $linked_guides ) ) {
+                foreach ( (array) $linked_guides as $guide_id ) {
+                    $gurl = get_permalink( $guide_id );
+                    if ( $gurl ) {
+                        $dynamic_guide_links[] = [
+                            'label' => get_the_title( $guide_id ),
+                            'url'   => $gurl,
+                        ];
+                    }
+                }
+            }
+            if ( ! empty( $dynamic_guide_links ) ) : ?>
             <div class="cbi-section">
                 <div class="cbi-section__heading">Related Guides</div>
-                <?php foreach ( (array) $linked_guides as $guide_id ) : ?>
-                    <a href="<?php echo esc_url( get_permalink( $guide_id ) ); ?>" style="display:block;color:var(--cbi-text-muted);font-size:var(--text-sm);padding:var(--space-3) 0;border-bottom:1px solid var(--cbi-border);">
-                        &rarr; <?php echo esc_html( get_the_title( $guide_id ) ); ?>
+                <?php foreach ( $dynamic_guide_links as $gl ) : ?>
+                    <a href="<?php echo esc_url( $gl['url'] ); ?>" style="display:block;color:var(--cbi-text-muted);font-size:var(--text-sm);padding:var(--space-3) 0;border-bottom:1px solid var(--cbi-border);">
+                        &rarr; <?php echo esc_html( $gl['label'] ); ?>
                     </a>
                 <?php endforeach; ?>
             </div>

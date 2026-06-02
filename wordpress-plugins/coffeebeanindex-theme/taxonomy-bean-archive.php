@@ -58,18 +58,26 @@ if ( $term && $term->parent ) {
         <?php cbi_breadcrumb( $breadcrumb_items ); ?>
         <div class="archive-hero__eyebrow"><?php echo esc_html( $eyebrow ); ?></div>
         <h1 class="archive-hero__title"><?php echo esc_html( $term_name ); ?></h1>
-        <?php if ( $description ) : ?>
-            <p class="archive-hero__desc"><?php echo esc_html( $description ); ?></p>
-        <?php else : ?>
-            <p class="archive-hero__desc" style="color:var(--cbi-text-dim);font-style:italic;">
-                [PLACEHOLDER: Add a description for this <?php echo esc_html( strtolower( $eyebrow ) ); ?> term in Taxonomy editor to improve SEO.]
-            </p>
-        <?php endif; ?>
         <p class="archive-hero__count">
             <?php echo esc_html( $bean_count ); ?> bean<?php echo 1 !== $bean_count ? 's' : ''; ?>
         </p>
     </div>
 </section>
+
+<!-- Guide Body — term description rendered as HTML (set via Taxonomy editor or seed script) -->
+<?php if ( $description ) : ?>
+<div class="cbi-container">
+    <div class="guide-body">
+        <?php echo wp_kses_post( $description ); ?>
+    </div>
+</div>
+<?php else : ?>
+<div class="cbi-container">
+    <p style="color:var(--cbi-text-dim);font-style:italic;padding:var(--space-4) 0;">
+        [Guide content coming soon — add a description for this <?php echo esc_html( strtolower( $eyebrow ) ); ?> in the Taxonomy editor to populate this section.]
+    </p>
+</div>
+<?php endif; ?>
 
 <!-- Related / sibling terms -->
 <?php if ( ! is_wp_error( $siblings ) && ! empty( $siblings ) ) : ?>
@@ -114,5 +122,60 @@ if ( $term && $term->parent ) {
         ] ); ?>
     </div>
 </div>
+
+<!-- Cross-Taxonomy Related Guides — links sideways to sibling taxonomy archives -->
+<?php
+// Define which taxonomies to cross-link for each taxonomy
+$cross_link_map = [
+    'origin'         => [ 'roast-level', 'brew-method', 'process-method' ],
+    'roast-level'    => [ 'brew-method', 'origin', 'process-method' ],
+    'brew-method'    => [ 'roast-level', 'origin', 'flavor-note' ],
+    'process-method' => [ 'origin', 'roast-level' ],
+    'flavor-note'    => [ 'origin', 'roast-level', 'brew-method' ],
+    'roaster'        => [ 'origin', 'roast-level' ],
+];
+
+$related_taxs = $cross_link_map[ $taxonomy ] ?? [];
+$guide_links  = [];
+
+foreach ( $related_taxs as $rel_tax ) {
+    // Get the top terms by bean count in this related taxonomy (those with descriptions = guide content)
+    $rel_terms = get_terms( [
+        'taxonomy'   => $rel_tax,
+        'hide_empty' => false,
+        'number'     => 5,
+        'orderby'    => 'count',
+        'order'      => 'DESC',
+    ] );
+    if ( is_wp_error( $rel_terms ) || empty( $rel_terms ) ) {
+        continue;
+    }
+    $tax_obj   = get_taxonomy( $rel_tax );
+    $tax_label = $tax_obj ? $tax_obj->labels->singular_name : $rel_tax;
+    foreach ( $rel_terms as $rt ) {
+        if ( empty( $rt->description ) ) {
+            continue; // Only link to terms that have guide content
+        }
+        $guide_links[] = [
+            'label' => $tax_label . ': ' . $rt->name,
+            'url'   => get_term_link( $rt ),
+        ];
+    }
+}
+
+if ( ! empty( $guide_links ) ) : ?>
+<div class="cbi-container" style="margin-top:var(--space-12);">
+    <div class="cbi-section">
+        <div class="cbi-section__heading">Related Guides</div>
+        <div style="display:flex;flex-wrap:wrap;gap:var(--space-3);margin-top:var(--space-4);">
+            <?php foreach ( $guide_links as $gl ) : ?>
+                <a href="<?php echo esc_url( $gl['url'] ); ?>" class="bean-tag" style="font-size:var(--text-sm);">
+                    <?php echo esc_html( $gl['label'] ); ?> &rarr;
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <?php get_footer(); ?>
