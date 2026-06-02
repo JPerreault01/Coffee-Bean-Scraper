@@ -183,15 +183,22 @@ def compute_reddit_quality(post_data: dict, config: dict) -> float:
     qcfg = config["reddit"]["quality"]
     score_norm = min(post_data["score"], qcfg["score_normalize_cap"]) / qcfg["score_normalize_cap"]
     comment_norm = min(post_data["num_comments"], qcfg["comment_normalize_cap"]) / qcfg["comment_normalize_cap"]
-    quality = score_norm * qcfg["score_weight"] + comment_norm * qcfg["comment_weight"]
 
     body = post_data.get("body", "")
+    body_norm = min(len(body), qcfg["body_normalize_cap"]) / qcfg["body_normalize_cap"]
+
+    quality = (
+        score_norm * qcfg["score_weight"]
+        + comment_norm * qcfg["comment_weight"]
+        + body_norm * qcfg["body_weight"]
+    )
+
     if len(body) < qcfg["short_body_penalty_threshold"]:
         quality = max(0.0, quality - qcfg["short_body_penalty"])
 
     title_lower = post_data["title"].lower()
     if any(kw in title_lower for kw in qcfg["boost_keywords"]):
-        quality = min(1.0, quality + 0.1)
+        quality = min(1.0, quality + qcfg.get("boost_keyword_bonus", 0.1))
 
     return round(quality, 4)
 
