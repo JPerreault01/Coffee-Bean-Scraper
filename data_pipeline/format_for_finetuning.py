@@ -247,26 +247,24 @@ def call_api_with_retry(
 
 
 # ---------------------------------------------------------------------------
-# Per-source processors
+# Phase 1: collect candidates (filtering only, no API calls)
 # ---------------------------------------------------------------------------
 
+# Each candidate dict has these keys:
+#   source, source_id, category, quality_score, site_or_channel, assistant_text
 
-def process_reddit(
+
+def collect_reddit(
     cleaned_dir: Path,
-    finetune_dir: Path,
-    client: anthropic.Anthropic | None,
-    checkpoint_ids: set[str],
     min_quality: float,
-    delay: float,
-    dry_run: bool,
-    pairs: list[dict],
-    api_calls_ref: list[int],
-) -> None:
-    """Process Reddit JSONL files and append instruction pairs to `pairs`."""
+    checkpoint_ids: set[str],
+) -> list[dict]:
+    """Collect candidate records from Reddit JSONL files. No API calls."""
+    candidates: list[dict] = []
     reddit_dir = cleaned_dir / "reddit"
     if not reddit_dir.exists():
         logger.info("No reddit/ directory found, skipping.")
-        return
+        return candidates
 
     for jsonl_file in sorted(reddit_dir.glob("*.jsonl")):
         site_or_channel = jsonl_file.stem
@@ -311,95 +309,40 @@ def process_reddit(
                 continue
 
             source_id = get_source_id_reddit(raw, title, body)
-            domain_tags = record.get("domain_tags", [])
-            category = assign_category(domain_tags)
-            quality_score = float(record.get("quality_score", 0.0))
-            assistant_text = primary_text[:1500]
 
             if source_id in checkpoint_ids:
                 passed += 1
                 continue
 
-            if dry_run:
-                api_calls_ref[0] += 1
-                pairs.append(
-                    {
-                        "messages": [],
-                        "meta": {
-                            "source": "reddit",
-                            "site_or_channel": site_or_channel,
-                            "category": category,
-                            "quality_score": quality_score,
-                            "source_id": source_id,
-                        },
-                    }
-                )
-                passed += 1
-                continue
-
-            user_text = call_api_with_retry(
-                client,
-                category,
-                SOURCE_TYPE_LABELS["reddit"],
-                assistant_text,
-                delay,
-            )
-            api_calls_ref[0] += 1
-
-            if user_text is None:
-                logger.warning(f"Failed to generate prompt for reddit source_id={source_id}")
-                filtered += 1
-                continue
-
-            pairs.append(
-                {
-                    "messages": [
-                        {"role": "system", "content": SYSTEM_PROMPT},
-                        {"role": "user", "content": user_text},
-                        {"role": "assistant", "content": assistant_text},
-                    ],
-                    "meta": {
-                        "source": "reddit",
-                        "site_or_channel": site_or_channel,
-                        "category": category,
-                        "quality_score": quality_score,
-                        "source_id": source_id,
-                    },
-                }
-            )
+            candidates.append({
+                "source": "reddit",
+                "source_id": source_id,
+                "category": assign_category(record.get("domain_tags", [])),
+                "quality_score": float(record.get("quality_score", 0.0)),
+                "site_or_channel": site_or_channel,
+                "assistant_text": primary_text[:1500],
+            })
             passed += 1
-            checkpoint_ids.add(source_id)
-            save_checkpoint(finetune_dir, source_id)
 
         print(
             f"\r[reddit] {jsonl_file.name}: {total}/{total} | "
             f"passed: {passed} | filtered: {filtered}"
         )
-        if not dry_run:
-            cost = estimate_cost(api_calls_ref[0])
-            print(
-                f"\rPairs generated: {len(pairs)} | Estimated cost: ${cost:.3f}",
-                end="",
-                flush=True,
-            )
+
+    return candidates
 
 
-def process_web(
+def collect_web(
     cleaned_dir: Path,
-    finetune_dir: Path,
-    client: anthropic.Anthropic | None,
-    checkpoint_ids: set[str],
     min_quality: float,
-    delay: float,
-    dry_run: bool,
-    pairs: list[dict],
-    api_calls_ref: list[int],
-) -> None:
-    """Process web JSONL files and append instruction pairs to `pairs`."""
+    checkpoint_ids: set[str],
+) -> list[dict]:
+    """Collect candidate records from web JSONL files. No API calls."""
+    candidates: list[dict] = []
     web_dir = cleaned_dir / "web"
     if not web_dir.exists():
         logger.info("No web/ directory found, skipping.")
-        return
+        return candidates
 
     for jsonl_file in sorted(web_dir.glob("*.jsonl")):
         site_or_channel = jsonl_file.stem
@@ -444,97 +387,41 @@ def process_web(
             else:
                 source_id = str(raw.get("site", "unknown")) + "_" + str(orig_index)
 
-            domain_tags = record.get("domain_tags", [])
-            category = assign_category(domain_tags)
-            quality_score = float(record.get("quality_score", 0.0))
-            assistant_text = body[:2500]
-
             if source_id in checkpoint_ids:
                 passed += 1
                 continue
 
-            if dry_run:
-                api_calls_ref[0] += 1
-                pairs.append(
-                    {
-                        "messages": [],
-                        "meta": {
-                            "source": "web",
-                            "site_or_channel": site_or_channel,
-                            "category": category,
-                            "quality_score": quality_score,
-                            "source_id": source_id,
-                        },
-                    }
-                )
-                passed += 1
-                continue
-
-            user_text = call_api_with_retry(
-                client,
-                category,
-                SOURCE_TYPE_LABELS["web"],
-                assistant_text,
-                delay,
-            )
-            api_calls_ref[0] += 1
-
-            if user_text is None:
-                logger.warning(f"Failed to generate prompt for web source_id={source_id}")
-                filtered += 1
-                continue
-
-            pairs.append(
-                {
-                    "messages": [
-                        {"role": "system", "content": SYSTEM_PROMPT},
-                        {"role": "user", "content": user_text},
-                        {"role": "assistant", "content": assistant_text},
-                    ],
-                    "meta": {
-                        "source": "web",
-                        "site_or_channel": site_or_channel,
-                        "category": category,
-                        "quality_score": quality_score,
-                        "source_id": source_id,
-                    },
-                }
-            )
+            candidates.append({
+                "source": "web",
+                "source_id": source_id,
+                "category": assign_category(record.get("domain_tags", [])),
+                "quality_score": float(record.get("quality_score", 0.0)),
+                "site_or_channel": site_or_channel,
+                "assistant_text": body[:2500],
+            })
             passed += 1
-            checkpoint_ids.add(source_id)
-            save_checkpoint(finetune_dir, source_id)
 
         print(
             f"\r[web] {jsonl_file.name}: {total}/{total} | "
             f"passed: {passed} | filtered: {filtered}"
         )
-        if not dry_run:
-            cost = estimate_cost(api_calls_ref[0])
-            print(
-                f"\rPairs generated: {len(pairs)} | Estimated cost: ${cost:.3f}",
-                end="",
-                flush=True,
-            )
+
+    return candidates
 
 
-def process_youtube(
+def collect_youtube(
     cleaned_dir: Path,
-    finetune_dir: Path,
-    client: anthropic.Anthropic | None,
-    checkpoint_ids: set[str],
     min_quality: float,
-    delay: float,
-    dry_run: bool,
-    pairs: list[dict],
-    api_calls_ref: list[int],
+    checkpoint_ids: set[str],
     max_chunks_per_video: int = 3,
     tech_vocab: list[str] | None = None,
-) -> None:
-    """Process YouTube JSONL files and append instruction pairs to `pairs`."""
+) -> list[dict]:
+    """Collect candidate records from YouTube JSONL files. No API calls."""
+    candidates: list[dict] = []
     youtube_dir = cleaned_dir / "youtube"
     if not youtube_dir.exists():
         logger.info("No youtube/ directory found, skipping.")
-        return
+        return candidates
 
     for jsonl_file in sorted(youtube_dir.glob("*.jsonl")):
         site_or_channel = jsonl_file.stem
@@ -572,8 +459,7 @@ def process_youtube(
                 continue
 
             video_id = str(raw.get("video_id", f"unknown_{i}"))
-            domain_tags = record.get("domain_tags", [])
-            category = assign_category(domain_tags)
+            category = assign_category(record.get("domain_tags", []))
             quality_score = float(record.get("quality_score", 0.0))
             all_chunks = chunk_transcript(transcript)
             vocab = tech_vocab or []
@@ -586,7 +472,6 @@ def process_youtube(
 
             for chunk_index, chunk in selected_chunks:
                 source_id = f"{video_id}_{chunk_index}"
-                assistant_text = chunk[:2500]
 
                 print(
                     f"\r[youtube] {jsonl_file.name}: {i + 1}/{total} | "
@@ -599,100 +484,51 @@ def process_youtube(
                     passed += 1
                     continue
 
-                if dry_run:
-                    api_calls_ref[0] += 1
-                    pairs.append(
-                        {
-                            "messages": [],
-                            "meta": {
-                                "source": "youtube",
-                                "site_or_channel": site_or_channel,
-                                "category": category,
-                                "quality_score": quality_score,
-                                "source_id": source_id,
-                            },
-                        }
-                    )
-                    passed += 1
-                    continue
-
-                user_text = call_api_with_retry(
-                    client,
-                    category,
-                    SOURCE_TYPE_LABELS["youtube"],
-                    assistant_text,
-                    delay,
-                )
-                api_calls_ref[0] += 1
-
-                if user_text is None:
-                    logger.warning(
-                        f"Failed to generate prompt for youtube source_id={source_id}"
-                    )
-                    filtered += 1
-                    continue
-
-                pairs.append(
-                    {
-                        "messages": [
-                            {"role": "system", "content": SYSTEM_PROMPT},
-                            {"role": "user", "content": user_text},
-                            {"role": "assistant", "content": assistant_text},
-                        ],
-                        "meta": {
-                            "source": "youtube",
-                            "site_or_channel": site_or_channel,
-                            "category": category,
-                            "quality_score": quality_score,
-                            "source_id": source_id,
-                        },
-                    }
-                )
+                candidates.append({
+                    "source": "youtube",
+                    "source_id": source_id,
+                    "category": category,
+                    "quality_score": quality_score,
+                    "site_or_channel": site_or_channel,
+                    "assistant_text": chunk[:2500],
+                })
                 passed += 1
-                checkpoint_ids.add(source_id)
-                save_checkpoint(finetune_dir, source_id)
 
         print(
             f"\r[youtube] {jsonl_file.name}: {total}/{total} | "
             f"passed: {passed} | filtered: {filtered}"
         )
-        if not dry_run:
-            cost = estimate_cost(api_calls_ref[0])
-            print(
-                f"\rPairs generated: {len(pairs)} | Estimated cost: ${cost:.3f}",
-                end="",
-                flush=True,
-            )
+
+    return candidates
 
 
 # ---------------------------------------------------------------------------
-# Category cap
+# Phase 2: category cap (applied before API calls)
 # ---------------------------------------------------------------------------
 
 
-def apply_category_cap(
-    pairs: list[dict], max_pairs: int
+def cap_candidates(
+    candidates: list[dict], max_per_cat: int
 ) -> tuple[list[dict], dict[str, int]]:
     """
-    Cap pairs per non-'general' category to max_pairs, sampling with seed 42.
+    Cap candidates per non-'general' category to max_per_cat, sampling with seed 42.
 
-    Returns (capped_pairs, pre_cap_counts_by_category).
+    Returns (capped_candidates, pre_cap_counts_by_category).
     """
     rng = random.Random(42)
     by_category: dict[str, list[dict]] = {}
-    for pair in pairs:
-        cat = pair["meta"]["category"]
-        by_category.setdefault(cat, []).append(pair)
+    for c in candidates:
+        by_category.setdefault(c["category"], []).append(c)
 
     result: list[dict] = []
     pre_cap: dict[str, int] = {}
 
-    for cat, cat_pairs in by_category.items():
-        pre_cap[cat] = len(cat_pairs)
-        if cat == "general" or len(cat_pairs) <= max_pairs:
-            result.extend(cat_pairs)
+    for cat, items in by_category.items():
+        pre_cap[cat] = len(items)
+        if cat == "general" or len(items) <= max_per_cat:
+            result.extend(items)
         else:
-            result.extend(rng.sample(cat_pairs, max_pairs))
+            result.extend(rng.sample(items, max_per_cat))
 
     return result, pre_cap
 
@@ -869,55 +705,46 @@ def main() -> None:
     if not args.dry_run:
         client = anthropic.Anthropic(api_key=api_key)
 
-    pairs: list[dict] = []
-    api_calls_ref: list[int] = [0]
-
     sources = [args.source] if args.source else ["reddit", "web", "youtube"]
-    process_fns = {
-        "reddit": process_reddit,
-        "web": process_web,
-        "youtube": process_youtube,
-    }
 
+    # Phase 1: load all passing records — filtering only, no API calls
+    candidates: list[dict] = []
     for source in sources:
-        call_kwargs: dict[str, Any] = dict(
-            cleaned_dir=cleaned_dir,
-            finetune_dir=finetune_dir,
-            client=client,
-            checkpoint_ids=checkpoint_ids,
-            min_quality=args.min_quality,
-            delay=args.delay,
-            dry_run=args.dry_run,
-            pairs=pairs,
-            api_calls_ref=api_calls_ref,
-        )
-        if source == "youtube":
-            call_kwargs["max_chunks_per_video"] = args.max_chunks_per_video
-            call_kwargs["tech_vocab"] = tech_vocab
-        process_fns[source](**call_kwargs)
+        if source == "reddit":
+            candidates.extend(collect_reddit(cleaned_dir, args.min_quality, checkpoint_ids))
+        elif source == "web":
+            candidates.extend(collect_web(cleaned_dir, args.min_quality, checkpoint_ids))
+        elif source == "youtube":
+            candidates.extend(
+                collect_youtube(
+                    cleaned_dir,
+                    args.min_quality,
+                    checkpoint_ids,
+                    args.max_chunks_per_video,
+                    tech_vocab,
+                )
+            )
 
-    cost = estimate_cost(api_calls_ref[0])
+    pre_cap_total = len(candidates)
+    pre_cap_by_cat: dict[str, int] = {}
+    for c in candidates:
+        pre_cap_by_cat[c["category"]] = pre_cap_by_cat.get(c["category"], 0) + 1
+
+    # Phase 2: apply --max-pairs-per-category cap before any API calls
+    candidates, _ = cap_candidates(candidates, args.max_pairs_per_category)
 
     if args.dry_run:
-        pre_cap_by_cat: dict[str, int] = {}
-        for pair in pairs:
-            cat = pair["meta"]["category"]
-            pre_cap_by_cat[cat] = pre_cap_by_cat.get(cat, 0) + 1
-        pre_cap_total = len(pairs)
-
-        pairs, _ = apply_category_cap(pairs, args.max_pairs_per_category)
-
         by_source: dict[str, int] = {}
         by_cat: dict[str, int] = {}
-        for pair in pairs:
-            src = pair["meta"]["source"]
-            cat = pair["meta"]["category"]
-            by_source[src] = by_source.get(src, 0) + 1
-            by_cat[cat] = by_cat.get(cat, 0) + 1
+        for c in candidates:
+            by_source[c["source"]] = by_source.get(c["source"], 0) + 1
+            by_cat[c["category"]] = by_cat.get(c["category"], 0) + 1
+
+        cost = estimate_cost(len(candidates))
 
         print("\nDry-run breakdown:")
         print(f"  Total pairs (pre-cap):  {pre_cap_total}")
-        print(f"  Total pairs (post-cap): {len(pairs)}")
+        print(f"  Total pairs (post-cap): {len(candidates)}")
         print("  By source:")
         for src, count in sorted(by_source.items()):
             print(f"    {src}: {count}")
@@ -931,10 +758,60 @@ def main() -> None:
                 print(f"    {cat}: {pre} → {post} (trimmed {pre - post})")
             else:
                 print(f"    {cat}: {post}")
-        print(f"  Estimated cost: ${cost:.3f}")
+        print(f"  Estimated cost: ${cost:.2f} (based on {len(candidates)} post-cap pairs)")
         return
 
-    pairs, _ = apply_category_cap(pairs, args.max_pairs_per_category)
+    # Phase 3: iterate the post-cap candidates and make API calls
+    pairs: list[dict] = []
+    api_calls_ref: list[int] = [0]
+
+    for i, candidate in enumerate(candidates):
+        print(
+            f"\rProcessing {i + 1}/{len(candidates)} | pairs: {len(pairs)}",
+            end="",
+            flush=True,
+        )
+
+        source = candidate["source"]
+        source_id = candidate["source_id"]
+        category = candidate["category"]
+        quality_score = candidate["quality_score"]
+        site_or_channel = candidate["site_or_channel"]
+        assistant_text = candidate["assistant_text"]
+
+        user_text = call_api_with_retry(
+            client,
+            category,
+            SOURCE_TYPE_LABELS[source],
+            assistant_text,
+            args.delay,
+        )
+        api_calls_ref[0] += 1
+
+        if user_text is None:
+            logger.warning(f"Failed to generate prompt for {source} source_id={source_id}")
+            continue
+
+        pairs.append(
+            {
+                "messages": [
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": user_text},
+                    {"role": "assistant", "content": assistant_text},
+                ],
+                "meta": {
+                    "source": source,
+                    "site_or_channel": site_or_channel,
+                    "category": category,
+                    "quality_score": quality_score,
+                    "source_id": source_id,
+                },
+            }
+        )
+        checkpoint_ids.add(source_id)
+        save_checkpoint(finetune_dir, source_id)
+
+    cost = estimate_cost(api_calls_ref[0])
 
     if not pairs:
         print("\nNo new pairs generated.")
