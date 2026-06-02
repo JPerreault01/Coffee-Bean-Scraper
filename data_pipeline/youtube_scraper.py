@@ -80,7 +80,8 @@ def compute_youtube_quality(transcript: str, channel_name: str, config: dict) ->
 
     text_lower = transcript.lower()
     tech_hits = sum(1 for term in tech_vocab if term.lower() in text_lower)
-    keyword_score = min(tech_hits / 10, 1.0)
+    keyword_normalize_count = qcfg.get("keyword_normalize_count", 10)
+    keyword_score = min(tech_hits / keyword_normalize_count, 1.0)
 
     quality = (
         length_score * qcfg["transcript_weight"]
