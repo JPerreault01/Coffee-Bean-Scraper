@@ -11,3 +11,5 @@ training_data/raw/
 training_data/cleaned/
 training_data/processed/
 training_data/state/
+training_data/finetune/
+.cache/
