@@ -87,7 +87,7 @@ def load_checkpoint(finetune_dir: Path) -> set[str]:
     if not checkpoint_path.exists():
         return set()
     try:
-        with open(checkpoint_path) as f:
+        with open(checkpoint_path, encoding='utf-8') as f:
             data = json.load(f)
         return set(data)
     except (json.JSONDecodeError, OSError) as exc:
@@ -101,13 +101,13 @@ def save_checkpoint(finetune_dir: Path, source_id: str) -> None:
     existing: list[str] = []
     if checkpoint_path.exists():
         try:
-            with open(checkpoint_path) as f:
+            with open(checkpoint_path, encoding='utf-8') as f:
                 existing = json.load(f)
         except (json.JSONDecodeError, OSError):
             existing = []
     existing.append(source_id)
     tmp = checkpoint_path.with_suffix(".tmp")
-    with open(tmp, "w") as f:
+    with open(tmp, "w", encoding='utf-8') as f:
         json.dump(existing, f)
     tmp.replace(checkpoint_path)
 
@@ -266,7 +266,7 @@ def process_reddit(
         site_or_channel = jsonl_file.stem
         records: list[dict] = []
         try:
-            with open(jsonl_file) as f:
+            with open(jsonl_file, encoding='utf-8') as f:
                 for line in f:
                     line = line.strip()
                     if not line:
@@ -399,7 +399,7 @@ def process_web(
         site_or_channel = jsonl_file.stem
         indexed_records: list[tuple[int, dict]] = []
         try:
-            with open(jsonl_file) as f:
+            with open(jsonl_file, encoding='utf-8') as f:
                 for line_index, line in enumerate(f):
                     line = line.strip()
                     if not line:
@@ -532,7 +532,7 @@ def process_youtube(
         site_or_channel = jsonl_file.stem
         records: list[dict] = []
         try:
-            with open(jsonl_file) as f:
+            with open(jsonl_file, encoding='utf-8') as f:
                 for line in f:
                     line = line.strip()
                     if not line:
@@ -690,11 +690,11 @@ def split_and_write(pairs: list[dict], finetune_dir: Path) -> dict[str, Any]:
     rng.shuffle(train_pairs)
     rng.shuffle(val_pairs)
 
-    with open(finetune_dir / "train.jsonl", "w") as f:
+    with open(finetune_dir / "train.jsonl", "w", encoding='utf-8') as f:
         for pair in train_pairs:
             f.write(json.dumps(pair) + "\n")
 
-    with open(finetune_dir / "val.jsonl", "w") as f:
+    with open(finetune_dir / "val.jsonl", "w", encoding='utf-8') as f:
         for pair in val_pairs:
             f.write(json.dumps(pair) + "\n")
 
@@ -715,7 +715,7 @@ def split_and_write(pairs: list[dict], finetune_dir: Path) -> dict[str, Any]:
         "by_split": by_split,
     }
 
-    with open(finetune_dir / "stats.json", "w") as f:
+    with open(finetune_dir / "stats.json", "w", encoding='utf-8') as f:
         json.dump(stats, f, indent=2)
 
     return stats
