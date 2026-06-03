@@ -12,17 +12,31 @@ Usage:
 
 Input folder structure (create this and drop your files in):
   voice_materials/
-  ├── articles/          your written articles — TREATED AS FORMAT EXEMPLARS
-  ├── reddit/            Reddit posts + comments — TREATED AS VOICE SIGNAL ONLY
-  └── podcasts/          podcast transcripts — TREATED AS VOICE SIGNAL ONLY
+  ├── articles/          your written articles — FORMAT EXEMPLARS + VOICE (highest weight)
+  ├── podcasts/          podcast transcripts — CONTENT + OPINIONS + ARGUMENT STRUCTURE (medium weight)
+  └── reddit/            Reddit posts + comments — VOICE SIGNAL ONLY (lowest weight)
 
-Why the distinction matters:
-  Articles represent the WRITTEN voice you want reproduced.
-  Reddit and podcasts are casual/spoken registers — useful for vocabulary,
-  opinions, and tics, but NOT for format. If we let the writer treat a
-  podcast transcript as a structural template, it will write reviews that
-  sound like you talking, not like you publishing. This is the same trap
-  that broke the fine-tune.
+How the three tiers are used:
+  ARTICLES (highest):
+    Written, structured pieces. These are the target written voice AND format templates.
+    Phrasing is preserved exactly. Structural patterns here take precedence over all else.
+
+  PODCASTS (medium):
+    Good content signal. Opinions, argument structure, how you frame a position,
+    content depth, and knowledge are all valid extractions from podcasts.
+    They should NOT become format templates — spoken cadence ≠ published prose —
+    but they carry more weight than Reddit for understanding what you know,
+    what you believe, and how you build a case.
+
+  REDDIT (lowest):
+    Casual register. Useful for vocabulary, informal opinions, and tics.
+    Do not treat as format or content authority.
+
+Why the distinction still matters:
+  Even strong podcast content can bleed in spoken-register structures if the
+  extractor treats it as a format exemplar. The rule is: use podcasts for
+  WHAT is said and HOW positions are built — not for sentence structure or
+  paragraph shape. That's what the articles are for.
 
 Outputs:
   skill_data/voice/voice_profile.md     extracted voice DNA
@@ -83,76 +97,105 @@ EXTRACTION_SYSTEM = (
     "You are a voice profiler extracting the authentic written voice of a coffee "
     "writer. You read their actual writing and produce a structured profile that "
     "another AI will use to write in their voice. You are precise, concrete, and "
-    "never invent patterns that aren't in the samples. You return only valid JSON."
+    "never invent patterns that aren't in the samples. You return only valid JSON. "
+    "Be exhaustive — this profile is built once and used to generate hundreds of "
+    "reviews. More specific evidence produces better output. Do not summarise when "
+    "you can quote. Do not generalise when you can be specific."
 )
 
 EXTRACTION_PROMPT_TEMPLATE = """You are extracting a voice profile from a coffee writer's own materials. The output will be saved as a skill that lets an AI write coffee reviews in this person's voice.
 
-The materials below are TAGGED by source type:
+The materials are TAGGED by source type with explicit weighting rules:
 
-  ===ARTICLE===   = written, structured pieces. These are the TARGET WRITTEN VOICE.
-                    The AI will use these as format templates and structural models.
+  ===ARTICLE===
+    Weight: HIGHEST.
+    Written, edited, published pieces. These are the TARGET WRITTEN VOICE.
+    Use these as format templates AND voice exemplars. Structural patterns
+    that appear here take precedence over everything else. Sentence shape,
+    paragraph rhythm, opening and closing moves — all come from articles.
 
-  ===REDDIT===    = casual posts and comments. VOICE SIGNAL ONLY.
-                    Extract vocabulary, opinions, stances, and tics from these.
-                    DO NOT treat their structure as a template for written reviews.
+  ===PODCAST===
+    Weight: MEDIUM-HIGH.
+    Spoken transcripts, but content-rich. Extract heavily from these for:
+      - Specific opinions and positions on coffee topics
+      - How arguments are built and defended
+      - Depth of knowledge and which topics the writer dwells on
+      - Vocabulary and terminology (carry these into the written voice)
+      - Recurring stances and what the writer cares about
+    Do NOT import spoken sentence structure into the written voice profile.
+    The content and worldview from podcasts is high-signal. The syntax is not.
 
-  ===PODCAST===   = spoken transcripts. VOICE SIGNAL ONLY.
-                    Same rule as Reddit — extract vocabulary and opinions, but
-                    spoken structure is NOT the target.
+  ===REDDIT===
+    Weight: LOW.
+    Casual register. Use only for:
+      - Informal vocabulary and slang
+      - Off-the-cuff opinions (treat as supporting evidence, not primary signal)
+      - Verbal tics that also appear elsewhere
+    Do not treat structure or phrasing from Reddit as a target.
 
-CRITICAL: If a pattern appears only in Reddit/podcast samples, mark it as voice
-signal only. Patterns that should shape the WRITTEN format must appear in
-articles too.
+WEIGHTING RULE: When the same opinion or stance appears in both an article and
+a podcast, treat the article phrasing as canonical. When a topic appears in
+podcasts but not articles, it is still valid content signal — note it but flag
+that it's podcast-only so the assembler can decide whether to trust it.
 
 --- MATERIALS ---
 {materials}
 --- END MATERIALS ---
 
-Extract a voice profile. Be specific and concrete. Pull actual examples from the
-materials with the source filename in parentheses. Do not generalize. Do not
-invent. If a section has insufficient evidence, say so explicitly rather than
-filling with assumptions.
+Extract a thorough, exhaustive voice profile. Be specific and concrete at every
+point. Pull actual examples from the materials and cite the source filename in
+parentheses. Do not generalise. Do not invent. If a section has insufficient
+evidence, say so explicitly rather than filling with assumptions.
+
+For vocabulary and tics especially: aim for the maximum count. It is better to
+include 25 vocabulary items with citations than 10 vague ones. This profile is
+used to generate hundreds of reviews — every specific data point improves output.
 
 Return ONLY this JSON object, no preamble or backticks:
 
 {{
-  "tone": "2-3 sentences on the overall tone, with one specific example phrase quoted from a sample (cite source file)",
+  "tone": "3-4 sentences on the overall tone, with at least two specific example phrases quoted from samples (cite source file for each)",
   "sentence_patterns": {{
-    "length_preference": "describe — short/medium/long/varied — with evidence",
-    "structure": "describe how sentences are typically built (e.g., 'subject-verb-object with frequent appositives')",
-    "rhythm": "describe pacing and rhythm patterns",
-    "examples": ["3 actual sentences from articles that exemplify the typical sentence (cite source)"]
+    "length_preference": "describe — short/medium/long/varied — with evidence from articles specifically",
+    "structure": "describe how sentences are typically built (e.g., 'subject-verb-object with frequent appositives'); cite article examples",
+    "rhythm": "describe pacing and rhythm patterns; note if podcast material corroborates or adds nuance",
+    "examples": ["5 actual sentences from articles that exemplify the typical sentence style (cite source for each)"]
   }},
   "vocabulary_signature": [
-    "specific words or phrases this writer uses distinctively, with the source where each appeared. Aim for 10-20 items."
+    "specific words or phrases this writer uses distinctively, with the source where each appeared and a note on whether it appears in articles, podcasts, or both. Aim for 20-35 items. Prioritise items that appear across multiple source types."
   ],
-  "stance_patterns": "2-3 sentences on how this writer takes positions (assertive? hedged? qualified? When does each happen?)",
+  "stance_patterns": "3-4 sentences on how this writer takes positions (assertive? hedged? qualified? When does each happen?). Note any differences between the written and spoken register.",
+  "content_depth_signals": [
+    "topics, products, or technical areas where the podcast material shows deeper knowledge or stronger opinions than the articles alone would reveal. 5-10 items, each with a brief description and source citation. These are content areas the skill should treat as available depth."
+  ],
   "opening_patterns": [
-    "3-5 patterns the writer uses to open articles or posts, each with an example"
+    "4-6 patterns the writer uses to open articles or posts, each with a direct example from the source. Prefer article examples; note if a pattern also appears in podcasts."
   ],
   "closing_patterns": [
-    "3-5 patterns the writer uses to close articles or posts, each with an example"
+    "4-6 patterns the writer uses to close articles or posts, each with a direct example. Prefer article examples."
   ],
   "transition_patterns": [
-    "3-5 ways the writer moves between ideas, each with an example"
+    "4-6 ways the writer moves between ideas, each with a direct example. Prefer article examples."
   ],
   "specific_tics": [
-    "verbal or textual quirks that mark this writer's voice — things they probably do without noticing. Include punctuation habits, capitalization habits, repeated structural moves. 5-10 items."
+    "verbal or textual quirks that mark this writer's voice — things they probably do without noticing. Include punctuation habits, capitalization habits, repeated structural moves, filler phrases. Note the source type for each. 8-15 items."
   ],
   "never_say_list": [
-    "words, phrases, or rhetorical moves that this writer does NOT use — patterns that would feel off-voice if inserted. Infer this from absence. 5-10 items."
+    "words, phrases, or rhetorical moves that this writer does NOT use — patterns that would feel off-voice if inserted. Infer this from absence across all source types. 8-15 items."
   ],
   "ai_isms_to_avoid": [
-    "common AI clichés that conflict with this writer's voice (e.g., 'delve into', 'it's worth noting', 'in the world of coffee', em-dashes used as filler). 10-15 items."
+    "common AI clichés that conflict with this writer's voice (e.g., 'delve into', 'it's worth noting', 'in the world of coffee', em-dashes used as filler). 12-20 items."
   ],
   "topic_stances": {{
-    "topic": "the writer's specific position or opinion on this coffee-related topic, with source citation"
+    "topic_name": "the writer's specific position or opinion on this coffee-related topic, with source citation and whether the signal comes from article, podcast, or both. Include any topic where the writer has expressed a clear view."
   }},
+  "podcast_only_signals": [
+    "knowledge areas, opinions, or stances that appear in podcast material but NOT in articles. Flag these separately so the assembler knows they are valid content signals but unverified against the written register. 0-10 items, or empty list if none."
+  ],
   "format_exemplar_ranking": [
     "filenames of the articles that BEST exemplify the target written voice — rank from strongest to weakest. Only include files from ===ARTICLE=== sources. 3-7 items."
   ],
-  "notes_for_assembler": "1-2 sentences flagging anything the human should know about this voice extraction — gaps in evidence, surprising patterns, etc."
+  "notes_for_assembler": "2-3 sentences flagging anything the human should know about this voice extraction — gaps in evidence, surprising patterns, conflicts between source types, or areas where more material would improve accuracy."
 }}"""
 
 
@@ -216,7 +259,7 @@ def load_materials(voice_dir: Path) -> tuple[list[dict[str, Any]], dict[str, int
     materials: list[dict[str, Any]] = []
     counts: dict[str, int] = {"articles": 0, "reddit": 0, "podcasts": 0}
 
-    for source_type in ("articles", "reddit", "podcasts"):
+    for source_type in ("articles", "podcasts", "reddit"):
         subdir = voice_dir / source_type
         if not subdir.exists():
             logger.info(f"No {source_type}/ subfolder — skipping")
@@ -250,8 +293,8 @@ def build_materials_blob(materials: list[dict[str, Any]]) -> str:
     """Concatenate materials with type tags into one prompt input."""
     type_tag = {
         "articles": "===ARTICLE===",
-        "reddit": "===REDDIT===",
         "podcasts": "===PODCAST===",
+        "reddit": "===REDDIT===",
     }
     parts: list[str] = []
     for m in materials:
@@ -280,7 +323,7 @@ def extract_voice_profile(
         try:
             response = client.messages.create(
                 model=model,
-                max_tokens=4000,
+                max_tokens=8000,
                 system=EXTRACTION_SYSTEM,
                 messages=[{"role": "user", "content": prompt}],
             )
@@ -350,9 +393,18 @@ def render_voice_profile_md(profile: dict[str, Any]) -> str:
         "",
         profile.get("stance_patterns", "_not extracted_"),
         "",
-        "## Opening patterns",
+        "## Content depth signals",
+        "",
+        "*Topics and areas where podcast material reveals deeper knowledge or "
+        "stronger opinions than articles alone. Use these when the review subject "
+        "touches these areas.*",
         "",
     ]
+    for item in profile.get("content_depth_signals", []):
+        lines.append(f"- {item}")
+    lines.append("")
+
+    lines += ["## Opening patterns", ""]
     for item in profile.get("opening_patterns", []):
         lines.append(f"- {item}")
     lines.append("")
@@ -385,6 +437,19 @@ def render_voice_profile_md(profile: dict[str, Any]) -> str:
             lines.append("")
     elif isinstance(topic_stances, list):
         for item in topic_stances:
+            lines.append(f"- {item}")
+        lines.append("")
+
+    podcast_signals = profile.get("podcast_only_signals", [])
+    if podcast_signals:
+        lines += [
+            "## Podcast-only signals",
+            "",
+            "*Valid content signal from podcasts with no corroborating article evidence. "
+            "Treat as available depth but verify before treating as canonical voice.*",
+            "",
+        ]
+        for item in podcast_signals:
             lines.append(f"- {item}")
         lines.append("")
 
@@ -489,8 +554,8 @@ def main() -> None:
 
     if not voice_materials_dir.exists():
         print(f"Error: {voice_materials_dir} does not exist.", file=sys.stderr)
-        print("Create voice_materials/articles/, voice_materials/reddit/, "
-              "voice_materials/podcasts/ and drop your files in.", file=sys.stderr)
+        print("Create voice_materials/articles/, voice_materials/podcasts/, "
+              "voice_materials/reddit/ and drop your files in.", file=sys.stderr)
         sys.exit(1)
 
     # Load materials
@@ -499,16 +564,16 @@ def main() -> None:
 
     if not materials:
         print("No materials loaded. Check that voice_materials/ has files in "
-              "articles/, reddit/, or podcasts/.", file=sys.stderr)
+              "articles/, podcasts/, or reddit/.", file=sys.stderr)
         sys.exit(1)
 
     total_chars = sum(m["char_count"] for m in materials)
     est_tokens = estimate_tokens(build_materials_blob(materials))
 
     print("\n=== Voice materials loaded ===")
-    print(f"  Articles:  {counts['articles']}")
-    print(f"  Reddit:    {counts['reddit']}")
-    print(f"  Podcasts:  {counts['podcasts']}")
+    print(f"  Articles:  {counts['articles']}  (format + voice — highest weight)")
+    print(f"  Podcasts:  {counts['podcasts']}  (content + opinions — medium-high weight)")
+    print(f"  Reddit:    {counts['reddit']}  (voice signal only — lowest weight)")
     print(f"  Total files: {len(materials)}")
     print(f"  Total chars: {total_chars:,}")
     print(f"  Estimated input tokens: {est_tokens:,}")
@@ -532,15 +597,15 @@ def main() -> None:
               file=sys.stderr)
         sys.exit(1)
 
-    # Cost estimate
-    output_tokens_est = 3000
+    # Cost estimate — output budget raised to 8000 for exhaustive extraction
+    output_tokens_est = 7000
     input_cost = est_tokens / 1_000_000 * SONNET_INPUT_PRICE_PER_M
     output_cost = output_tokens_est / 1_000_000 * SONNET_OUTPUT_PRICE_PER_M
     total_cost = input_cost + output_cost
 
     print(f"\n=== Cost estimate ===")
     print(f"  Input cost:  ${input_cost:.3f}")
-    print(f"  Output cost: ${output_cost:.3f}")
+    print(f"  Output cost: ${output_cost:.3f}  (8k token budget for exhaustive extraction)")
     print(f"  Total:       ${total_cost:.3f}")
 
     if args.dry_run:
@@ -555,7 +620,7 @@ def main() -> None:
 
     client = anthropic.Anthropic(api_key=api_key)
 
-    logger.info(f"Calling {args.model} for voice extraction (this takes 30-60s)...")
+    logger.info(f"Calling {args.model} for voice extraction (this takes 60-120s with extended output)...")
     materials_blob = build_materials_blob(materials)
     profile = extract_voice_profile(materials_blob, client, args.model)
 
@@ -596,8 +661,9 @@ def main() -> None:
     print(f"   {never_say_path}")
     print(f"   {exemplars_dir}/  ({len(copied)} exemplars)")
     print(f"   {raw_path}  (raw JSON for inspection)")
-    print("\nRead voice_profile.md and confirm the patterns match what you'd write.")
-    print("Edit voice_materials/ and re-run if anything is wrong before assembly.")
+    print("\nRead voice_profile.md — pay attention to 'podcast_only_signals' section.")
+    print("Those are valid depth signals but not yet confirmed against written register.")
+    print("Edit voice_materials/ and re-run if anything looks wrong before assembly.")
 
 
 if __name__ == "__main__":
