@@ -21,7 +21,8 @@
     "comparison_anchors": [
       {"product": "Café Don Pablo Gourmet Coffee Signature Blend", "logic": "flavor_profile"},
       {"product": "Illy Classico Ground Coffee Medium Roast", "logic": "performance"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "illy-classico-medium",
@@ -45,7 +46,8 @@
     "comparison_anchors": [
       {"product": "Stumptown Hair Bender", "logic": "flavor_profile"},
       {"product": "Lavazza Super Crema", "logic": "performance"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "peets-major-dickasons",
@@ -69,7 +71,8 @@
     "comparison_anchors": [
       {"product": "Camano Island Coffee Roasters Sumatra", "logic": "origin"},
       {"product": "Kicking Horse Coffee 454 Horse Power Dark Roast", "logic": "performance"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "stumptown-hair-bender",
@@ -93,7 +96,8 @@
     "comparison_anchors": [
       {"product": "Atlas Coffee Club Ethiopia Limu", "logic": "origin"},
       {"product": "Intelligentsia Black Cat Espresso", "logic": "performance"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "death-wish-coffee",
@@ -117,7 +121,8 @@
     "comparison_anchors": [
       {"product": "Community Coffee Signature Blend Medium-Dark Roast", "logic": "flavor_profile"},
       {"product": "Café Bustelo Espresso Style Dark Roast", "logic": "performance"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "kicking-horse-454-horse-power",
@@ -141,7 +146,8 @@
     "comparison_anchors": [
       {"product": "Café Bustelo Espresso Style Dark Roast", "logic": "performance"},
       {"product": "Peet's Coffee Major Dickason's Blend", "logic": "flavor_profile"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "lifeboost-medium-roast",
@@ -165,7 +171,8 @@
     "comparison_anchors": [
       {"product": "Eight O'Clock Original Whole Bean Coffee", "logic": "flavor_profile"},
       {"product": "Don Francisco's Colombia Supremo Medium Roast", "logic": "origin"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "cafe-don-pablo-gourmet",
@@ -189,7 +196,8 @@
     "comparison_anchors": [
       {"product": "Caribou Coffee Caribou Blend", "logic": "flavor_profile"},
       {"product": "Community Coffee Signature Blend Medium-Dark Roast", "logic": "performance"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "camano-island-sumatra",
@@ -213,7 +221,8 @@
     "comparison_anchors": [
       {"product": "Onyx Coffee Lab Southern Weather Blend", "logic": "origin"},
       {"product": "Peet's Coffee Major Dickason's Blend", "logic": "flavor_profile"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "caribou-caribou-blend",
@@ -237,7 +246,8 @@
     "comparison_anchors": [
       {"product": "Kirkland Signature Colombian Supremo", "logic": "performance"},
       {"product": "Café Don Pablo Gourmet Coffee Signature Blend", "logic": "flavor_profile"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "blue-bottle-hayes-valley",
@@ -261,7 +271,8 @@
     "comparison_anchors": [
       {"product": "Counter Culture Big Trouble", "logic": "origin"},
       {"product": "Intelligentsia Black Cat Espresso", "logic": "performance"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "intelligentsia-black-cat",
@@ -285,7 +296,8 @@
     "comparison_anchors": [
       {"product": "Lavazza Super Crema", "logic": "performance"},
       {"product": "Blue Bottle Hayes Valley Espresso", "logic": "flavor_profile"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "counter-culture-big-trouble",
@@ -309,7 +321,8 @@
     "comparison_anchors": [
       {"product": "Eight O'Clock Original Whole Bean Coffee", "logic": "performance"},
       {"product": "Stumptown Hair Bender", "logic": "flavor_profile"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "atlas-limu-ethiopia",
@@ -333,7 +346,8 @@
     "comparison_anchors": [
       {"product": "Lifeboost Medium Roast Coffee", "logic": "performance"},
       {"product": "Onyx Coffee Lab Southern Weather Blend", "logic": "origin"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "onyx-southern-weather",
@@ -357,7 +371,8 @@
     "comparison_anchors": [
       {"product": "Counter Culture Big Trouble", "logic": "performance"},
       {"product": "Atlas Coffee Club Ethiopia Limu", "logic": "origin"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "kirkland-colombian",
@@ -381,7 +396,8 @@
     "comparison_anchors": [
       {"product": "Don Francisco's Colombia Supremo Medium Roast", "logic": "origin"},
       {"product": "Caribou Coffee Caribou Blend", "logic": "performance"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "eight-oclock-original",
@@ -405,7 +421,8 @@
     "comparison_anchors": [
       {"product": "Kirkland Signature Colombian Supremo", "logic": "performance"},
       {"product": "Caribou Coffee Caribou Blend", "logic": "flavor_profile"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "don-franciscos-colombia",
@@ -429,7 +446,8 @@
     "comparison_anchors": [
       {"product": "Camano Island Coffee Roasters Sumatra", "logic": "origin"},
       {"product": "Lifeboost Medium Roast Coffee", "logic": "flavor_profile"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "community-coffee-medium-dark",
@@ -453,7 +471,8 @@
     "comparison_anchors": [
       {"product": "Kicking Horse Coffee 454 Horse Power Dark Roast", "logic": "flavor_profile"},
       {"product": "Peet's Coffee Major Dickason's Blend", "logic": "performance"}
-    ]
+    ],
+    "reference_slug": null
   },
   {
     "id": "cafe-bustelo-espresso",
@@ -477,6 +496,7 @@
     "comparison_anchors": [
       {"product": "Blue Bottle Hayes Valley Espresso", "logic": "performance"},
       {"product": "Intelligentsia Black Cat Espresso", "logic": "flavor_profile"}
-    ]
+    ],
+    "reference_slug": null
   }
 ]
