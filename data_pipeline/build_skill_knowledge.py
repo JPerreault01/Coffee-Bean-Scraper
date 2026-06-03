@@ -54,27 +54,35 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_MODEL = "claude-sonnet-4-6"
 
-SELECTION_MIN = 50
-SELECTION_MAX = 60
+SELECTION_MIN = 80
+SELECTION_MAX = 90
 
-# Max chars sent to API per source — limits token cost, controls digest quality
-TEXT_DIGEST_CAP = 6000
+TEXT_DIGEST_CAP = 6000      # unchanged
 
-# Diversity caps (per site/channel)
-MAX_PER_WEB_SITE = 5
-MAX_PER_YT_CHANNEL = 4
-MAX_PER_SUBREDDIT = 8
-MIN_PER_CATEGORY = 2  # backfill categories that would otherwise be underrepresented
+# --- Source-type allocation targets ---
+# These are TARGETS not hard ceilings. If the corpus can't fill a target,
+# the gap is filled from other types. Priority fill order: web → youtube → reddit.
+TARGET_WEB     = 38         # aim for ~40% web (authoritative, editorial)
+TARGET_YOUTUBE = 32         # aim for ~30% YouTube (long-form, expert)
+MAX_REDDIT     = 14         # hard ceiling: Reddit is the minority source
+                            # (high volume in corpus but lower authority)
 
-# Sonnet 4.6 pricing
-SONNET_INPUT_PRICE_PER_M = 3.00
-SONNET_OUTPUT_PRICE_PER_M = 15.00
+# --- Per-source-group diversity caps ---
+MAX_PER_WEB_SITE    = 15   # was 5 — raise to let good sites contribute more
+MAX_PER_YT_CHANNEL  = 8    # was 4 — raise to capture more per-channel depth
+MAX_PER_SUBREDDIT   = 3    # was 8 — lower to force subreddit diversity
+                            # with ~9 subreddits × 3 = 27 max possible, but
+                            # MAX_REDDIT=14 hard-caps the total
 
-# Estimation constants
-CHARS_PER_TOKEN = 3.5
-OUTPUT_TOKENS_PER_SEC = 40
-EST_OUTPUT_TOKENS_PER_DIGEST = 1500   # conservative; actual varies by source length
-EST_INPUT_OVERHEAD_PER_DIGEST = 800   # system + user prompt chars (overhead, not source text)
+MIN_PER_CATEGORY    = 2    # unchanged — backfill underrepresented categories
+
+# --- Pricing and estimation (unchanged) ---
+SONNET_INPUT_PRICE_PER_M    = 3.00
+SONNET_OUTPUT_PRICE_PER_M   = 15.00
+CHARS_PER_TOKEN              = 3.5
+OUTPUT_TOKENS_PER_SEC        = 40
+EST_OUTPUT_TOKENS_PER_DIGEST = 1500
+EST_INPUT_OVERHEAD_PER_DIGEST = 800
 
 # Min text lengths per source (from test_clean_quality.py)
 MIN_TEXT_LEN: dict[str, int] = {
@@ -291,30 +299,50 @@ def select_sources(
     limit: int | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """
-    Select SELECTION_MIN–SELECTION_MAX sources with diversity caps and category backfill.
+    Select SELECTION_MIN–SELECTION_MAX sources using a type-priority fill strategy
+    with per-group diversity caps and category backfill.
 
     Strategy:
-      1. Backfill: ensure every CATEGORY with ≥MIN_PER_CATEGORY corpus entries gets at
-         least MIN_PER_CATEGORY sources selected (respecting site caps).
-      2. Fill: greedily add highest-quality remaining sources up to target_max.
+      Pass 1 — Web:     fill up to TARGET_WEB, respecting MAX_PER_WEB_SITE
+      Pass 2 — YouTube: fill up to TARGET_YOUTUBE, respecting MAX_PER_YT_CHANNEL
+      Pass 3 — Reddit:  fill up to MAX_REDDIT (hard cap), respecting MAX_PER_SUBREDDIT
+      Top-up:           if total < SELECTION_MIN, top up web → youtube → reddit until
+                        SELECTION_MIN is reached or candidates are exhausted
+      Category backfill: ensure MIN_PER_CATEGORY per represented category
 
-    Returns (selected, cap_excluded) where cap_excluded holds sources that were
-    skipped because their site/channel hit its cap — these go in the selection report
-    so Jackson can override them.
+    Returns (selected, cap_excluded) where cap_excluded holds sources skipped because
+    their site/channel hit its per-group cap.
     """
     target_max = limit if limit is not None else SELECTION_MAX
 
+    # Scale type targets proportionally when --limit is used so ratios are preserved
+    if limit is not None:
+        ratio = limit / SELECTION_MAX
+        t_web     = max(1, round(TARGET_WEB * ratio))
+        t_youtube = max(1, round(TARGET_YOUTUBE * ratio))
+        t_reddit  = max(1, round(MAX_REDDIT * ratio))
+    else:
+        t_web     = TARGET_WEB
+        t_youtube = TARGET_YOUTUBE
+        t_reddit  = MAX_REDDIT
+
     ranked = sorted(candidates, key=lambda c: -c["quality_score"])
+
+    # Pre-split by type; each list inherits quality-score descending order
+    type_pool: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for c in ranked:
+        type_pool[c["source"]].append(c)
 
     site_counts: dict[str, int] = defaultdict(int)
     category_counts: dict[str, int] = defaultdict(int)
+    type_counts: dict[str, int] = defaultdict(int)
 
     selected: list[dict[str, Any]] = []
     used_ids: set[str] = set()
     cap_excluded_ids: set[str] = set()
     cap_excluded: list[dict[str, Any]] = []
 
-    def _can_add(c: dict[str, Any]) -> bool:
+    def _can_add_group(c: dict[str, Any]) -> bool:
         return site_counts[c["site_or_channel"]] < _CAP_MAX[c["source"]]
 
     def _add(c: dict[str, Any]) -> None:
@@ -322,21 +350,72 @@ def select_sources(
         used_ids.add(c["source_id"])
         site_counts[c["site_or_channel"]] += 1
         category_counts[c["category"]] += 1
+        type_counts[c["source"]] += 1
 
     def _mark_cap_excluded(c: dict[str, Any]) -> None:
         if c["source_id"] not in cap_excluded_ids and c["source_id"] not in used_ids:
             cap_excluded_ids.add(c["source_id"])
             cap_excluded.append(c)
 
-    # Count how many corpus candidates exist per category
+    def _fill_type(source_type: str, type_limit: int) -> None:
+        """Add sources of source_type up to type_limit, respecting per-group cap."""
+        for c in type_pool.get(source_type, []):
+            if len(selected) >= target_max:
+                return
+            if type_counts[source_type] >= type_limit:
+                return
+            if c["source_id"] in used_ids:
+                continue
+            if not _can_add_group(c):
+                _mark_cap_excluded(c)
+                continue
+            _add(c)
+
+    # Count corpus entries per category for backfill eligibility
     corpus_cat_counts: dict[str, int] = defaultdict(int)
     for c in ranked:
         corpus_cat_counts[c["category"]] += 1
 
-    # Pass 1 — backfill underrepresented categories
+    # Three-pass type-priority fill
+    _fill_type("web", t_web)
+    _fill_type("youtube", t_youtube)
+    _fill_type("reddit", t_reddit)
+
+    # Warn if a type fell short of its target — gap filled by top-up pass
+    if type_counts["web"] < t_web:
+        logger.warning(
+            f"Web corpus short: selected {type_counts['web']}/{t_web} targets "
+            "(filling gap from other types)"
+        )
+    if type_counts["youtube"] < t_youtube:
+        logger.warning(
+            f"YouTube corpus short: selected {type_counts['youtube']}/{t_youtube} targets "
+            "(filling gap from other types)"
+        )
+
+    # Top-up: if total < SELECTION_MIN, fill remaining from each type in priority order
+    if len(selected) < SELECTION_MIN:
+        for top_type in ("web", "youtube", "reddit"):
+            if len(selected) >= SELECTION_MIN:
+                break
+            for c in type_pool.get(top_type, []):
+                if len(selected) >= SELECTION_MIN or len(selected) >= target_max:
+                    break
+                if top_type == "reddit" and type_counts["reddit"] >= t_reddit:
+                    break
+                if c["source_id"] in used_ids:
+                    continue
+                if not _can_add_group(c):
+                    _mark_cap_excluded(c)
+                    continue
+                _add(c)
+
+    # Category backfill: ensure MIN_PER_CATEGORY per represented category
     for cat in CATEGORIES:
+        if len(selected) >= target_max:
+            break
         if corpus_cat_counts.get(cat, 0) < MIN_PER_CATEGORY:
-            continue  # corpus doesn't have enough for this category
+            continue
         needed = MIN_PER_CATEGORY - category_counts[cat]
         if needed <= 0:
             continue
@@ -346,24 +425,15 @@ def select_sources(
                 break
             if c["source_id"] in used_ids or c["category"] != cat:
                 continue
-            if not _can_add(c):
+            if not _can_add_group(c):
                 _mark_cap_excluded(c)
+                continue
+            if c["source"] == "reddit" and type_counts["reddit"] >= t_reddit:
                 continue
             _add(c)
             needed -= 1
             if needed <= 0:
                 break
-
-    # Pass 2 — fill up to target_max greedily
-    for c in ranked:
-        if len(selected) >= target_max:
-            break
-        if c["source_id"] in used_ids:
-            continue
-        if not _can_add(c):
-            _mark_cap_excluded(c)
-            continue
-        _add(c)
 
     return selected, cap_excluded
 
@@ -439,18 +509,33 @@ def write_selection_report(
 
     # Source-type breakdown
     by_type: dict[str, int] = defaultdict(int)
+    by_subreddit: dict[str, int] = defaultdict(int)
     for c in selected:
         by_type[c["source"]] += 1
+        if c["source"] == "reddit":
+            by_subreddit[c["site_or_channel"]] += 1
 
     lines += [
         "## Source type breakdown",
         "",
-        "| Type | Count |",
-        "|------|-------|",
+        "| Type | Count | Target / Cap |",
+        "|------|-------|--------------|",
+        f"| web | {by_type.get('web', 0)} | target ~{TARGET_WEB} |",
+        f"| youtube | {by_type.get('youtube', 0)} | target ~{TARGET_YOUTUBE} |",
+        f"| reddit | {by_type.get('reddit', 0)} | hard cap {MAX_REDDIT}, max {MAX_PER_SUBREDDIT}/subreddit |",
+        "",
     ]
-    for st in ("reddit", "web", "youtube"):
-        lines.append(f"| {st} | {by_type.get(st, 0)} |")
-    lines.append("")
+
+    if by_subreddit:
+        lines += [
+            "### Reddit subreddit spread",
+            "",
+            "| Subreddit | Sources |",
+            "|-----------|---------|",
+        ]
+        for sub, cnt in sorted(by_subreddit.items(), key=lambda x: -x[1]):
+            lines.append(f"| r/{sub} | {cnt} |")
+        lines.append("")
 
     # Selected sources grouped by category
     by_cat: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -559,18 +644,31 @@ def print_dry_run_analytics(
     print(f"  Cap-excluded (notable)  : {len(cap_excluded)}")
     print()
 
+    type_info = {
+        "web":     f"target ~{TARGET_WEB}",
+        "youtube": f"target ~{TARGET_YOUTUBE}",
+        "reddit":  f"hard cap {MAX_REDDIT}, max {MAX_PER_SUBREDDIT}/subreddit",
+    }
     print("=== By source type ===")
-    for st in ("reddit", "web", "youtube"):
+    for st in ("web", "youtube", "reddit"):
         items = by_source.get(st, [])
-        if not items:
-            continue
         chars = sum(c["text_chars"] for c in items)
         toks = estimate_tokens(chars)
-        avg_qs = sum(c["quality_score"] for c in items) / len(items)
+        avg_qs = sum(c["quality_score"] for c in items) / len(items) if items else 0.0
         print(
-            f"  {st:<8} : {len(items):>3} sources | "
+            f"  {st:<8} : {len(items):>3} sources  ({type_info[st]}) | "
             f"{chars:>8,} chars (~{toks:>6,} tok) | avg quality {avg_qs:.3f}"
         )
+
+    reddit_items = by_source.get("reddit", [])
+    if reddit_items:
+        sub_counts: dict[str, int] = defaultdict(int)
+        for c in reddit_items:
+            sub_counts[c["site_or_channel"]] += 1
+        print()
+        print("  Reddit by subreddit:")
+        for sub, cnt in sorted(sub_counts.items(), key=lambda x: -x[1]):
+            print(f"    r/{sub:<20} : {cnt}")
 
     print()
     print("=== By category ===")
