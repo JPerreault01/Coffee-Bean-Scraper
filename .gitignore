@@ -19,3 +19,4 @@ voice_materials/*
 !voice_materials/**/.gitkeep
 
 skill_data/
+data/*.json

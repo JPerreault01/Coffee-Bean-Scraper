@@ -24,6 +24,37 @@ import sqlite3
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from pathlib import Path as _Path
+from reference_db import get_conn, get_specs, find_coffee
+
+
+def reference_block(product: dict) -> str:
+    """Return a verified-specs context block for the review prompt, or '' if unavailable."""
+    db = "data/coffee_reference.db"
+    if not _Path(db).exists():
+        return ""
+    try:
+        conn = get_conn(db)
+        slug = product.get("reference_slug")
+        if not slug:
+            hits = find_coffee(conn, product.get("name", ""), product.get("roaster"))
+            slug = hits[0][1] if hits and hits[0][0] > 0.6 else None
+        specs = get_specs(conn, slug) if slug else None
+        conn.close()
+        if not specs:
+            return ""
+        return (
+            "VERIFIED SPECS (populate spec table from these; do not invent):\n"
+            f"  Roast: {specs['roast_level'].title() if specs['roast_level'] else 'unknown'}\n"
+            f"  Origin: {', '.join(s.title() for s in specs['origins']) or 'unknown'}\n"
+            f"  Process: {', '.join(s.title() for s in specs['processing']) or 'unknown'}\n"
+            f"  Varietals: {', '.join(s.title() for s in specs['varietals']) or 'unknown'}\n"
+            "  Community flavor notes (candidates only — do not copy verbatim into tasting notes):\n"
+            f"    {', '.join(specs['flavor_notes'])}\n"
+        )
+    except Exception:
+        return ""
+
 
 ENV_FILE = Path("/opt/.env")
 DB_PATH = Path("/opt/data/prices.db")
@@ -505,10 +536,12 @@ def main() -> None:
     print(f"Generating review for: {product['name']}", file=sys.stderr)
     print(f"Voice mode: {voice_label}", file=sys.stderr)
 
+    ref_context = reference_block(product)
+
     if args.mock:
         print("Mode: MOCK (no API call)", file=sys.stderr)
         print("=" * 60, file=sys.stderr)
-        prompt = build_prompt(product, price_summary, style_guide, args.personal)
+        prompt = ref_context + build_prompt(product, price_summary, style_guide, args.personal)
         print("\n=== CONSTRUCTED PROMPT ===", file=sys.stderr)
         print(prompt, file=sys.stderr)
         print("=== END PROMPT ===\n", file=sys.stderr)
@@ -519,7 +552,7 @@ def main() -> None:
         print(f"Mock draft saved to: {path}", file=sys.stderr)
         return
 
-    prompt = build_prompt(product, price_summary, style_guide, args.personal)
+    prompt = ref_context + build_prompt(product, price_summary, style_guide, args.personal)
 
     api = args.api
     if api is None:

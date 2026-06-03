@@ -116,3 +116,38 @@ Add this shortcode to any post or page:
 | Trade Coffee | 10% + $5/subscription |
 | Blue Bottle | 10% (via CJ Affiliate) |
 | Death Wish | 10% (via ShareASale) |
+
+## Reference Database
+
+Normalized SQLite corpus of ~14,000 coffees from thewaytocoffee.com. Powers verified spec enrichment in review generation and backs the site's flavor/origin entity graph.
+
+### Build
+
+```bash
+# Small test run first (~75 coffees, ~3 min)
+python scrapers/waytocoffee_scraper.py --pages 3 --format json --output data/waytocoffee.json
+python scrapers/reference_db.py load data/waytocoffee.json
+
+# Full corpus (~14,000 coffees — run overnight)
+python scrapers/waytocoffee_scraper.py --all --format json --output data/waytocoffee.json
+python scrapers/reference_db.py load data/waytocoffee.json
+```
+
+### Map products to reference entries
+
+After a scrape, run `map` to see suggested reference slugs for each tracked product:
+
+```bash
+python scrapers/reference_db.py map scrapers/products.json
+```
+
+Copy confirmed slugs into each product's `reference_slug` field in `products.json`. The review generator uses these for verified spec lookup; it fuzzy-matches automatically when `reference_slug` is null.
+
+### Verify
+
+```bash
+python scrapers/reference_db.py specs <slug>
+python scrapers/reference_db.py find "super crema" --roaster lavazza
+```
+
+`data/coffee_reference.db` and `data/waytocoffee.json` are gitignored — rebuild from a scrape on a new machine.
