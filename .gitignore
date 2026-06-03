@@ -17,3 +17,5 @@ training_data/top_content_preview.md
 
 voice_materials/*
 !voice_materials/**/.gitkeep
+
+skill_data/
