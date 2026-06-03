@@ -14,3 +14,6 @@ training_data/state/
 training_data/finetune/
 .cache/
 training_data/top_content_preview.md
+
+voice_materials/*
+!voice_materials/**/.gitkeep
