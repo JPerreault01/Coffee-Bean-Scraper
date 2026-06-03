@@ -323,7 +323,7 @@ def extract_voice_profile(
         try:
             response = client.messages.create(
                 model=model,
-                max_tokens=8000,
+                max_tokens=16000,
                 system=EXTRACTION_SYSTEM,
                 messages=[{"role": "user", "content": prompt}],
             )
@@ -598,14 +598,14 @@ def main() -> None:
         sys.exit(1)
 
     # Cost estimate — output budget raised to 8000 for exhaustive extraction
-    output_tokens_est = 7000
+    output_tokens_est = 13000
     input_cost = est_tokens / 1_000_000 * SONNET_INPUT_PRICE_PER_M
     output_cost = output_tokens_est / 1_000_000 * SONNET_OUTPUT_PRICE_PER_M
     total_cost = input_cost + output_cost
 
     print(f"\n=== Cost estimate ===")
     print(f"  Input cost:  ${input_cost:.3f}")
-    print(f"  Output cost: ${output_cost:.3f}  (8k token budget for exhaustive extraction)")
+    print(f"  Output cost: ${output_cost:.3f}  (16k token budget for exhaustive extraction)")
     print(f"  Total:       ${total_cost:.3f}")
 
     if args.dry_run:
