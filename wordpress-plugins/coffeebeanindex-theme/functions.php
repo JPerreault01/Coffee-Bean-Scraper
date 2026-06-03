@@ -43,6 +43,17 @@ function cbi_enqueue_styles() {
             true // footer
         );
     }
+
+    // Explore filters JS — only on the explore page template
+    if ( is_page_template( 'page-explore.php' ) ) {
+        wp_enqueue_script(
+            'cbi-explore-filters',
+            get_stylesheet_directory_uri() . '/js/explore-filters.js',
+            [],
+            '1.0.0',
+            true // footer
+        );
+    }
 }
 
 // Preconnect hints for Google Fonts (output before any render-blocking resources)
@@ -582,6 +593,6 @@ function cbi_hide_title_on_custom_templates( $show ) {
     if ( is_singular( 'bean' ) ) return false;
     if ( is_post_type_archive( 'bean' ) ) return false;
     if ( is_tax( [ 'flavor-note', 'origin', 'roast-level', 'process-method', 'brew-method', 'roaster' ] ) ) return false;
-    if ( is_page_template( [ 'template-roundup.php', 'template-comparison.php', 'template-guide.php' ] ) ) return false;
+    if ( is_page_template( [ 'template-roundup.php', 'template-comparison.php', 'template-guide.php', 'page-explore.php' ] ) ) return false;
     return $show;
 }
