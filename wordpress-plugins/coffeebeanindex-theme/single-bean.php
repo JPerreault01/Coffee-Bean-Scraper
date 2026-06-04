@@ -509,7 +509,7 @@ get_header(); ?>
             <div class="cbi-section similar-beans">
                 <div class="cbi-section__heading">Similar Beans</div>
                 <?php
-                $similar_found = false;
+                $similar_count = 0;
                 if ( $flavor_notes && ! is_wp_error( $flavor_notes ) ) {
                     $flavor_ids = wp_list_pluck( $flavor_notes, 'term_id' );
                     $similar    = new WP_Query( [
@@ -529,8 +529,8 @@ get_header(); ?>
                     ] );
 
                     if ( $similar->have_posts() ) :
-                        $similar_found = true;
                         while ( $similar->have_posts() ) : $similar->the_post();
+                            $similar_count++;
                             $sim_id       = get_the_ID();
                             $sim_rating   = $has_acf ? get_field( 'rating', $sim_id ) : '';
                             $sim_roasters = get_the_terms( $sim_id, 'roaster' );
@@ -554,10 +554,39 @@ get_header(); ?>
                     endif;
                 }
 
-                if ( ! $similar_found ) {
-                    echo '<p style="color:var(--cbi-text-dim);font-size:var(--text-sm);">More beans coming soon.</p>';
-                }
-                ?>
+                // Sparse-state fallback: give the right column useful weight on pages with
+                // fewer than 2 similar-bean matches (early library state, niche flavor combos).
+                if ( $similar_count < 2 ) :
+                    $explore_groups = [];
+                    if ( $roast_levels && ! is_wp_error( $roast_levels ) ) {
+                        $explore_groups[] = [ 'label' => 'Roast', 'terms' => $roast_levels, 'class' => 'bean-tag--roast' ];
+                    }
+                    if ( $origins && ! is_wp_error( $origins ) ) {
+                        $explore_groups[] = [ 'label' => 'Origin', 'terms' => $origins, 'class' => 'bean-tag--origin' ];
+                    }
+                    if ( $brew_methods && ! is_wp_error( $brew_methods ) ) {
+                        $explore_groups[] = [ 'label' => 'Brew Method', 'terms' => $brew_methods, 'class' => 'bean-tag--brew' ];
+                    }
+                    if ( ! empty( $explore_groups ) ) : ?>
+                    <div style="margin-top:var(--space-4);">
+                        <div style="font-size:var(--text-xs);color:var(--cbi-text-dim);font-family:var(--font-mono);margin-bottom:var(--space-3);">Browse by category</div>
+                        <?php foreach ( $explore_groups as $group ) : ?>
+                        <div style="margin-bottom:var(--space-4);">
+                            <div style="font-size:var(--text-xs);color:var(--cbi-text-dim);font-family:var(--font-mono);margin-bottom:var(--space-2);"><?php echo esc_html( $group['label'] ); ?></div>
+                            <div style="display:flex;flex-wrap:wrap;gap:var(--space-2);">
+                                <?php foreach ( $group['terms'] as $term ) : ?>
+                                    <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag <?php echo esc_attr( $group['class'] ); ?>">
+                                        All <?php echo esc_html( $term->name ); ?> &rarr;
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php else : ?>
+                    <p style="color:var(--cbi-text-dim);font-size:var(--text-sm);">More beans coming soon.</p>
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
 
             <!-- Origin Link -->

@@ -285,6 +285,19 @@ the reader in the experience. Confidence level is absolute — identical to pers
 Specificity is the only citation you need. "This roast turns acrid past 205°F" needs
 no source — the specificity is the credibility."""
 
+    # Shared safeguard appended to both voice modes — addresses PREPUBLISH_CHECKLIST §A.4.
+    voice_instruction += """
+
+HALLUCINATION SAFEGUARD (applies in both voice modes):
+- Spec table fields (Roast, Origin, Process, Weight) must exactly match the product data
+  provided below — do not alter, combine, or invent these values.
+- Price analysis must reference the actual 30-day figures supplied — do not invent prices.
+- Technical specifics in prose (temperatures, times, ratios) are only acceptable when
+  they are industry-standard for the given roast level and brew method combination.
+  If the product data does not support a specific number, use directional language:
+  "pull short" not "pull to 25 seconds"; "keep water off the boil" not "brew at 94°C".
+- Leave any spec table cell blank (write only the label) rather than guessing."""
+
     return f"""You are writing a coffee bean product review for a niche affiliate website.
 The review will be edited by a human before publication.
 
