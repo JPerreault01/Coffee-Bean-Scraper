@@ -596,3 +596,18 @@ function cbi_hide_title_on_custom_templates( $show ) {
     if ( is_page_template( [ 'template-roundup.php', 'template-comparison.php', 'template-guide.php', 'page-explore.php' ] ) ) return false;
     return $show;
 }
+
+// ============================================================
+// 18. GP — force no-sidebar layout on taxonomy archive pages
+//     Taxonomy archives build their own in-template sidebar for
+//     related guides. Without this filter GP emits a widget-area
+//     alongside the content-area, constraining its width.
+// ============================================================
+
+add_filter( 'generate_sidebar_layout', 'cbi_tax_archive_no_sidebar' );
+function cbi_tax_archive_no_sidebar( $layout ) {
+    if ( is_tax( [ 'flavor-note', 'origin', 'roast-level', 'process-method', 'brew-method', 'roaster' ] ) ) {
+        return 'no-sidebar';
+    }
+    return $layout;
+}

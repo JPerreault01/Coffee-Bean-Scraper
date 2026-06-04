@@ -238,6 +238,16 @@ blockquote {
   display: none;
 }
 
+/* Hide GP sidebar widget area on taxonomy archives — we build our own in-template sidebar */
+.tax-flavor-note .widget-area,
+.tax-origin .widget-area,
+.tax-roast-level .widget-area,
+.tax-process-method .widget-area,
+.tax-brew-method .widget-area,
+.tax-roaster .widget-area {
+  display: none;
+}
+
 /* Untemplated pages (About, Contact, Disclosure, etc.) — restore readable column */
 body:not(.single-bean):not(.post-type-archive-bean):not(.home):not(.tax-flavor-note):not(.tax-origin):not(.tax-roast-level):not(.tax-process-method):not(.tax-brew-method):not(.tax-roaster):not(.page-template-template-roundup):not(.page-template-template-comparison):not(.page-template-template-guide) .entry-content {
   max-width: var(--content-width);
@@ -273,6 +283,8 @@ h1, h2, h3 {
   height: 64px;
 }
 
+.site-title,
+.site-title a,
 .site-logo a,
 .site-branding a {
   font-family: var(--font-display);
@@ -280,6 +292,7 @@ h1, h2, h3 {
   font-weight: 700;
   color: var(--cbi-text) !important;
   letter-spacing: -0.02em;
+  white-space: nowrap; /* prevent "Coffee Bean Index" from wrapping into the nav */
 }
 
 .site-logo a span,
@@ -432,6 +445,7 @@ h1, h2, h3 {
   font-family: var(--font-mono);
   transition: all 0.15s;
   text-decoration: none;
+  align-self: flex-start; /* never stretch taller than content in flex parents */
 }
 
 .bean-tag:hover {
@@ -1252,6 +1266,80 @@ details[open] .cbi-faq__question::after {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-right: var(--space-2);
+}
+
+/* ============================================================
+   TAXONOMY ARCHIVE — two-column main + sidebar layout
+   ============================================================ */
+
+/* Two-column grid: main content left, related guides sidebar right */
+.archive-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: var(--space-10);
+  align-items: start; /* each column is only as tall as its content — no artificial gap */
+  padding: var(--space-10) 0;
+}
+
+/* Single-column when no sidebar content (no guide links for this taxonomy/term) */
+.archive-layout--full {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 900px) {
+  .archive-layout {
+    grid-template-columns: 1fr;
+    padding: var(--space-8) 0;
+  }
+}
+
+/* Description prose — comfortable reading measure, separated from bean grid */
+.archive-description {
+  max-width: 65ch;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid var(--cbi-border);
+}
+
+/* Placeholder shown when taxonomy has no description yet */
+.archive-description--placeholder {
+  color: var(--cbi-text-dim);
+  font-style: italic;
+  padding: var(--space-4) 0;
+  margin-bottom: var(--space-6);
+}
+
+/* Empty state when 0 beans match this term */
+.archive-empty {
+  grid-column: 1 / -1;
+  padding: var(--space-16) 0;
+  text-align: center;
+}
+
+.archive-empty p {
+  color: var(--cbi-text-dim);
+  margin-bottom: var(--space-6);
+}
+
+/* Pill container — flex-start prevents oval deformation when items wrap */
+.archive-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: flex-start;
+  margin-top: var(--space-4);
+}
+
+/* Sidebar — sticks to top as user scrolls through long bean grids */
+.archive-sidebar {
+  position: sticky;
+  top: var(--space-6);
+}
+
+@media (max-width: 900px) {
+  .archive-sidebar {
+    position: static;
+  }
 }
 
 /* ============================================================
