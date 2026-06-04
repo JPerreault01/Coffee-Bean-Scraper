@@ -172,6 +172,11 @@ blockquote {
    GENERATEPRESS — minimal scoped overrides
    Configure GP Customizer as documented in DEPLOY_NOTES.md.
    We scope most overrides to our own wrapper classes, not global elements.
+
+   PRIMARY FIX: The generate_sidebar_layout + generate_content_width filters
+   in functions.php §18 tell GP not to output .widget-area on custom templates.
+   The CSS rules below are a secondary safety net for edge cases where GP's
+   Customizer settings override the PHP filters (e.g. per-page layout overrides).
    ============================================================ */
 
 /* Ensure GP uses our paper background everywhere */
@@ -197,7 +202,9 @@ blockquote {
   border: none;
 }
 
-/* Our custom templates own their padding completely */
+/* Safety net: our custom templates own their padding completely.
+   The PHP filter should handle this, but belt-and-suspenders for
+   any GP version that doesn't respect generate_content_width. */
 .single-bean .inside-article,
 .post-type-archive-bean .inside-article,
 .tax-flavor-note .inside-article,
@@ -210,7 +217,10 @@ blockquote {
   padding: 0;
 }
 
-/* Full width for our custom templates */
+/* Safety net: force full-width .content-area on custom templates.
+   GP's "Content + Sidebar" layout sets float:left + a % width here.
+   The generate_sidebar_layout filter eliminates the need for this,
+   but keeping it prevents visual breakage if the filter is ever removed. */
 .single-bean .content-area,
 .post-type-archive-bean .content-area,
 .tax-flavor-note .content-area,
@@ -328,6 +338,16 @@ h1, h2, h3 {
 /* Mobile hamburger */
 .mobile-menu-control-wrapper button {
   color: var(--cbi-text) !important;
+}
+
+/* Prevent the nav from wrapping below the logo on narrow viewports.
+   The "Price Tracker" item dropping below is a menu assignment issue
+   (Appearance → Menus, see GATE 1 instructions), but this guard
+   stops the nav from reflowing even if GP adds more items. */
+.main-navigation,
+.main-nav {
+  flex-shrink: 0;
+  flex-wrap: nowrap;
 }
 
 /* ============================================================
@@ -1223,6 +1243,17 @@ details[open] .cbi-faq__question::after {
   font-family: var(--font-mono);
   margin-top: var(--space-4);
   letter-spacing: 0.04em;
+}
+
+/* Guide body in taxonomy archives — constrain to a readable measure.
+   In guide templates, .guide-body sits inside .guide-layout (1fr 280px grid),
+   so no extra rule is needed there. In taxonomy-bean-archive.php it is a
+   direct child of .cbi-container, which defaults to full 1200px — too wide
+   for prose reading. This rule targets that context only. */
+.cbi-container > .guide-body {
+  max-width: var(--content-width);
+  padding-top: var(--space-10);
+  padding-bottom: var(--space-8);
 }
 
 /* ============================================================
