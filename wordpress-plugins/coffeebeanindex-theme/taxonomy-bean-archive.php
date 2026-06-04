@@ -100,6 +100,9 @@ if ( $term && $term->parent ) {
 
 <!-- Bean Grid -->
 <div class="cbi-container">
+    <h2 class="cbi-section__heading" style="margin-top:var(--space-8);">
+        <?php echo esc_html( $bean_count ); ?> <?php echo esc_html( $term_name ); ?> bean<?php echo 1 !== $bean_count ? 's' : ''; ?>
+    </h2>
     <div class="bean-grid">
         <?php if ( have_posts() ) :
             while ( have_posts() ) : the_post();

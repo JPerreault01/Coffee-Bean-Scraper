@@ -452,6 +452,75 @@ function cbi_bean_schema() {
     }
 
     echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+
+    // BreadcrumbList — mirrors the .bean-hero__breadcrumb nav in single-bean.php
+    $roasters_bc  = get_the_terms( $post_id, 'roaster' );
+    $bc_items     = [
+        [ '@type' => 'ListItem', 'position' => 1, 'name' => 'Home',  'item' => home_url() ],
+        [ '@type' => 'ListItem', 'position' => 2, 'name' => 'Beans', 'item' => get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' ) ],
+    ];
+    $bc_pos = 3;
+    if ( $roasters_bc && ! is_wp_error( $roasters_bc ) ) {
+        $bc_items[] = [
+            '@type'    => 'ListItem',
+            'position' => $bc_pos++,
+            'name'     => $roasters_bc[0]->name,
+            'item'     => get_term_link( $roasters_bc[0] ),
+        ];
+    }
+    $bc_items[] = [ '@type' => 'ListItem', 'position' => $bc_pos, 'name' => $title, 'item' => $url ];
+    echo '<script type="application/ld+json">' . wp_json_encode( [
+        '@context'        => 'https://schema.org',
+        '@type'           => 'BreadcrumbList',
+        'itemListElement' => $bc_items,
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+
+    // FAQPage — built from ACF fields; only outputs when field data exists
+    if ( $has_acf ) {
+        $faq_entries = [];
+
+        $tasting_raw = get_field( 'tasting_notes' );
+        if ( $tasting_raw ) {
+            $notes = array_filter( array_map( 'trim', explode( "\n", $tasting_raw ) ) );
+            if ( ! empty( $notes ) ) {
+                $faq_entries[] = [
+                    'q' => 'What does ' . $title . ' taste like?',
+                    'a' => implode( ' ', array_slice( $notes, 0, 3 ) ),
+                ];
+            }
+        }
+
+        $whos_for_raw = get_field( 'whos_for' );
+        if ( $whos_for_raw ) {
+            $faq_entries[] = [
+                'q' => 'Who is ' . $title . ' best for?',
+                'a' => $whos_for_raw,
+            ];
+        }
+
+        $whos_not_raw = get_field( 'whos_not_for' );
+        if ( $whos_not_raw ) {
+            $faq_entries[] = [
+                'q' => 'Who should skip ' . $title . '?',
+                'a' => $whos_not_raw,
+            ];
+        }
+
+        if ( ! empty( $faq_entries ) ) {
+            $faq_schema = [
+                '@context'   => 'https://schema.org',
+                '@type'      => 'FAQPage',
+                'mainEntity' => array_map( function ( $faq ) {
+                    return [
+                        '@type'          => 'Question',
+                        'name'           => $faq['q'],
+                        'acceptedAnswer' => [ '@type' => 'Answer', 'text' => $faq['a'] ],
+                    ];
+                }, $faq_entries ),
+            ];
+            echo '<script type="application/ld+json">' . wp_json_encode( $faq_schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+        }
+    }
 }
 
 // ============================================================
@@ -620,6 +689,47 @@ function cbi_force_no_sidebar( $layout ) {
         return 'no-sidebar';
     }
     return $layout;
+}
+
+// ============================================================
+// 19. SCHEMA MARKUP — taxonomy archive pages (ItemList)
+//
+//     archive-bean.php already outputs its own ItemList inline.
+//     This covers the six custom taxonomy archives routed via
+//     taxonomy-bean-archive.php, which previously had only BreadcrumbList.
+// ============================================================
+
+add_action( 'wp_head', 'cbi_taxonomy_schema' );
+function cbi_taxonomy_schema() {
+    $our_taxes = [ 'flavor-note', 'origin', 'roast-level', 'process-method', 'brew-method', 'roaster' ];
+    if ( ! is_tax( $our_taxes ) ) return;
+
+    global $wp_query;
+    if ( empty( $wp_query->posts ) ) return;
+
+    $term  = get_queried_object();
+    $items = [];
+    foreach ( $wp_query->posts as $i => $post ) {
+        $items[] = [
+            '@type'    => 'ListItem',
+            'position' => $i + 1,
+            'name'     => get_the_title( $post->ID ),
+            'url'      => get_permalink( $post->ID ),
+        ];
+    }
+
+    $schema = [
+        '@context'        => 'https://schema.org',
+        '@type'           => 'ItemList',
+        'name'            => $term->name . ' Coffee Beans — Coffee Bean Index',
+        'numberOfItems'   => count( $items ),
+        'itemListElement' => $items,
+    ];
+    if ( $term->description ) {
+        $schema['description'] = wp_strip_all_tags( $term->description );
+    }
+
+    echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
 }
 
 // Explicitly signal GP that custom pages use the full container width.

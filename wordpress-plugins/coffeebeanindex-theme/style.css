@@ -28,7 +28,7 @@ Version: 2.0.0
   /* Text — espresso hierarchy */
   --cbi-text:         #1c1410;
   --cbi-text-muted:   #5c5048;
-  --cbi-text-dim:     #9c8e82;
+  --cbi-text-dim:     #73655b; /* darkened from #9c8e82 — WCAG AA 4.5:1 on --cbi-bg */
 
   /* Accent — oxblood */
   --cbi-accent:       #9e2b0e;
@@ -1054,6 +1054,8 @@ details[open] .cbi-faq__question::after {
   color: var(--cbi-text);
 }
 
+/* H3 retained for backward compat with editor-authored subsections */
+.review-body h2,
 .review-body h3 {
   font-family: var(--font-body);
   font-size: var(--text-xs);
