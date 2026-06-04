@@ -596,3 +596,45 @@ function cbi_hide_title_on_custom_templates( $show ) {
     if ( is_page_template( [ 'template-roundup.php', 'template-comparison.php', 'template-guide.php', 'page-explore.php' ] ) ) return false;
     return $show;
 }
+
+// ============================================================
+// 18. GP — force no-sidebar + full-width on all custom templates
+//
+//     Without this filter, GP falls back to its global Customizer
+//     layout (usually "Content + Sidebar") and injects an empty
+//     .widget-area column next to custom content, shrinking
+//     .content-area and breaking every custom grid layout.
+//     This is the primary fix for the phantom sidebar / squeezed
+//     column issues on bean, taxonomy, and homepage templates.
+// ============================================================
+
+add_filter( 'generate_sidebar_layout', 'cbi_force_no_sidebar' );
+function cbi_force_no_sidebar( $layout ) {
+    if (
+        is_singular( 'bean' )
+        || is_post_type_archive( 'bean' )
+        || is_tax( [ 'flavor-note', 'origin', 'roast-level', 'process-method', 'brew-method', 'roaster' ] )
+        || is_page_template( [ 'template-roundup.php', 'template-comparison.php', 'template-guide.php', 'page-explore.php' ] )
+        || is_front_page()
+    ) {
+        return 'no-sidebar';
+    }
+    return $layout;
+}
+
+// Explicitly signal GP that custom pages use the full container width.
+// Prevents GP's content-width calculation from reserving sidebar space
+// even when the sidebar filter already suppresses the widget-area output.
+add_filter( 'generate_content_width', 'cbi_force_full_content_width' );
+function cbi_force_full_content_width( $width ) {
+    if (
+        is_singular( 'bean' )
+        || is_post_type_archive( 'bean' )
+        || is_tax( [ 'flavor-note', 'origin', 'roast-level', 'process-method', 'brew-method', 'roaster' ] )
+        || is_page_template( [ 'template-roundup.php', 'template-comparison.php', 'template-guide.php', 'page-explore.php' ] )
+        || is_front_page()
+    ) {
+        return 100;
+    }
+    return $width;
+}

@@ -43,7 +43,7 @@ $has_acf       = function_exists( 'get_field' );
                 </p>
                 <div class="home-hero__cta">
                     <a class="cbi-btn cbi-btn--primary" href="<?php echo esc_url( get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' ) ); ?>">Browse all beans</a>
-                    <a class="cbi-btn cbi-btn--secondary" href="<?php echo esc_url( home_url( '/find-your-coffee/' ) ); ?>">Find your coffee &rarr;</a>
+                    <a class="cbi-btn cbi-btn--secondary" href="<?php echo esc_url( home_url( '/explore/' ) ); ?>">Explore by flavor &amp; origin &rarr;</a>
                 </div>
             </div>
             <ul class="home-hero__stats">
