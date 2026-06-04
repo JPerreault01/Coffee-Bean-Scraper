@@ -23,7 +23,7 @@
 | `--cbi-border-light` | `#e2d8cc` | Lighter borders |
 | `--cbi-text` | `#1c1410` | Near-black espresso text |
 | `--cbi-text-muted` | `#5c5048` | Body copy, descriptions |
-| `--cbi-text-dim` | `#9c8e82` | Metadata, captions, labels |
+| `--cbi-text-dim` | `#73655b` | Metadata, captions, labels (WCAG AA on --cbi-bg) |
 | `--cbi-accent` | `#9e2b0e` | Oxblood — primary accent |
 | `--cbi-accent-light` | `#c03a18` | Hover state |
 | `--cbi-accent-dark` | `#7a2008` | Active/pressed |

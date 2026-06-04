@@ -305,37 +305,77 @@ get_header(); ?>
             </div>
             <?php endif; ?>
 
-            <!-- Review Body -->
+            <!-- Review Body — section headings use H2 (direct subsections of the H1 bean title) -->
             <div class="cbi-section">
                 <div class="review-body">
                     <?php if ( $whos_for ) : ?>
-                    <h3>Who it&rsquo;s for</h3>
+                    <h2>Who it&rsquo;s for</h2>
                     <p><?php echo esc_html( $whos_for ); ?></p>
                     <?php endif; ?>
 
                     <?php if ( $whos_not_for ) : ?>
-                    <h3>Who should skip it</h3>
+                    <h2>Who should skip it</h2>
                     <p><?php echo esc_html( $whos_not_for ); ?></p>
                     <?php endif; ?>
 
                     <?php if ( get_the_content() ) : ?>
-                    <h3>Full review</h3>
+                    <h2>Full review</h2>
                     <?php the_content(); ?>
                     <?php endif; ?>
 
                     <?php if ( $price_analysis ) : ?>
-                    <h3>Price analysis</h3>
+                    <h2>Price analysis</h2>
                     <p><?php echo esc_html( $price_analysis ); ?></p>
                     <?php endif; ?>
 
                     <?php if ( $rating !== '' && $rating !== null ) : ?>
-                    <h3>Rating</h3>
+                    <h2>Rating</h2>
                     <p style="font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:500;color:var(--cbi-accent);font-variant-numeric:tabular-nums;">
                         <?php echo esc_html( $rating ); ?>/10
                     </p>
                     <?php endif; ?>
                 </div>
             </div>
+
+            <!-- FAQ Accordion — sourced from ACF fields; visible + searchable  -->
+            <?php
+            $faq_items = [];
+            if ( $tasting_notes ) {
+                $notes_arr = array_filter( array_map( 'trim', explode( "\n", $tasting_notes ) ) );
+                if ( ! empty( $notes_arr ) ) {
+                    $faq_items[] = [
+                        'q' => 'What does ' . $title . ' taste like?',
+                        'a' => implode( ' ', array_slice( $notes_arr, 0, 3 ) ),
+                    ];
+                }
+            }
+            if ( $whos_for ) {
+                $faq_items[] = [
+                    'q' => 'Who is ' . $title . ' best for?',
+                    'a' => $whos_for,
+                ];
+            }
+            if ( $whos_not_for ) {
+                $faq_items[] = [
+                    'q' => 'Who should skip ' . $title . '?',
+                    'a' => $whos_not_for,
+                ];
+            }
+            if ( ! empty( $faq_items ) ) : ?>
+            <div class="cbi-section">
+                <div class="cbi-section__heading">FAQ</div>
+                <div class="cbi-faq">
+                    <?php foreach ( $faq_items as $faq_item ) : ?>
+                    <details class="cbi-faq__item">
+                        <summary class="cbi-faq__question"><?php echo esc_html( $faq_item['q'] ); ?></summary>
+                        <div class="cbi-faq__answer">
+                            <p><?php echo esc_html( $faq_item['a'] ); ?></p>
+                        </div>
+                    </details>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
 
             <!-- Price History Chart — shortcode preserves product_id linkage to SQLite -->
             <?php if ( $product_id ) : ?>
