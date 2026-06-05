@@ -23,5 +23,5 @@ data/*.json
 
 # Local design-QA screenshots (Stage 2 visual verification)
 .tmp-shots/
-# Stray empty artifact
-/[
+# Stray empty artifact (literal bracket file from a shell mishap)
+/\[
