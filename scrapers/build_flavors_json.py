@@ -91,7 +91,7 @@ def build_affiliate_url(product):
     if asin:
         if tag:
             return f"https://www.amazon.com/dp/{asin}?tag={tag}"
-        return f"https://www.amazon.com/dp/{asin}"
+        return f"https://www.amazon.com/dp/{asin}?tag=coffeebeanind-20"
     roaster_url = product.get("roaster_url")
     if roaster_url:
         return roaster_url

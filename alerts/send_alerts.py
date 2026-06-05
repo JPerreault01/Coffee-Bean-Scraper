@@ -123,11 +123,11 @@ def record_alert(
 
 def build_affiliate_url(product: dict) -> str:
     asin = product.get("amazon_asin")
-    tag = product.get("affiliate_tag")
-    if asin and tag:
+    tag = product.get("affiliate_tag") or "coffeebeanind-20"
+    if asin:
         return f"https://www.amazon.com/dp/{asin}?tag={tag}"
     roaster_url = product.get("roaster_url", "")
-    if roaster_url and tag:
+    if roaster_url:
         sep = "&" if "?" in roaster_url else "?"
         return f"{roaster_url}{sep}ref={tag}"
     return product.get("roaster_url", "")

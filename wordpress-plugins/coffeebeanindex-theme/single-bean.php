@@ -20,6 +20,7 @@ get_header(); ?>
     $price_per_oz   = $has_acf ? get_field( 'price_per_oz' )    : '';
     $current_price  = $has_acf ? get_field( 'current_price' )   : '';
     $amazon_url     = $has_acf ? get_field( 'amazon_affiliate_url' ) : '';
+    $amazon_asin    = $has_acf ? get_field( 'amazon_asin' )          : '';
     $roaster_url    = $has_acf ? get_field( 'roaster_url' )     : '';
     $product_id     = $has_acf ? get_field( 'product_id' )      : '';
     $acidity        = $has_acf ? get_field( 'acidity' )         : '';
@@ -475,6 +476,13 @@ get_header(); ?>
         <aside class="bean-sidebar">
 
             <!-- Buy Box -->
+            <?php
+            // Build Amazon URL from ASIN if amazon_affiliate_url ACF field is empty.
+            // Every outbound Amazon link must carry the affiliate tag — never link bare.
+            if ( ! $amazon_url && $amazon_asin ) {
+                $amazon_url = 'https://www.amazon.com/dp/' . rawurlencode( $amazon_asin ) . '?tag=coffeebeanind-20';
+            }
+            ?>
             <div class="buy-box">
                 <div class="buy-box__title">Buy This Bean</div>
 
