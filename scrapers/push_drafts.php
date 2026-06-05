@@ -101,6 +101,30 @@ foreach ( $files as $file ) {
         $price_analysis = trim( $pa );
     }
 
+    // --- Parse RankMath meta from the <!--META ... --> header ---
+    $meta_title = '';
+    $meta_desc  = '';
+    if ( preg_match( '/<!--META\s*(.*?)-->/si', $content, $match ) ) {
+        $meta_block = $match[1];
+        if ( preg_match( '/meta_title:\s*(.+)/i', $meta_block, $mt ) ) {
+            $meta_title = trim( $mt[1] );
+        }
+        if ( preg_match( '/meta_description:\s*(.+)/i', $meta_block, $md ) ) {
+            $meta_desc = trim( $md[1] );
+        }
+    }
+
+    // --- Parse "Explore further" internal links → HTML for post_content ---
+    $body_html = '';
+    if ( preg_match( '/###\s*Explore further\s*\n(.*?)(?=\n###|\n---|\z)/si', $content, $match ) ) {
+        $links_md = trim( $match[1] );
+        // Convert [text](/url/) → <a href="/url/">text</a>
+        $links_html = preg_replace( '/\[([^\]]+)\]\(([^)]+)\)/', '<a href="$2">$1</a>', $links_md );
+        if ( $links_html ) {
+            $body_html = '<p>' . trim( $links_html ) . '</p>';
+        }
+    }
+
     // --- Validate we got the minimum fields ---
     if ( empty( $verdict ) || empty( $rating ) ) {
         WP_CLI::warning( "SKIP  {$product_id} — draft looks incomplete (missing verdict or rating). Is it a clarifying-question file?" );
@@ -120,10 +144,24 @@ foreach ( $files as $file ) {
         update_field( 'price_per_oz', $price_per_oz, $post->ID );
     }
 
-    // Set post status to draft (keeps it unpublished until you review it)
-    wp_update_post( [ 'ID' => $post->ID, 'post_status' => 'draft' ] );
+    // --- RankMath meta (per-post overrides the CPT title template) ---
+    if ( $meta_title ) {
+        update_post_meta( $post->ID, 'rank_math_title', $meta_title );
+    }
+    if ( $meta_desc ) {
+        update_post_meta( $post->ID, 'rank_math_description', $meta_desc );
+    }
 
-    WP_CLI::success( "UPDATED {$product_id} (post #{$post->ID}) — verdict, rating {$rating}/10, " . count( explode( "\n", $tasting_notes ) ) . " tasting notes" );
+    // --- Post body: internal links render under "Full review" in single-bean.php ---
+    $post_update = [ 'ID' => $post->ID, 'post_status' => 'draft' ];
+    if ( $body_html ) {
+        $post_update['post_content'] = $body_html;
+    }
+    wp_update_post( $post_update );
+
+    $meta_note = $meta_title ? ' + meta' : '';
+    $body_note = $body_html ? ' + internal links' : '';
+    WP_CLI::success( "UPDATED {$product_id} (post #{$post->ID}) — verdict, rating {$rating}/10, " . count( explode( "\n", $tasting_notes ) ) . " tasting notes{$meta_note}{$body_note}" );
     $updated++;
 }
 

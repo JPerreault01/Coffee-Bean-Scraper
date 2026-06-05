@@ -56,11 +56,23 @@ def reference_block(product: dict) -> str:
         return ""
 
 
-ENV_FILE = Path("/opt/.env")
-DB_PATH = Path("/opt/data/prices.db")
-PRODUCTS_FILE = Path("/opt/scrapers/products.json")
-STYLE_GUIDE_FILE = Path("/opt/scrapers/style_guide.txt")
-DRAFTS_DIR = Path("/opt/drafts")
+# Paths prefer the live VPS layout (/opt/...) but fall back to the repo so the
+# generator can be run and tested locally (e.g. `python scrapers/generate_review.py
+# <id> --mock`). Server behaviour is unchanged: on the VPS the /opt paths exist.
+_SCRAPERS_DIR = Path(__file__).resolve().parent
+_REPO_ROOT = _SCRAPERS_DIR.parent
+
+
+def _resolve(opt_path: str, repo_path: Path) -> Path:
+    opt = Path(opt_path)
+    return opt if opt.exists() else repo_path
+
+
+ENV_FILE = _resolve("/opt/.env", _REPO_ROOT / ".env")
+DB_PATH = _resolve("/opt/data/prices.db", _REPO_ROOT / "data" / "prices.db")
+PRODUCTS_FILE = _resolve("/opt/scrapers/products.json", _SCRAPERS_DIR / "products.json")
+STYLE_GUIDE_FILE = _resolve("/opt/scrapers/style_guide.txt", _SCRAPERS_DIR / "style_guide.txt")
+DRAFTS_DIR = Path("/opt/drafts") if Path("/opt").exists() else (_REPO_ROOT / "drafts")
 
 # ---------------------------------------------------------------------------
 # Fallback style guide — used if style_guide.txt does not exist on disk.
@@ -234,6 +246,92 @@ def build_price_summary(history: list[dict]) -> str:
     )
 
 
+def slugify(value: str) -> str:
+    """Approximate WordPress sanitize_title() so internal links match the real
+    taxonomy term slugs created by create_beans (which uses sanitize_title)."""
+    import re
+    import unicodedata
+
+    value = unicodedata.normalize("NFKD", str(value)).encode("ascii", "ignore").decode("ascii")
+    value = value.lower()
+    value = re.sub(r"[^a-z0-9]+", "-", value)
+    return value.strip("-")
+
+
+# Real taxonomy rewrite slugs (see functions.php cbi_register_taxonomies):
+#   origin -> /origin/   roast-level -> /roast/   roaster -> /roaster/
+def build_internal_links(product: dict) -> list[dict]:
+    """Deterministic internal links to this bean's origin guide, roast-level
+    guide, and roaster archive. Built from product data so the model never has
+    to invent a slug. Returns an ordered list of {label, url} dicts."""
+    links = []
+    roast = (product.get("roast_level") or "").strip()
+    origin = (product.get("origin") or "").strip()
+    brand = (product.get("brand") or "").strip()
+    if roast:
+        links.append({"label": f"{roast} roast guide", "url": f"/roast/{slugify(roast)}/"})
+    if origin:
+        links.append({"label": f"{origin} origin guide", "url": f"/origin/{slugify(origin)}/"})
+    if brand:
+        links.append({"label": f"more from {brand}", "url": f"/roaster/{slugify(brand)}/"})
+    return links
+
+
+def internal_links_section(product: dict) -> str:
+    """Markdown '### Explore further' block with ≥1 link each to origin, roast,
+    and roaster archives. push_drafts.php converts these into the post body."""
+    links = build_internal_links(product)
+    if not links:
+        return ""
+    phrases = [f"[{l['label']}]({l['url']})" for l in links]
+    if len(phrases) > 1:
+        joined = ", ".join(phrases[:-1]) + ", and " + phrases[-1]
+    else:
+        joined = phrases[0]
+    return f"### Explore further\nKeep pulling the thread: {joined}.\n"
+
+
+def meta_title(product: dict) -> str:
+    """SEO title in the required format: '[Product] Review — [Roaster] | Coffee Bean Index'."""
+    brand = (product.get("brand") or "").strip()
+    if brand:
+        return f"{product['name']} Review — {brand} | Coffee Bean Index"
+    return f"{product['name']} Review | Coffee Bean Index"
+
+
+def meta_description_mock(product: dict) -> str:
+    """Deterministic ≤155-char meta description for --mock (the live API writes its own)."""
+    roast = (product.get("roast_level") or "").strip().lower()
+    brand = (product.get("brand") or "").strip()
+    brews = ", ".join(product.get("best_brew_methods", [])[:2]) or "everyday brewing"
+    desc = (
+        f"{product['name']}: a {roast} roast from {brand} built for {brews}. "
+        f"Tasting notes, sensory profile, daily price tracking, and our verdict."
+    )
+    if len(desc) <= 155:
+        return desc
+    return desc[:152].rsplit(" ", 1)[0] + "…"
+
+
+def meta_header(product: dict, description: str) -> str:
+    """HTML-comment metadata block parsed by push_drafts.php into RankMath fields.
+    Invisible in rendered markdown; sits above the H1."""
+    return (
+        "<!--META\n"
+        f"meta_title: {meta_title(product)}\n"
+        f"meta_description: {description}\n"
+        "-->\n\n"
+    )
+
+
+# FTC affiliate disclosure — rendered near the top of the draft (the live page
+# also shows one via the template; this keeps the draft itself compliant).
+DISCLOSURE_TOP = (
+    "*This page contains affiliate links. We may earn commissions from "
+    "qualifying purchases at no extra cost to you.*"
+)
+
+
 def build_prompt(product: dict, price_summary: str, style_guide: str, personal: bool) -> str:
     best_brew = ", ".join(product.get("best_brew_methods", []))
     flavor_notes = ", ".join(product.get("flavor_notes", []))
@@ -298,6 +396,11 @@ HALLUCINATION SAFEGUARD (applies in both voice modes):
   "pull short" not "pull to 25 seconds"; "keep water off the boil" not "brew at 94°C".
 - Leave any spec table cell blank (write only the label) rather than guessing."""
 
+    # Deterministic SEO scaffolding — the model must reproduce these verbatim,
+    # not invent slugs or a different title.
+    mtitle = meta_title(product)
+    links_md = internal_links_section(product)
+
     return f"""You are writing a coffee bean product review for a niche affiliate website.
 The review will be edited by a human before publication.
 
@@ -336,8 +439,18 @@ Every review must include all three of the following:
 ## Required output format
 
 Write the review exactly in this structure. No preamble. No additional sections.
+Reproduce the META block, the disclosure line, and the "Explore further" block
+EXACTLY as given — do not change the title, the URLs, or the link text. Replace
+only the bracketed placeholders (including the meta_description) with your copy.
+
+<!--META
+meta_title: {mtitle}
+meta_description: [One sentence, 120–155 characters. Plain, specific, no hedging. Describe what this coffee is and who it's for. No quotation marks.]
+-->
 
 ## {product['name']} Review
+
+{DISCLOSURE_TOP}
 
 **One-line verdict**: [One declarative sentence. No hedge words. States exactly what this coffee is.]
 
@@ -365,6 +478,7 @@ Write the review exactly in this structure. No preamble. No additional sections.
 ### Rating: X/10
 [One sentence. Justify the number specifically.]
 
+{links_md}
 ---
 *[Affiliate disclosure: links in this review are affiliate links. Prices accurate at time of writing.]*
 """
@@ -463,7 +577,12 @@ def generate_mock(product: dict, price_summary: str, personal: bool) -> str:
         )
         skip = "Skip it if the profile sounds one-dimensional — it is. That's not a flaw, it's the design."
 
-    return f"""## {product['name']} Review
+    meta_desc = meta_description_mock(product)
+    links_md = internal_links_section(product)
+
+    return f"""{meta_header(product, meta_desc)}## {product['name']} Review
+
+{DISCLOSURE_TOP}
 
 **One-line verdict**: {verdict}
 
@@ -490,6 +609,7 @@ Drip and french press drinkers who want a reliable daily driver. Not a special o
 ### Rating: X/10
 [Mock draft — edit rating and justification before publishing.]
 
+{links_md}
 ---
 *[Affiliate disclosure: links in this review are affiliate links. Prices accurate at time of writing.]*
 
