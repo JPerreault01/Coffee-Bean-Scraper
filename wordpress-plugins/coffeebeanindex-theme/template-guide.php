@@ -63,9 +63,8 @@ while ( have_posts() ) : the_post();
     <div class="cbi-container">
         <?php
         cbi_breadcrumb( [
-            [ 'label' => 'Home',          'url' => home_url() ],
-            [ 'label' => 'Guides',        'url' => home_url( '/guides/' ) ],
-            [ 'label' => $title,          'url' => $url ],
+            [ 'label' => 'Home',  'url' => home_url() ],
+            [ 'label' => $title,  'url' => $url ],
         ] );
         ?>
         <p class="guide-hero__category"><?php echo esc_html( $category ); ?></p>

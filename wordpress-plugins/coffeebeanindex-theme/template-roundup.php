@@ -49,9 +49,9 @@ while ( have_posts() ) : the_post();
     <div class="cbi-container">
         <?php
         cbi_breadcrumb( [
-            [ 'label' => 'Home',  'url' => home_url() ],
-            [ 'label' => 'Roundups', 'url' => home_url( '/category/roundups/' ) ],
-            [ 'label' => $title, 'url' => $url ],
+            [ 'label' => 'Home',    'url' => home_url() ],
+            [ 'label' => 'Reviews', 'url' => get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' ) ],
+            [ 'label' => $title,    'url' => $url ],
         ] );
         ?>
         <p class="roundup-hero__eyebrow">Roundup &middot; <?php echo get_the_date( 'F Y' ); ?></p>

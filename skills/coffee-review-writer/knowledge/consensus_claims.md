@@ -1,0 +1,1051 @@
+# Consensus Claims
+
+*What the curated coffee community agrees on. State these with confidence in the review — do not hedge what is settled.*
+
+## Cold Brew
+
+- Atomo Coffee began with a Kickstarter campaign in 2019 and had its first public release a couple of weeks prior to the video. *(via HmOidaY_30w)*
+- Atomo raised nearly $12 million in funding and spent time in research and development. *(via HmOidaY_30w)*
+- Coffee is a complicated organism containing hundreds of volatile and non-volatile compounds that create its smell, taste, texture, color, and caffeine. *(via HmOidaY_30w)*
+- Atomo's launch pack contains two ready-to-drink cold brews: a Classic Roast and an Ultra Smooth. *(via HmOidaY_30w)*
+- Eight 8-ounce cans of Atomo cost $59.99 with shipping included. *(via HmOidaY_30w)*
+- Subtracting approximately $10 for shipping, each can costs roughly $6.25. *(via HmOidaY_30w)*
+- Atomo claimed that before their product, you couldn't get coffee not linked to deforestation. *(via HmOidaY_30w)*
+- Atomo did not address the potential impact of their planned industry disruption on the livelihoods of millions of coffee farmers. *(via HmOidaY_30w)*
+
+## Equipment Review
+
+- The Breville Barista Express was found at a Target store at 70% off, priced at $209.99. *(via 1oua7ug)*
+- The standard retail price of the Breville Barista Express is approximately $700.00. *(via 1oua7ug)*
+- The deal was found at a newly opened Target location. *(via 1oua7ug)*
+- The poster was previously using a KitchenAid KES6403 espresso machine that had been gifted to them. *(via 1oua7ug)*
+- The poster had been planning to purchase the Barista Express on Black Friday before finding this deal. *(via 1oua7ug)*
+- The source text contains no coffee-related claims or information. *(via 3iKYO4G1Hr0)*
+
+## Espresso
+
+- Only 20 years ago, the majority of coffee shops used traditional Italian espresso machines. *(via https://perfectdailygrind.com/2024/11/future-for-espresso-machine-technology/)*
+- Pressure profiling, thermal stability, and flow rate regulation are now hallmarks of modern espresso machines. *(via https://perfectdailygrind.com/2024/11/future-for-espresso-machine-technology/)*
+- The emergence of third wave coffee in the early 2000s brought an increasing focus on the craft and artisanry of roasting and brewing coffee. *(via https://perfectdailygrind.com/2024/11/future-for-espresso-machine-technology/)*
+- Dose, yield, and time are still key parameters in espresso extraction. *(via https://perfectdailygrind.com/2024/11/future-for-espresso-machine-technology/)*
+- A PID controller monitors the boiler's water temperature and makes adjustments as needed. *(via https://perfectdailygrind.com/2024/11/future-for-espresso-machine-technology/)*
+- Super-automatic espresso machines carry out most of the steps in espresso and milk preparation for the barista. *(via https://perfectdailygrind.com/2024/11/future-for-espresso-machine-technology/)*
+- Super-automatics are found in coffee shops such as Blank Street and used at competitions like the World Latte Art Championship. *(via https://perfectdailygrind.com/2024/11/future-for-espresso-machine-technology/)*
+- Historically, specialty coffee was hesitant to embrace automation, fearing it would water down its focus and dedication to craft and quality. *(via https://perfectdailygrind.com/2024/11/future-for-espresso-machine-technology/)*
+- High staff turnover and rising costs (including a 27-year high C price and rising inflation) are challenges facing coffee businesses. *(via https://perfectdailygrind.com/2024/11/future-for-espresso-machine-technology/)*
+- Espresso has many variables affecting extraction, including brew ratio, extraction pressure, extraction temperature, dosing, tamping, and distribution. *(via https://perfectdailygrind.com/2018/11/how-to-improve-consistency-when-making-espresso-based-drinks/)*
+- Consistency is harder to maintain during peak hours when baristas are under pressure and queues are long. *(via https://perfectdailygrind.com/2018/11/how-to-improve-consistency-when-making-espresso-based-drinks/)*
+- Cross-selling, up-selling, and customer service interactions can negatively affect a barista's focus and consistency. *(via https://perfectdailygrind.com/2018/11/how-to-improve-consistency-when-making-espresso-based-drinks/)*
+- Without good barista training, investments in equipment, roasters, and processes will not produce consistent espresso. *(via https://perfectdailygrind.com/2018/11/how-to-improve-consistency-when-making-espresso-based-drinks/)*
+- Good workflow allows baristas to work more efficiently, freeing attention for beverage quality. *(via https://perfectdailygrind.com/2018/11/how-to-improve-consistency-when-making-espresso-based-drinks/)*
+- Repeating actions the same way every time — such as always tapping the portafilter in the same manner — embeds positive habits and improves consistency. *(via https://perfectdailygrind.com/2018/11/how-to-improve-consistency-when-making-espresso-based-drinks/)*
+- Cleaning the portafilter after every shot is cited as an example of a habit that should become automatic. *(via https://perfectdailygrind.com/2018/11/how-to-improve-consistency-when-making-espresso-based-drinks/)*
+- In specialty coffee, every small variation is more noticeable to customers than in second-wave or commercial coffee shops. *(via https://perfectdailygrind.com/2018/11/how-to-improve-consistency-when-making-espresso-based-drinks/)*
+- Commercial coffee shops typically offer a single blend and customers do not ask about origin or flavor, making apparent consistency easier to maintain. *(via https://perfectdailygrind.com/2018/11/how-to-improve-consistency-when-making-espresso-based-drinks/)*
+- Specialty coffee shops educate customers about coffee's worth, comparable to wine or food. *(via https://perfectdailygrind.com/2018/11/how-to-improve-consistency-when-making-espresso-based-drinks/)*
+- Most conventional moka pots are made of aluminium. *(via https://perfectdailygrind.com/2021/07/cleaning-your-coffee-brewer-at-home/)*
+- Old, residual coffee particles release their acids when exposed to hot water. *(via https://perfectdailygrind.com/2021/07/cleaning-your-coffee-brewer-at-home/)*
+- When not properly cleaned, coffee particles can cause aluminium to corrode over time and release metals into the coffee. *(via https://perfectdailygrind.com/2021/07/cleaning-your-coffee-brewer-at-home/)*
+- Aluminium is porous, and coffee compounds attach to these pores and become very difficult to remove. *(via https://perfectdailygrind.com/2021/07/cleaning-your-coffee-brewer-at-home/)*
+- Corrosion compounds the difficulty of cleaning porous aluminium. *(via https://perfectdailygrind.com/2021/07/cleaning-your-coffee-brewer-at-home/)*
+- The moka pot gasket seal (the circular seal between the two halves of the pot) is commonly overlooked in maintenance. *(via https://perfectdailygrind.com/2021/07/cleaning-your-coffee-brewer-at-home/)*
+- All pieces of the moka pot should be completely dry before reassembling to avoid mildew or condensation build-up. *(via https://perfectdailygrind.com/2021/07/cleaning-your-coffee-brewer-at-home/)*
+- The moka pot should not be cleaned with only a damp cloth or plain water rinse. *(via https://perfectdailygrind.com/2021/07/cleaning-your-coffee-brewer-at-home/)*
+- Dishwashers, vinegar, and lemon juice should be avoided for cleaning moka pots as these can cause corrosion. *(via https://perfectdailygrind.com/2021/07/cleaning-your-coffee-brewer-at-home/)*
+- The French press filter should be thoroughly cleaned at least once a month for heavy users. *(via https://perfectdailygrind.com/2021/07/cleaning-your-coffee-brewer-at-home/)*
+- The AeroPress rubber seal should be removed and cleaned inside and out about once a month to remove oil buildup. *(via https://perfectdailygrind.com/2021/07/cleaning-your-coffee-brewer-at-home/)*
+- Every part of a brewer should be completely dry before reassembly to avoid mold risk. *(via https://perfectdailygrind.com/2021/07/cleaning-your-coffee-brewer-at-home/)*
+- More than 25 million farmers around the world depend on coffee for income. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- Coffee lovers around the globe drink approximately two billion cups of coffee every single day, according to The British Coffee Association. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- Coffee is made by extracting flavours and aromas from roasted, ground coffee seeds using hot water, then filtering out the grounds. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- Instant coffee is brewed the same way as regular coffee but is then dehydrated so consumers can add hot water to drink it. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- Under-extracted coffee tastes sour and acidic; over-extracted coffee tastes bitter; perfectly extracted coffee is sweet and balanced. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- Each coffee cherry normally contains two seeds; peaberries occur when the seeds fail to separate, resulting in one round seed. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- The two main commercial coffee species are Arabica and Robusta. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- Arabica tastes better and is more aromatic but the plants are more vulnerable; Robusta is more robust, more bitter, and more caffeinated. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- The Geisha/Gesha variety is known for being floral and tea-like; Bourbon tends towards sweetness; Pacamara has a reputation for being aromatic with a good mouthfeel. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- Origin affects flavour: a Rwandan Bourbon can taste very different from a Salvadoran Bourbon due to soil and climate. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- The most common coffee processing methods are washed/wet, natural/dry, and honey/pulped natural. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- Washed coffee is often cleaner, allowing the taste of origin and variety to shine. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- Natural/dry processed coffees are sweeter and fuller-bodied but can be more inconsistent. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- Honey and pulped natural coffees tend towards sweetness and body, with exact degree depending on finer processing details. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- The Chemex brewer is nearly 80 years old; the syphon and cezve/ibrik have been around for centuries. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- World brewing championships exist for espresso-based drinks, manual brewing, the Cezve/Ibrik, and more. *(via https://perfectdailygrind.com/2018/02/what-is-coffee-the-5-faces-of-our-favourite-drink/)*
+- Filter coffee is approximately 98% water, making water quality instrumental to extraction and flavour. *(via https://perfectdailygrind.com/2023/05/how-do-specialty-coffee-shops-filter-water/)*
+- The chemical composition and mineral content of tap water can vary widely depending on location. *(via https://perfectdailygrind.com/2023/05/how-do-specialty-coffee-shops-filter-water/)*
+- Higher levels of minerals and compounds in water can leave chalky limescale deposits, especially in espresso machine pipes and boilers. *(via https://perfectdailygrind.com/2023/05/how-do-specialty-coffee-shops-filter-water/)*
+- Limescale forms when calcium and/or magnesium in water fuses with carbonates. *(via https://perfectdailygrind.com/2023/05/how-do-specialty-coffee-shops-filter-water/)*
+- Water hardness is measured in parts per million (ppm). *(via https://perfectdailygrind.com/2023/05/how-do-specialty-coffee-shops-filter-water/)*
+- The Specialty Coffee Association recommends using water with a total hardness of 50 to 175ppm and a carbonate hardness between 40 and 75ppm. *(via https://perfectdailygrind.com/2023/05/how-do-specialty-coffee-shops-filter-water/)*
+- A total hardness of 100ppm or more, if not managed correctly, can lead to limescale deposits in espresso machine boilers and pipes. *(via https://perfectdailygrind.com/2023/05/how-do-specialty-coffee-shops-filter-water/)*
+- The ratio of calcium to magnesium in tap water is generally around 3:1, reflecting the balance found in natural water sources. *(via https://perfectdailygrind.com/2023/05/how-do-specialty-coffee-shops-filter-water/)*
+- Activated carbon filtration removes contaminants such as chlorine, chloramine, and volatile organic compounds (VOCs), as well as off-tastes. *(via https://perfectdailygrind.com/2023/05/how-do-specialty-coffee-shops-filter-water/)*
+- Reverse osmosis (RO) removes around 95 to 97% of minerals (total dissolved solids) from water. *(via https://perfectdailygrind.com/2023/05/how-do-specialty-coffee-shops-filter-water/)*
+- RO works by forcing water through a semipermeable membrane at high pressure. *(via https://perfectdailygrind.com/2023/05/how-do-specialty-coffee-shops-filter-water/)*
+- RO is particularly popular with coffee shops in areas with higher water hardness levels (around 250ppm or over). *(via https://perfectdailygrind.com/2023/05/how-do-specialty-coffee-shops-filter-water/)*
+- Coffee-focused RO filtration systems include technologies that re-add minerals back into the filtered water to meet required levels. *(via https://perfectdailygrind.com/2023/05/how-do-specialty-coffee-shops-filter-water/)*
+- Multi-stage filtration systems often include fines, carbon, and solid membrane filtration steps. *(via https://perfectdailygrind.com/2023/05/how-do-specialty-coffee-shops-filter-water/)*
+- Cup shape, size, design, and weight can have a profound influence on barista workflow, comfort, and beverage preparation. *(via https://perfectdailygrind.com/2025/04/why-coffee-cup-design-is-important-for-baristas/)*
+- In 2018, Brazilian neuroscientist Dr. Fabiana Carvalho conducted a study suggesting that cup shape influences overall enjoyment and perception of sweetness and acidity. *(via https://perfectdailygrind.com/2025/04/why-coffee-cup-design-is-important-for-baristas/)*
+- Prior research found that the weight, texture, and shape of coffee cups have a considerable impact on sensory experiences. *(via https://perfectdailygrind.com/2025/04/why-coffee-cup-design-is-important-for-baristas/)*
+- A study found that 68% of surveyed baristas reported shoulder pain, while 73% experienced lower back pain, often attributed to repetitive strain injury (RSI). *(via https://perfectdailygrind.com/2025/04/why-coffee-cup-design-is-important-for-baristas/)*
+- RSI in baristas can be caused by performing the same movements repeatedly, such as tamping or placing portafilters in group heads. *(via https://perfectdailygrind.com/2025/04/why-coffee-cup-design-is-important-for-baristas/)*
+- For a cup to be considered ergonomic, it should have a handle located near the cup's centre of gravity and one wide enough for more than one finger to grip comfortably. *(via https://perfectdailygrind.com/2025/04/why-coffee-cup-design-is-important-for-baristas/)*
+- The design of espresso machines and grinders has a profound impact on barista workflow, especially with repeated movements throughout the day. *(via https://perfectdailygrind.com/2025/04/why-coffee-cup-design-is-important-for-baristas/)*
+- The layout of equipment on the bar affects how baristas move through the space. *(via https://perfectdailygrind.com/2025/04/why-coffee-cup-design-is-important-for-baristas/)*
+- Prior to the late 1940s, espresso machines could only brew under 2 bar of pressure, producing coffee more akin to a moka pot. *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- The piston lever, introduced after World War Two, increased brewing pressure from 1.5–2 bar to 8–10 bar. *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- Achille Gaggia discovered that boilers can force water into a cylinder before pushing it through a bed of coffee — the origin of the term 'pulling a shot.' *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- The increase in pressure to 8–10 bar also resulted in crema; Gaggia called it 'caffe creme.' *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- illycaffè defined a single espresso as 7g of coffee extracted between 88°C and 93°C under nine bar of pressure, producing no more than 30ml — a 1:4 coffee-to-water ratio. *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- Specialty coffee shops today commonly use 1:2 or 1:3 coffee-to-water ratios. *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- The traditional main component of Italian espresso blends was Brazilian arabica, not robusta. *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- The shift toward robusta in Italian blends began in the mid-1970s, driven by high inflation in Italy and a production crisis in Brazil. *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- Darker roasts became more prominent as robusta was added to blends, in order to mask overly bitter flavours. *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- Baristas also tightened coffee-to-water ratios as robusta use increased. *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- As specialty coffee emerged in the 1990s and 2000s, roasters began embracing lighter roasts to showcase quality and delicate flavours. *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- Espresso requires more solubility than filter coffee due to its shorter extraction times, making very light roasts less ideal. *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- Coarser grind sizes, shorter extraction times, and lower pressure have produced 'turbo shots,' resulting in sweeter and cleaner flavours. *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- Blue Bottle launched the First Espresso arabica-robusta blend in early 2024, described as paying homage to espresso of the 1950s. *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- Dark, roasty, robusta-heavy blends common in the late 1990s and early 2000s have largely been replaced with medium-to-light roasts and single-origin options. *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- Rising coffee prices in recent years have contributed to a revert toward blends and high-quality robusta. *(via https://perfectdailygrind.com/2024/10/espresso-is-changing-specialty-coffee/)*
+- There are two main types of coffee grinder: burr grinders and blade grinders. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- Blade grinders use spinning blades and control grind size by duration of grinding, not blade shape or size. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- Blade grinders are generally simpler and more cost-effective than burr grinders. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- Blade grinders are not especially precise or accurate, making it difficult to control and repeat a specific grind size. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- Burr grinders grind coffee between two ridged metal discs or plates called burrs. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- In a burr grinder, grind size is determined by the distance between the two burrs — closer burrs produce a finer grind. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- Burr grinders allow precise incremental adjustments to grind size. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- There are two main burr shapes: conical and flat. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- Electric home grinder burrs typically start at around 40mm in diameter, while commercial models begin around 60mm and can exceed 100mm. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- As burr size increases, so does the physical size of the grinder. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- Flat burrs retain more heat than conical burrs. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- Heat retention in flat burrs is less of a concern at home than in a coffee shop, but grinding many doses in quick succession can cause burrs to heat up and affect grind consistency. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- Burrs shift over time and through regular use, causing slight misalignment. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- Misalignment from wear is much more of an issue in a café setting than at home due to higher commercial use volume. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- Most high-quality home grinders have burrs of around 40mm and above. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- The G-IOTA grinder features 64mm flat burrs spinning at 1,400rpm, weighs 7kg, and can grind 18g of coffee for espresso in 13 seconds. *(via https://perfectdailygrind.com/2021/06/coffee-grinder-burrs-what-should-home-consumers-look-for/)*
+- The Philippines has been a coffee-producing country since the middle of the 18th century. *(via https://perfectdailygrind.com/2018/12/understanding-specialty-coffee-in-the-philippines/)*
+- When coffee rust hit Brazil, parts of Africa, and Java in the 1880s, the Philippines became the top coffee-producing country in the world. *(via https://perfectdailygrind.com/2018/12/understanding-specialty-coffee-in-the-philippines/)*
+- Coffee rust later reached the Philippines and production never fully recovered to pre-rust levels. *(via https://perfectdailygrind.com/2018/12/understanding-specialty-coffee-in-the-philippines/)*
+- In 1960, a government act was introduced to prohibit coffee importation. *(via https://perfectdailygrind.com/2018/12/understanding-specialty-coffee-in-the-philippines/)*
+- The Philippines produced enough coffee for domestic consumption and export until the collapse of the International Coffee Agreement in 1989. *(via https://perfectdailygrind.com/2018/12/understanding-specialty-coffee-in-the-philippines/)*
+- The Philippines is made up of over 7,000 islands with varied microclimates. *(via https://perfectdailygrind.com/2018/12/understanding-specialty-coffee-in-the-philippines/)*
+- The Philippines is suitable for growing Robusta, Arabica, Liberica, and Excelsa. *(via https://perfectdailygrind.com/2018/12/understanding-specialty-coffee-in-the-philippines/)*
+- The Philippines now relies on coffee imports from Vietnam and Indonesia. *(via https://perfectdailygrind.com/2018/12/understanding-specialty-coffee-in-the-philippines/)*
+- For the last three years prior to publication, coffees from Latin America helped the winners at the Philippine National Barista Championship at the World Barista Championships. *(via https://perfectdailygrind.com/2018/12/understanding-specialty-coffee-in-the-philippines/)*
+- 2018 was the first year the Philippines crowned a Brewers Cup Champion — Jaycee Galera, who used natural processed heirloom beans from Ethiopia's Rocko Mountain Reserve. *(via https://perfectdailygrind.com/2018/12/understanding-specialty-coffee-in-the-philippines/)*
+- The Philippine Coffee Industry Roadmap 2017–2022 was introduced in March 2017 with the goal of boosting domestic coffee output. *(via https://perfectdailygrind.com/2018/12/understanding-specialty-coffee-in-the-philippines/)*
+- Silvester Dan Samonte is the 2016 and 2017 Philippine National Barista Champion and Director of Coffee at a roastery in La Union. *(via https://perfectdailygrind.com/2018/12/understanding-specialty-coffee-in-the-philippines/)*
+- Traditional coffee-growing areas in the Philippines include the Cordillera Administrative Region and Calabarzon. *(via https://perfectdailygrind.com/2018/12/understanding-specialty-coffee-in-the-philippines/)*
+- Strong typhoons increasingly hit the Philippine islands, including traditional coffee areas. *(via https://perfectdailygrind.com/2018/12/understanding-specialty-coffee-in-the-philippines/)*
+- Colombia has high elevations, varied microclimates, and a culture of innovation in coffee production. *(via https://pullandpourcoffee.com/introducing-pull-pours-taste-of-colombia-set/)*
+- The Papayo variety is a rarer Colombian varietal known for its expressive fruit qualities. *(via https://pullandpourcoffee.com/introducing-pull-pours-taste-of-colombia-set/)*
+- Café Granja La Esperanza's Finca Potosí is located in Valle del Cauca and is operated by the Herrera family. *(via https://pullandpourcoffee.com/introducing-pull-pours-taste-of-colombia-set/)*
+- El Vergel farms produced a co-fermented washed lot using Caturra and Colombia varieties fermented with watermelon candy. *(via https://pullandpourcoffee.com/introducing-pull-pours-taste-of-colombia-set/)*
+- Victor Bermúdez's Gesha lot from Acevedo, Huila undergoes a multi-stage washed process: 48–72 hours of open in-cherry fermentation, floating, depulping, sealed underwater fermentation, and extended drying on raised beds. *(via https://pullandpourcoffee.com/introducing-pull-pours-taste-of-colombia-set/)*
+- Edinson Argote's Orange Bourbon lot comes from Quebraditas Farm in Huila. *(via https://pullandpourcoffee.com/introducing-pull-pours-taste-of-colombia-set/)*
+- The thermal shock method involves precise temperature treatments during fermentation and washing. *(via https://pullandpourcoffee.com/introducing-pull-pours-taste-of-colombia-set/)*
+- Inmaculada Farms' Papayo lot is roasted by Modcup. *(via https://pullandpourcoffee.com/introducing-pull-pours-taste-of-colombia-set/)*
+- Jhon Didier Trujillo's Chiroso lot is roasted by Poem Roasting. *(via https://pullandpourcoffee.com/introducing-pull-pours-taste-of-colombia-set/)*
+- Café Granja La Esperanza's natural lot features a San Juan varietal and uses long in-cherry fermentation and controlled drying. *(via https://pullandpourcoffee.com/introducing-pull-pours-taste-of-colombia-set/)*
+- The Sprudgie Awards are an annual awards program run by Sprudge. *(via https://sprudge.com/sprudgies)*
+- The awards have been presented annually since at least 2010, with the 17th edition covering 2025/2026. *(via https://sprudge.com/sprudgies)*
+- Juan Peña won the producer/farmer category in both the 2019 and 2020 Sprudgie Awards. *(via https://sprudge.com/sprudgies)*
+- Jooyeon Jeon was the 2019 World Barista Champion and won the Outstanding Achievement in the Field of Excellence category at the 2019 Sprudgies. *(via https://sprudge.com/sprudgies)*
+- Counter Culture Coffee Training Centers (United States) was an honoree in a training/education category at the 2019 Sprudgies. *(via https://sprudge.com/sprudgies)*
+- Hard Beans Coffee Roasters is based in Opole, Poland. *(via https://sprudge.com/sprudgies)*
+- The Crown: Royal Coffee Lab & Tasting Room is located in Oakland. *(via https://sprudge.com/sprudgies)*
+- Intelligentsia Coffee (Austin) and Canary Coffee Bar (Milwaukee) were finalists in a café category at the 2019 Sprudgies. *(via https://sprudge.com/sprudgies)*
+- Umeko Motoyoshi won a writing category at the 2019 Sprudgies for 'The @WastingCoffee Guide To Not Wasting Coffee'. *(via https://sprudge.com/sprudgies)*
+- Amanda Mull wrote 'The Rise of Coffee Shaming' for The Atlantic, which was a finalist at the 2019 Sprudgies. *(via https://sprudge.com/sprudgies)*
+- The 2020 Sprudgie Awards were presented by Pacific Barista Series. *(via https://sprudge.com/sprudgies)*
+- The 2019 Sprudgie Awards were presented by Pacific Barista Series. *(via https://sprudge.com/sprudgies)*
+- The 2018 Sprudgie Awards were presented by Oatly. *(via https://sprudge.com/sprudgies)*
+- Finalists for the 2020 producer/farmer category included Anny Ruth (El Salvador), Gilberto Baraona (El Salvador), Gare Ware Jilo (Ethiopia), Ato Tesfaye Bekele (Ethiopia), Rosalba Cifuentes Tovia (Mexico), and Virgelina Perdomo (Colombia). *(via https://sprudge.com/sprudgies)*
+- Tim Wendelboe & Elias Roas were recognized for Finca Taman and Finca El Suelo at a past Sprudgie Awards. *(via https://sprudge.com/sprudgies)*
+- Third Wave Wichteln founders are Markus Reuter, André Krüger, and Thorsten Keller. *(via https://sprudge.com/sprudgies)*
+- Milstead & Co. was recognized at a past Sprudgie Awards. *(via https://sprudge.com/sprudgies)*
+- The film 'Barista' was directed by Rock Baijnauth and was recognized at a past Sprudgie Awards. *(via https://sprudge.com/sprudgies)*
+- T. Ben Fischer of Glitter Cat Barista Boot Camp was a finalist for Outstanding Achievement at the 2019 Sprudgies. *(via https://sprudge.com/sprudgies)*
+- Alice Wong of Disability Visibility Project was a finalist for Outstanding Achievement at the 2019 Sprudgies. *(via https://sprudge.com/sprudgies)*
+- Peter Giuliano of Coffee Science Foundation and SCA was a finalist for Outstanding Achievement at the 2019 Sprudgies. *(via https://sprudge.com/sprudgies)*
+- Virginia Bauman of Cuties and Go Get Em Tiger was a finalist for Outstanding Achievement at the 2019 Sprudgies. *(via https://sprudge.com/sprudgies)*
+- Boss Barista was a finalist in a podcast/media category at the 2020 Sprudgies. *(via https://sprudge.com/sprudgies)*
+- Coffee Chats @ Kore was a finalist in a podcast/media category at the 2020 Sprudgies. *(via https://sprudge.com/sprudgies)*
+- Crema Coffee is located in Nashville. *(via https://sprudge.com/sprudgies)*
+- Horizon Line Coffee is located in Des Moines, Iowa. *(via https://sprudge.com/sprudgies)*
+- Isla Coffee is located in Berlin. *(via https://sprudge.com/sprudgies)*
+- Camber Coffee Artists Series is based in Bellingham, WA. *(via https://sprudge.com/sprudgies)*
+- Partners Coffee offers a gesha from Edin Geovany Lopez of Santa Bárbara, Honduras, fermented in sealed tanks to limit ambient oxygen exposure, resulting in a fully washed coffee. *(via https://sprudge.com/coffee)*
+- Blueprint Coffee's Nidia Lasso is a washed Gesha from Colombia. *(via https://sprudge.com/coffee)*
+- Klatch Coffee's El Salvador Jasal Orange Geisha Anaerobic Natural was rated 94 points by Coffee Review. *(via https://sprudge.com/coffee)*
+- The Klatch coffee is part of Klatch Coffee's Pearl Collection. *(via https://sprudge.com/coffee)*
+- Equator Coffees' Mexico Pluma Oaxaca is sourced from smallholder producers in the Pluma region of Oaxaca, Mexico, and is offered as a single origin espresso. *(via https://sprudge.com/coffee)*
+- 8th & Roast's coffee is an extended fermentation natural process coffee from Julia and her mother Maria of Mara Madeira Coffee in the Sul de Minas region of Brazil. *(via https://sprudge.com/coffee)*
+- Night Swim Coffee's offering is a washed Papayo from young farmers in Pitalito, Colombia, in partnership with Unblended Coffee. *(via https://sprudge.com/coffee)*
+- Mr. Espresso's Java Garut lot comes from small farmers in Garut Regency, West Java; varietals include Catimor and Typica grown in volcanic loam soil at approximately 4,000 feet altitude. *(via https://sprudge.com/coffee)*
+- Presta Coffee Roasters' house blend is made up of a natural Ethiopia and a washed Peru. *(via https://sprudge.com/coffee)*
+- Onyx Coffee Lab's blend contains a washed Ethiopian and a Colombian coffee. *(via https://sprudge.com/coffee)*
+- Portland Coffee Roasters' blend is 37% Costa Rica La Hilda, 37% Colombia Popayán Reserve (pre-roast blended), and 25% organic Ethiopia Tega & Tula Estate (added post-roast), roasted light. *(via https://sprudge.com/coffee)*
+- Stumptown Coffee Roasters' seasonal blend combines Papua New Guinea Kuta Mill and Rwanda Huye Mountain coffees. *(via https://sprudge.com/coffee)*
+- Phil & Sebastian's Sure Thing blend sources coffee from the El Cielito and El Cedral regions of Honduras. *(via https://sprudge.com/coffee)*
+- Olympia Coffee's blend combines lots from Colombia and Ethiopia. *(via https://sprudge.com/coffee)*
+- Verve Coffee Roasters' Wilder blend uses yeast-inoculated Colombian coffees combined with a washed Ethiopian heirloom. *(via https://sprudge.com/coffee)*
+- PERC's featured coffee is from Diego Bermudez. *(via https://sprudge.com/coffee)*
+- Madcap Coffee's blend sources from Central or South America and Ethiopia. *(via https://sprudge.com/coffee)*
+- The Pull & Pour 12 Days of Coffee Christmas set includes 12 coffees from 12 different roasters. *(via https://pullandpourcoffee.com/introducing-pull-pours-12-days-of-coffee-christmas-set/)*
+- The set includes coffees from origins including Ethiopia, Panama, Colombia, China, Kenya, and Costa Rica. *(via https://pullandpourcoffee.com/introducing-pull-pours-12-days-of-coffee-christmas-set/)*
+- Processing methods represented in the set include washed, natural, anaerobic, and hybrid fermentations. *(via https://pullandpourcoffee.com/introducing-pull-pours-12-days-of-coffee-christmas-set/)*
+- Each coffee included is one the Pull & Pour team has previously featured in the coffee club. *(via https://pullandpourcoffee.com/introducing-pull-pours-12-days-of-coffee-christmas-set/)*
+- Orders are structured as pre-orders from mid-October until early November. *(via https://pullandpourcoffee.com/introducing-pull-pours-12-days-of-coffee-christmas-set/)*
+- Sets ship the last week of November. *(via https://pullandpourcoffee.com/introducing-pull-pours-12-days-of-coffee-christmas-set/)*
+- International orders are estimated to arrive December 8–12, but delivery cannot be guaranteed. *(via https://pullandpourcoffee.com/introducing-pull-pours-12-days-of-coffee-christmas-set/)*
+- International shipping takes an estimated 2–4 weeks depending on destination. *(via https://pullandpourcoffee.com/introducing-pull-pours-12-days-of-coffee-christmas-set/)*
+- Import duties and fees for international orders are the buyer's responsibility. *(via https://pullandpourcoffee.com/introducing-pull-pours-12-days-of-coffee-christmas-set/)*
+- The set includes a printable coffee brew guide cheatsheet covering 8 brew methods including Chemex, V60, and AeroPress, with ratios, water temperature, brew times, and serving sizes. *(via https://pullandpourcoffee.com/introducing-pull-pours-12-days-of-coffee-christmas-set/)*
+- Each coffee included provides enough for two to three brews. *(via https://pullandpourcoffee.com/introducing-pull-pours-12-days-of-coffee-christmas-set/)*
+- The BOOKOO Puckgo integrates a WDT Tool, Dosing Ring, and Impact Tamper into a single magnetic system. *(via https://sprudge.com/coffeegear)*
+- The BOOKOO Puckgo uses retractable needles to break clumps for uniform coffee distribution. *(via https://sprudge.com/coffeegear)*
+- The Acaia Horizon was designed in collaboration with Swiss Barista Champion Mathieu Theis. *(via https://sprudge.com/coffeegear)*
+- The Acaia Horizon removes oxygen and carbon dioxide from the cup's atmosphere to intensify aromatics. *(via https://sprudge.com/coffeegear)*
+- The Hario V60 'Simply' Glass Pour Over Kit includes a V60 Glass Coffee Dripper 02 with a clear round base. *(via https://sprudge.com/coffeegear)*
+- The MiiR New Standard Carafe uses Thermo 3D double-wall stainless steel construction. *(via https://sprudge.com/coffeegear)*
+- MiiR is the only B Corp-certified stainless drinkware brand with global customization available in 70+ countries. *(via https://sprudge.com/coffeegear)*
+- The Comandante C40 Lab Series Hammerhead burr is described as likely the first burr tailored for use with a specific coffee variety—Yellow Pacamara. *(via https://sprudge.com/coffeegear)*
+- The Comandante C40 Lab Series Hammerhead was driven by founder Bernd Braune's interest in Yellow Pacamara. *(via https://sprudge.com/coffeegear)*
+- The Dwell Dripper by Verve Coffee is made of BPA-free silicone and uses a bottomless design. *(via https://sprudge.com/coffeegear)*
+- The Dwell Dripper is available in seven colors and comes with a scooping spoon. *(via https://sprudge.com/coffeegear)*
+- The Dwell Dripper brews coffee in approximately three minutes. *(via https://sprudge.com/coffeegear)*
+- The Flair Wizard is a stovetop milk steamer compatible with gas and induction stovetops and features a cool-touch wand. *(via https://sprudge.com/coffeegear)*
+- The KIMERA is a tri-spout, handleless latte art milk pitcher designed by Slow Pour Supply founder Anita Tam. *(via https://sprudge.com/coffeegear)*
+- The KIMERA's first release includes a 500mL Black pitcher and two sleeves (Mystic Black and Bubble Gum Pink). *(via https://sprudge.com/coffeegear)*
+- The KIMERA is powered by WPM spouts and includes three spout shapes: #06 round, #07 narrow, and #08 high precision tapered. *(via https://sprudge.com/coffeegear)*
+- The La Marzocco Linea Mini launched in 2015. *(via https://sprudge.com/coffeegear)*
+- The La Marzocco Linea Micra features double boilers, PID, and full temperature control. *(via https://sprudge.com/coffeegear)*
+- The La Marzocco Linea Micra can be thought of as a scaled-down version of the Linea Classic. *(via https://sprudge.com/coffeegear)*
+- The Timemore Black Mirror line has become one of the most recognizable scale series in specialty coffee. *(via https://pullandpourcoffee.com/timemore-black-mirror-basic-3-scale-review/)*
+- The Black Mirror Basic 3 includes a built-in timer, touch controls, and an LED display. *(via https://pullandpourcoffee.com/timemore-black-mirror-basic-3-scale-review/)*
+- The Basic 3 features USB-C charging, replacing older charging methods used in previous models. *(via https://pullandpourcoffee.com/timemore-black-mirror-basic-3-scale-review/)*
+- The scale has dedicated brew modes for pour-over and espresso. *(via https://pullandpourcoffee.com/timemore-black-mirror-basic-3-scale-review/)*
+- In pour-over mode, the scale can automatically start the timer, display live flow rate, and calculate brew ratio in real time. *(via https://pullandpourcoffee.com/timemore-black-mirror-basic-3-scale-review/)*
+- Espresso mode includes auto-tare and automatic shot timing triggered by the first drops of extraction. *(via https://pullandpourcoffee.com/timemore-black-mirror-basic-3-scale-review/)*
+- The scale has a slim, low-profile footprint that fits under most espresso machines. *(via https://pullandpourcoffee.com/timemore-black-mirror-basic-3-scale-review/)*
+- The scale is compatible with larger brewers such as a V60 or small carafe, as well as immersion brewers like AeroPress and French Press. *(via https://pullandpourcoffee.com/timemore-black-mirror-basic-3-scale-review/)*
+- The Basic 3 uses a matte finish with minimal branding. *(via https://pullandpourcoffee.com/timemore-black-mirror-basic-3-scale-review/)*
+- The scale also works in a 'Manual' mode without advanced automatic features. *(via https://pullandpourcoffee.com/timemore-black-mirror-basic-3-scale-review/)*
+- The touch controls can be finicky with wet hands or in faster-paced brewing situations. *(via https://pullandpourcoffee.com/timemore-black-mirror-basic-3-scale-review/)*
+- Quakers are immature coffee seeds. *(via https://www.scottrao.com/blog/2024/3/6/optical-sorting)*
+- Quakers can result from subpar plant health or nutrition, or from picking underripe cherry. *(via https://www.scottrao.com/blog/2024/3/6/optical-sorting)*
+- Quakers are less dense and contain less sugar, protein, and starches than mature seeds. *(via https://www.scottrao.com/blog/2024/3/6/optical-sorting)*
+- Quakers brown slower than mature seeds during roasting. *(via https://www.scottrao.com/blog/2024/3/6/optical-sorting)*
+- Quakers can be difficult to identify and sort in green coffee, but are more obvious after roasting. *(via https://www.scottrao.com/blog/2024/3/6/optical-sorting)*
+- Producers can minimize quaker content by ensuring adequate tree nutrition, picking only ripe cherry, and floating the cherries. *(via https://www.scottrao.com/blog/2024/3/6/optical-sorting)*
+- It is more efficient and affordable for producers to prevent quakers than for roasters to remove them through sorting. *(via https://www.scottrao.com/blog/2024/3/6/optical-sorting)*
+- Traditional quakers appear as obvious yellowish beans that stand out in a bucket of roasted coffee. *(via https://www.scottrao.com/blog/2024/3/6/optical-sorting)*
+- There is no 'set it and forget it' approach to optical sorter recipes if the goal is removing quakers with precision — the user still needs to be skilled at programming the sorter for new coffees. *(via https://www.scottrao.com/blog/2024/3/6/optical-sorting)*
+- Prodigal purchases coffees processed within the past month wherever possible. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Prodigal removes quakers from green coffee to improve cup quality. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Prodigal uses a ground-coffee color-range tolerance of four points per batch. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Prodigal uses an accepted weight-loss range of +/-0.2% per batch. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Prodigal uses a cup-score floor of 87.5 points; batches below this go into a discounted 'First Batch' offering. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Prodigal roasts dozens of samples each week, sometimes re-roasting if the first attempt does not land in target ranges for ground color and weight loss. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Prodigal measures moisture content of each green sample before roasting using a dedicated moisture meter. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Sample roasts are conducted in the Roest sample roaster. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Ground color is measured immediately after roasting using the DiFluid Omni, which uses only 3–5 grams of coffee per reading. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Weight loss and color data are saved in Roest software. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Sample roasts are cupped blind the following morning, often alongside production roasts and samples from other roasters. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Quakers are removed from each cupping bowl and their percentage by weight is recorded for any coffee being considered for purchase. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Water chemistry is carefully managed; both water and beans are weighed in cupping bowls. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- The crust is broken at 4:00 minutes and slurping begins at around 13:00 minutes. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Prodigal cups an average of 125 bowls every week. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Coffees scoring 87.5 or higher, or with perceived 87.5+ potential, are re-cupped before a purchase decision. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Potential purchases are sometimes brewed as filter coffee ('Filter3') to get a different impression of flavor. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Prodigal passes on some coffees scoring 87.5 for reasons including price, funky flavors, risk, and marketability. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- A beta version of the DiFluid Omix is being tested as an all-in-one color/moisture/density/screen size/water activity meter. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- Scott Rao has a small financial interest in Roest. *(via https://www.scottrao.com/blog/2024/5/7/prodigal-qc-protocols)*
+- A 16:1 water-to-coffee ratio is recommended for Chemex brewing. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- 24 grams of coffee yields approximately 385mL (~13 fl oz) of water at a 16:1 ratio. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- For two people, 36 or 48 grams of coffee is recommended. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- The recommended grind size for Chemex on a Baratza Encore is setting 18 to 20. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- The correct Chemex grind should fall between the coarseness of table salt and kosher salt. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- Recommended brew water temperature is 195°F to 205°F (91°C to 96°C). *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- Without a temperature-controlled kettle, boiling water can be let to sit 10 to 15 seconds to reduce temperature. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- The Chemex paper filter should be rinsed with 60 to 75 grams of hot water before brewing, and the rinse water discarded. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- Rinsing the Chemex filter is especially important because of its thicker paper, to avoid paper taste and ensure filter structure. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- The bloom phase uses approximately 50 grams of water, or double the weight of coffee used. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- Bloom water should be poured in concentric circles to fully cover the grounds. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- Blooming releases carbon dioxide from the beans and leads to better extraction. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- Fresh coffee will visibly 'rise' to a dome shape and bubble during the bloom. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- The bloom pour should take at least 20 seconds, followed by a 25-second wait, reaching a total brew time of 0:45. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- The remaining 335 grams of water should be poured in concentric circles starting from the center, avoiding the paper filter edges. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- The remaining water pour should be completed in approximately two minutes (reaching brew time 2:45). *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- Water should be allowed to fully drain until the coffee bed looks dry and flat, taking around one minute (total brew time 3:30–4:00). *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- The multilayered side of the Chemex filter should be placed on the pouring spout side to prevent collapse and maintain airflow. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- Swirling the finished coffee helps distribute flavor evenly. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- Both the paper filter and used grounds can be composted. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- If brew time is too long, the grind should be coarsened. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- If brew time is too short, a finer grind should be used. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- Bitter coffee may indicate over-extraction, which calls for a coarser grind. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- Weak or astringent coffee may indicate under-extraction, which calls for a finer grind. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-chemex/)*
+- The AeroPress is one of the least expensive, most versatile, and easy-to-use brew methods available. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-aeropress-inverted/)*
+- The AeroPress is portable, making it a suitable travel brew option. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-aeropress-inverted/)*
+- The AeroPress is easy to clean. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-aeropress-inverted/)*
+- The inverted AeroPress method involves aligning the suction cup at the '4' mark. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-aeropress-inverted/)*
+- Blooming coffee releases carbon dioxide from the beans and leads to better extraction. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-aeropress-inverted/)*
+- The bloom step uses water equal to double the weight of the coffee (42 g for 21 g of coffee) and lasts 30 seconds. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-aeropress-inverted/)*
+- Rinsing the paper filter helps it adhere to the plastic cap and reduces any paper taste imparted to the coffee. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-aeropress-inverted/)*
+- Both the paper filter and spent coffee puck are compostable. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-aeropress-inverted/)*
+- If the plunge feels too easy, the grind is likely too coarse. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-aeropress-inverted/)*
+- If the plunge requires too much pressure, the grind is likely too fine. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-aeropress-inverted/)*
+- Bitter coffee suggests over-extraction; the fix is a coarser grind. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-aeropress-inverted/)*
+- Weak or astringent coffee suggests under-extraction; the fix is a finer grind. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-aeropress-inverted/)*
+- Use 36 grams of coffee for this brew method. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- Grind setting on the Baratza Encore should be around 12 to 13 for this recipe. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- Water temperature should be between 195°F and 205°F (91°C to 96°C). *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- If no temperature-controlled kettle is available, boiling water can be cooled by letting it sit for 10 to 15 seconds. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- The paper filter should be rinsed with 60 to 75 grams of water before brewing. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- Rinsing the filter reduces paper taste in the final cup. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- The Chemex uses a thicker paper filter than other brewers, making rinsing especially important. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- 270 grams of ice should be added to the bottom of the Chemex before brewing. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- The bloom step uses approximately 70 grams of hot water, or double the weight of the coffee used. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- Bloom water should be poured in concentric circles, covering all the grounds. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- Blooming releases carbon dioxide from the beans and leads to better extraction. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- Fresh coffee will visibly rise to a dome shape and bubble during the bloom. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- The bloom pour should take at least 20 seconds, followed by a 25-second rest (total bloom time: 0:45). *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- The remaining 235 grams of water should be poured starting from the center in concentric circles outward. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- Water should not be poured directly onto the paper filter, as it can bypass the coffee grounds. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- The remaining 235 grams of water should be poured over approximately 1 minute 30 seconds (completing at brew time 2:15). *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- Coffee is fully drained when it looks dry and flat at the base of the brewer, typically around brew time 3:30. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- The multilayered side of the Chemex filter should be placed on the pouring spout side to prevent filter collapse. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- Both the paper filter and used coffee grounds can be composted. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- Less water is used in this method (two-thirds of normal) because the ice provides the remaining dilution. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- A finer grind than normal Chemex is used to compensate for the reduced brew water volume. *(via https://pullandpourcoffee.com/how-to-make-the-perfect-japanese-iced-coffee/)*
+- A 15:1 water-to-coffee ratio produces approximately 12 fluid ounces (~300mL) of coffee from 24 grams of coffee. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- A recommended starting dose range is 21 to 28 rams of coffee depending on desired cup size. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- On the Baratza Encore, a V60 pour-over grind setting of around 14 to 15 corresponds to medium fineness, comparable to the coarseness of table salt. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- Ideal brew water temperature is 195°F to 205°F (91°C to 96°C). *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- Without a temperature-controlled kettle, boiling water and letting it sit for 10 to 15 seconds reduces it to an appropriate brewing temperature. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- Rinsing the paper filter with 50 to 60 grams of water before brewing reduces paper taste in the cup. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- The bloom phase uses approximately 50 grams of water, or double the weight of the coffee used. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- Bloom water should be poured in concentric circles to fully cover the grounds, taking at least 20 seconds to pour, followed by a 25-second wait — total bloom time approximately 0:45. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- Blooming releases carbon dioxide from the beans and leads to better extraction. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- Fresh coffee will visibly 'rise' to a dome shape and bubble during the bloom. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- The remaining 310 grams of water should be poured starting in the center and moving in concentric circles outward, finishing in approximately 1 minute and 30 seconds (target brew time: 2:15). *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- Water should not be poured directly onto the paper filter, as it can pass through without fully extracting the coffee. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- Slow pouring is especially important with the V60 due to its large bottom hole. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- Drawdown is complete when the coffee bed looks dry and flat at the base of the brewer, typically around 1 minute after pouring ends (total brew time: ~3:30). *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- Paper filters and spent grounds can both be composted. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- Swirling the finished coffee promotes even flavor distribution. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- If brew time is too long, the grind should be made coarser; if too short, finer. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- Bitter coffee may indicate over-extraction; the fix is to coarsen the grind. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- Weak or astringent coffee may indicate under-extraction; the fix is to use a finer grind. *(via https://pullandpourcoffee.com/how-to-make-coffee-with-the-hario-v60/)*
+- If you have several non-defective coffees all roasted to similar degrees, there is no need to change anything other than the grind setting when brewing each coffee. *(via https://www.scottrao.com/blog/2024/2/26/how-to-approach-brewing-different-coffees)*
+- The coffee refractometer was instrumental in teaching baristas how various brewing parameters affected extraction level. *(via https://www.scottrao.com/blog/2024/2/26/how-to-approach-brewing-different-coffees)*
+- Working with only one variable is infinitely easier than attempting to juggle several variables. *(via https://www.scottrao.com/blog/2024/2/26/how-to-approach-brewing-different-coffees)*
+- For filter brewing, target water alkalinity (KH/bicarbonate) of 30–50 ppm; general hardness (GH) of 30–100 ppm is acceptable. *(via https://www.scottrao.com/blog/2024/2/26/how-to-approach-brewing-different-coffees)*
+- A target TDS of 1.3–1.4% is recommended for filter brewing. *(via https://www.scottrao.com/blog/2024/2/26/how-to-approach-brewing-different-coffees)*
+- Weaker coffee tends to lack flavor intensity; stronger coffee tends to decrease flavor clarity and 'flavor separation.' *(via https://www.scottrao.com/blog/2024/2/26/how-to-approach-brewing-different-coffees)*
+- New grinders should be seasoned with 6 kg / 13 lbs of coffee at a grind setting finer than pourover but much coarser than espresso. *(via https://www.scottrao.com/blog/2024/2/26/how-to-approach-brewing-different-coffees)*
+- Season grinders in smaller amounts (usually 500g at a time) to prevent motor overheating. *(via https://www.scottrao.com/blog/2024/2/26/how-to-approach-brewing-different-coffees)*
+- Use the dose for which your basket is rated (e.g., 18g in an 18g basket). *(via https://www.scottrao.com/blog/2024/2/26/how-to-approach-brewing-different-coffees)*
+- Rao recommends avoiding espresso shot times longer than 35 seconds. *(via https://www.scottrao.com/blog/2024/2/26/how-to-approach-brewing-different-coffees)*
+- The best grinder setting depends on burr sharpness, geometry, and alignment, so even two people using the same grinder model may have different optimal settings. *(via https://www.scottrao.com/blog/2024/2/26/how-to-approach-brewing-different-coffees)*
+- It is better to target brew times than a particular grinder setting or micron rating. *(via https://www.scottrao.com/blog/2024/2/26/how-to-approach-brewing-different-coffees)*
+- When in doubt about initial grind setting, always begin too coarse rather than too fine. *(via https://www.scottrao.com/blog/2024/2/26/how-to-approach-brewing-different-coffees)*
+- Ethiopian coffees and decafs can produce exceptional amounts of fines and may require down-dosing if you cannot grind coarse enough to prevent choked brews. *(via https://www.scottrao.com/blog/2024/2/26/how-to-approach-brewing-different-coffees)*
+- Blending occurs at multiple levels: farm (cherry blend at harvest), dry mill (parchment or seed form), roastery (pre- or post-roast), and by the barista (filter or espresso). *(via https://www.scottrao.com/blog/thebiasagainstblends)*
+- Most commercially available blends are made of cheaper, darker roasts intended to be paired with milk and sugar. *(via https://www.scottrao.com/blog/thebiasagainstblends)*
+- Pre-roast blending causes beans of differing sizes and processes to develop at different rates, potentially leaving some beans underdeveloped or over-dark. *(via https://www.scottrao.com/blog/thebiasagainstblends)*
+- Post-roast blending allows a roaster to optimize the development of each blend component individually. *(via https://www.scottrao.com/blog/thebiasagainstblends)*
+- Post-roast blending allows the roaster to adjust blend ratios based on the actual roast batches on hand. *(via https://www.scottrao.com/blog/thebiasagainstblends)*
+- When blending two coffees with different particle size distributions (PSDs), the blend's PSD will be the weighted average of each component's PSD. *(via https://www.scottrao.com/blog/thebiasagainstblends)*
+- Blend components making up less than 15% of a blend are subject to significant dose-to-dose ratio variation, making their contribution unreliable. *(via https://www.scottrao.com/blog/thebiasagainstblends)*
+- The moka pot is cheap and ubiquitous. *(via UGf7mtfhOFM)*
+- Hoffmann's previous 'ultimate moka pot technique' video is the most viewed video on his channel. *(via UGf7mtfhOFM)*
+- The core goal of Hoffmann's moka pot technique is to maintain a steady, not-too-hot temperature in the bottom of the brewer to avoid harsh, bitter flavors. *(via UGf7mtfhOFM)*
+- The Moka Bot is a prototype, not a commercially available product; only one or two exist. *(via UGf7mtfhOFM)*
+- The Moka Bot was created by someone named Javi (Havi) as a proof of concept. *(via UGf7mtfhOFM)*
+- The Moka Bot features a touchscreen display, three buttons (off, preheat, extract), a pressure reading, a temperature reading, and wifi connectivity for logging brews via a web app. *(via UGf7mtfhOFM)*
+- The Moka Bot contains an internal temperature probe in the bottom of the brewer that sends data back to the kettle base. *(via UGf7mtfhOFM)*
+- The Moka Bot uses a PID controller to regulate the heating element based on temperature data. *(via UGf7mtfhOFM)*
+- PID controllers are commonly used in coffee equipment. *(via UGf7mtfhOFM)*
+- A PID controller uses three numbers — Proportional (P), Integral (I), and Derivative (D) — each corresponding to a letter in the name. *(via UGf7mtfhOFM)*
+- The Proportional (P) value tells the system how much to correct based on how far it is from the desired set point. *(via UGf7mtfhOFM)*
+- Every system is unique and requires individual PID tuning. *(via UGf7mtfhOFM)*
+- Hoffmann received the Moka Bot as a gift and has no commercial affiliation with it; the creator did not ask him to make the video. *(via UGf7mtfhOFM)*
+- The concept of the PID controller is over a hundred years old and is attributed to Minorsky, a Russian-American. *(via UGf7mtfhOFM)*
+- Minorsky was inspired by the helmsman of ships when developing the PID concept. *(via UGf7mtfhOFM)*
+- The Ceado Hoop is a no-bypass pour-over brewer that uses radial infusion. *(via -g_Bcng41Js)*
+- The brewer was designed by a Ceado engineer to allow his older mother to make pour-over coffee without a pouring kettle. *(via -g_Bcng41Js)*
+- Ceado primarily makes commercial coffee grinders, mostly for espresso-focused applications. *(via -g_Bcng41Js)*
+- The Hoop consists of two pieces: a flow tower (which also traps the filter paper) and a main body that acts as a reservoir. *(via -g_Bcng41Js)*
+- Water is poured on the outside of the flow tower; holes around the tower allow water in from every direction at a flow-controlled rate. *(via -g_Bcng41Js)*
+- The recommended brew time for the Hoop is approximately four minutes for one cup. *(via -g_Bcng41Js)*
+- Using the factory-standard filter papers, brew time can extend to eight minutes. *(via -g_Bcng41Js)*
+- Switching from the factory filter papers to Scott Rao's alternative papers improved flow rate, bringing brew time down to approximately four minutes. *(via -g_Bcng41Js)*
+- The brewer has been commercially available for at least a couple of years at the time of filming. *(via -g_Bcng41Js)*
+- The Hario SWITCH and Clever Dripper are alternative brewers that do not require a pouring kettle. *(via -g_Bcng41Js)*
+- The Clever Dripper requires moving a large, full vessel of hot liquid, which may be a disadvantage for some users. *(via -g_Bcng41Js)*
+- Cold brew is defined as coffee brewed where the water at the time of brewing is room temperature to cold. *(via AB0QLjroFss)*
+- Hot-brewed coffee chilled over ice is a distinct method from cold brew and produces a different flavor profile. *(via AB0QLjroFss)*
+- Traditional cold brew typically uses a coffee-to-water ratio of at least 1:10. *(via AB0QLjroFss)*
+- Cold water filters through ground coffee much more slowly than hot water does. *(via AB0QLjroFss)*
+- Grinding coarser makes it easier to separate coffee grounds from cold water during filtration. *(via AB0QLjroFss)*
+- Grinding coarser with cold brew results in a weaker brew, but not necessarily a sour one the way a hot underextracted brew would be — instead it tastes empty and weak. *(via AB0QLjroFss)*
+- The common solution to coarse grinding is to use more coffee, but this leads to under-extraction and wasted flavor. *(via AB0QLjroFss)*
+- Cold brew aged over time develops oxidation-related flavors that are generic and mask the character of the specific coffee used. *(via AB0QLjroFss)*
+- When cold brew is served over ice, dilution from melting ice means a slightly higher coffee-to-water ratio is typically used. *(via AB0QLjroFss)*
+- The Toddy brewer uses a two-step filtration system: a thin paper bag and a cloth filter. *(via AB0QLjroFss)*
+- The paper used in the Toddy-style paper bag is thinner than typical pour-over filter papers. *(via AB0QLjroFss)*
+- Heat is necessary to extract certain compounds from coffee; cold water cannot extract all of them. *(via AB0QLjroFss)*
+- CT scanners work by emitting x-rays from one side, detecting them on the other, rotating the object 360 degrees, and computing a 3D density map of the object — this is computed tomography. *(via CX-aoSKLRzg)*
+- Tomography refers to looking at cross-sections of an object. *(via CX-aoSKLRzg)*
+- CT scanners represent volume data using voxels, which are volume pixels. *(via CX-aoSKLRzg)*
+- Espresso coffee particles range from a few microns up to roughly 50–100 microns in size. *(via CX-aoSKLRzg)*
+- Stainless steel portafilter baskets are difficult to CT scan quickly because metal is hard for x-rays to pass through. *(via CX-aoSKLRzg)*
+- Scanning a metal basket to sufficient resolution would take approximately 12 hours per scan. *(via CX-aoSKLRzg)*
+- A 3D-printed basket allows x-rays to pass through more easily, making the coffee inside clearer to scan. *(via CX-aoSKLRzg)*
+- The Breville grinder produced visible clumps of coffee throughout the puck. *(via CX-aoSKLRzg)*
+- CT scan images showed more clumps around the edges and top of the basket than in the center. *(via CX-aoSKLRzg)*
+- This video was not sponsored by Lumafield. *(via CX-aoSKLRzg)*
+- One factory in Japan now makes all Hario V60 filter papers, regardless of format (box or bag), so they are all the same paper. *(via YY5Fwj-tOAw)*
+- Previously, Hario V60 papers were made by different manufacturers in different countries depending on packaging format, and they brewed differently. *(via YY5Fwj-tOAw)*
+- Slower filter papers produce higher extraction when grind, coffee, and recipe are held constant, due to longer contact time. *(via YY5Fwj-tOAw)*
+- Contact time is a function of extraction in pour-over brewing. *(via YY5Fwj-tOAw)*
+- The Sibarist Fast papers are among the fastest-flowing papers on the market and produced the lowest extraction at a fixed grind. *(via YY5Fwj-tOAw)*
+- The Kinto Slow Coffee Style paper is very slow and produced much higher extractions. *(via YY5Fwj-tOAw)*
+- Paper flow rate can be measured by pouring water through a paper with no coffee and observing drainage speed. *(via YY5Fwj-tOAw)*
+- Paper resistance to flow can come from thickness or from how the paper is woven. *(via YY5Fwj-tOAw)*
+- A slow brew can result from either a slow filter paper or a grinder that produces a lot of fines, which can clog the paper. *(via YY5Fwj-tOAw)*
+- Grinders that produce many fines also tend to produce many large coarse particles; fines can add bitterness and coarse particles underextract, resulting in a weak, sour, and bitter brew. *(via YY5Fwj-tOAw)*
+- Cafec makes four V60 papers: Abaca, a dark roast paper (83°C), a medium-dark paper (90°C), and a light roast paper (T-92, 92°C). *(via YY5Fwj-tOAw)*
+- Abaca is a plant-based material used as a paper alternative, with a sustainability angle. *(via YY5Fwj-tOAw)*
+- Timemore makes V60 filter papers. *(via YY5Fwj-tOAw)*
+- The Kinto Slow Coffee Style papers contain cotton in the weave and are heavier and thicker than standard papers. *(via YY5Fwj-tOAw)*
+- Sibarist also makes a slower, more conventional V60 paper called the B3. *(via YY5Fwj-tOAw)*
+- The Hario V60 is one of the most popular brewers in homes and cafés worldwide. *(via BfNoNTjcRbE)*
+- The V60 is widely regarded as the iconic brewer of the Specialty Coffee movement. *(via BfNoNTjcRbE)*
+- The Coffee Equipment Company was founded in 2005 by three Stanford graduates: Zander Nosler, Randy Hulett, and Jorah Wyer. *(via BfNoNTjcRbE)*
+- The Coffee Equipment Company's original mission was to bring technology to drip/filter coffee. *(via BfNoNTjcRbE)*
+- The first machine the Coffee Equipment Company set out to build was a bean-to-cup filter coffee machine for offices called the Magnolia. *(via BfNoNTjcRbE)*
+- An engineer on the team created a prototype from the Magnolia's brewing chamber that was internally called the 'Chalupa.' *(via BfNoNTjcRbE)*
+- The Clover was re-engineered from the Magnolia project and debuted publicly at Coffee Fest in Seattle around 2005. *(via BfNoNTjcRbE)*
+- In the early 2000s, filter coffee was very inexpensive — approximately $1.50 for a cup from an urn with free refills. *(via BfNoNTjcRbE)*
+- Intelligentsia used a Grindmaster urn to make filter coffee when the interviewee joined the company. *(via BfNoNTjcRbE)*
+- The Clover brewer uses a combination of immersion and percolation brewing. *(via BfNoNTjcRbE)*
+- Zander Nosler is a mechanical engineer and product designer by training. *(via BfNoNTjcRbE)*
+- The Coffee Equipment Company had previously done consulting work on a Starbucks office coffee machine. *(via BfNoNTjcRbE)*
+- The Clover's user-facing controls allowed the barista to select brew volume and steep time. *(via BfNoNTjcRbE)*
+- The period from roughly 2000 to 2004 was characterized as an 'Espresso Explosion' — a period of major innovation in espresso equipment, grinders, and coffee. *(via BfNoNTjcRbE)*
+- Specialty coffee roasters in the early 2000s were sourcing small lots of high-quality, traceable coffee and building direct relationships with producers. *(via BfNoNTjcRbE)*
+- The CEO of Peet's Coffee advised the Coffee Equipment Company to let the barista handle tasks like grinding, dosing, and the squeegee scrape, rather than automating everything. *(via BfNoNTjcRbE)*
+- The AeroPress Premium retails at $150 in the US and £180 in the UK. *(via 0Ds0pgSLT4I)*
+- The AeroPress Premium's cap is made of stainless steel. *(via 0Ds0pgSLT4I)*
+- The brewing chamber is made of dual-wall glass. *(via 0Ds0pgSLT4I)*
+- The plunger body is made of aluminum, with a silicone seal at the bottom. *(via 0Ds0pgSLT4I)*
+- The interior diameter of the AeroPress Premium chamber is approximately 4 millimeters narrower than a standard AeroPress. *(via 0Ds0pgSLT4I)*
+- The AeroPress Premium chamber is taller than a standard AeroPress chamber. *(via 0Ds0pgSLT4I)*
+- The stated volume of both the AeroPress Premium and the standard AeroPress is 300 ml, but the actual cylinder volume of the Premium is 371 milliliters. *(via 0Ds0pgSLT4I)*
+- The AeroPress Premium accepts standard AeroPress filters despite its narrower diameter. *(via 0Ds0pgSLT4I)*
+- The metal and glass components pull more heat out of brewing liquid than a conventional plastic AeroPress. *(via 0Ds0pgSLT4I)*
+- Even when preheated, the AeroPress Premium initially loses more temperature than the standard AeroPress. *(via 0Ds0pgSLT4I)*
+- After preheating, there is a heat transference from the brew water back into the brewer in the Premium model. *(via 0Ds0pgSLT4I)*
+- Green (raw) coffee beans are very dense and difficult to grind without potentially damaging grinders. *(via N4qDYsSvNIQ)*
+- Uneven roasting is a known challenge because it is hard to transfer heat evenly from the outside to the inside of a dense coffee bean. *(via N4qDYsSvNIQ)*
+- During roasting, air around the beans — not direct contact heat — is the primary roasting medium; beans need to be kept moving to avoid burning against hot metal. *(via N4qDYsSvNIQ)*
+- Coffee beans contain approximately 10–11% moisture. *(via N4qDYsSvNIQ)*
+- First crack (an audible popping of beans) is a key marker in the coffee roasting process. *(via N4qDYsSvNIQ)*
+- Dr. Samo Smrke previously conducted a similar experiment, reportedly suggested to him by Andre Eiermann and Scott Rao. *(via N4qDYsSvNIQ)*
+- Roasted coffee that was ground before roasting cools more quickly than whole roasted beans. *(via N4qDYsSvNIQ)*
+- The Ikawa roaster is not designed to roast ground coffee pieces and its fan dynamics do not move small fragments the same way it moves whole beans. *(via N4qDYsSvNIQ)*
+- The Roastino is a small hand-cranked roaster with a temperature probe, suitable for roasting non-standard materials. *(via N4qDYsSvNIQ)*
+- The Hario V60 is a conical dripper; the Kalita Wave is a flat bottom dripper. *(via CB0QzpPL_1E)*
+- The Coffee Collective in Copenhagen switched from the Hario V60 to the Kalita Wave around 2012. *(via CB0QzpPL_1E)*
+- The Coffee Collective chose the Kalita Wave because it is more consistent, requires less demanding pouring technique, and is more suitable for a busy café environment. *(via CB0QzpPL_1E)*
+- The 'ba vs. kiki' concept originates from psychological and linguistic theory, not coffee science. *(via CB0QzpPL_1E)*
+- Most people across cultures associate the 'ba' shape with something sweet, comforting, rounded, and harmonious, and the 'kiki' shape with something sharper and more unpredictable. *(via CB0QzpPL_1E)*
+- Calcium carbonate added to brew water raises alkalinity and can produce a more creamy mouthfeel. *(via CB0QzpPL_1E)*
+- Water with lower alkalinity allows acidity in coffee to stand out more prominently. *(via CB0QzpPL_1E)*
+- WPM (Wellhome Pro) is a Hong Kong-based company. *(via h93RujMzoBw)*
+- WPM is well known in the West primarily for its milk pitchers, which have a following in the latte art community. *(via h93RujMzoBw)*
+- The WPM Primus heats up in approximately 4 minutes (plus or minus 10 seconds) in repeated testing. *(via h93RujMzoBw)*
+- If the machine has already been used and is revisited a couple of hours later, heat-up time drops to about a minute and a half. *(via h93RujMzoBw)*
+- The portafilter takes closer to 10 minutes before all connected metal parts are fully up to temperature. *(via h93RujMzoBw)*
+- The Primus uses a boiler combined with a thermal block at the group head to fine-tune water temperature. *(via h93RujMzoBw)*
+- Temperature is controlled via an interface on the group head, without hidden modes or complex button sequences. *(via h93RujMzoBw)*
+- The Lelit Mara X is an Italian heat exchange machine and an attempt to modernize the E61 platform. *(via h93RujMzoBw)*
+- The Lelit Mara X has a heat-up time of approximately 15–20 minutes and requires shots to be pulled in quick succession to avoid an overheating cycle. *(via h93RujMzoBw)*
+- The WPM Primus features an external water reservoir that is separate from the main machine body. *(via h93RujMzoBw)*
+- On the Primus, the pump responds directly to the pressure paddle, meaning the user is controlling pressure directly. *(via h93RujMzoBw)*
+- On some E61 machines with flow control, pressure is a side effect of controlling flow — not direct pressure control. *(via h93RujMzoBw)*
+- The WPM Set P1 grinder was previously reviewed by the same reviewer. *(via h93RujMzoBw)*
+- Some barista competitors deliberately cool their portafilter before pulling a shot. *(via h93RujMzoBw)*
+- The Leverresso Orbit is made by the Korean brand Hugh. *(via jndcKhu2WEk)*
+- The previous model, the Leverresso Pro, used a dual-arm design similar to the Cafelat Robot. *(via jndcKhu2WEk)*
+- The Leverresso Pro required brewing into a plastic cup, making scale use difficult. *(via jndcKhu2WEk)*
+- The Pro's stand made it nearly impossible to fit a scale inside the legs. *(via jndcKhu2WEk)*
+- The Orbit comes in a compact case with a three-legged screw stand. *(via jndcKhu2WEk)*
+- The Orbit's stand fits more scales and accommodates different cup heights. *(via jndcKhu2WEk)*
+- The Orbit's basket diameter increased from 51 mm to 54.8 mm. *(via jndcKhu2WEk)*
+- The 54.8 mm basket size is used in some commercial lever machines, such as the La Marzocco (Lean Marco referenced). *(via jndcKhu2WEk)*
+- The Orbit's basket was made in collaboration with IMS. *(via jndcKhu2WEk)*
+- The larger basket diameter allows grinding finer and pulling larger shots up to 20 gram doses. *(via jndcKhu2WEk)*
+- The 54.8 mm basket size is more common in Italy and not widely standard elsewhere, making accessory sourcing harder. *(via jndcKhu2WEk)*
+- The Orbit includes a calibrated palm tamper and a funnel. *(via jndcKhu2WEk)*
+- The basket is sheltered from the main body, which the reviewer states helps with thermal stability. *(via jndcKhu2WEk)*
+- The Orbit has a pressure gauge visible during the shot pull. *(via jndcKhu2WEk)*
+- Battery-powered espresso machines heat their own water and automate pressure application, removing the need for a separate kettle, manual timing, and preheating. *(via YDgNc9q0is0)*
+- The Audin Nano maintains brew temperatures in the 93–94°C range consistently, even after 1.5 years of use. *(via YDgNc9q0is0)*
+- The Audin Nano takes an average of 4 minutes to heat up with 60 ml of water. *(via YDgNc9q0is0)*
+- The Audin Nano's stock configuration includes a 6g pressurized basket and a capsule insert; the pressurized basket produces poor extraction. *(via YDgNc9q0is0)*
+- The Audin Nano requires a slow charger (often car-type) and has a more limited battery compared to newer models. *(via YDgNc9q0is0)*
+- With 60 ml of water, the Audin Nano completes approximately 3 full brew cycles before the battery dies partway through a fourth. *(via YDgNc9q0is0)*
+- Using less water in the reservoir (e.g., for capsules) yields more brew cycles across all devices in this category. *(via YDgNc9q0is0)*
+- The Audin Nano Basket Plus kit upgrades the basket to hold 16–18g of coffee depending on roast level. *(via YDgNc9q0is0)*
+- The Audin Mino is faster to heat up than the Nano, averaging around 3 minutes from cold to brew temperature. *(via YDgNc9q0is0)*
+- The Audin Mino's standard basket holds approximately 11–13g of coffee and is described as a more professional basket. *(via YDgNc9q0is0)*
+- The Audin Mino's brew temperature stays consistently in the 92–94°C range, similar to the Nano. *(via YDgNc9q0is0)*
+- Water loses approximately 4–5°C of heat between the reservoir and the coffee puck in these devices. *(via YDgNc9q0is0)*
+- As battery charge decreases, brew temperature drops slightly and heat-up time increases slightly across all devices tested. *(via YDgNc9q0is0)*
+- With 60 ml in the reservoir, the Audin Mino yields approximately 4 solid shots per full charge. *(via YDgNc9q0is0)*
+- The Audin Mino is physically smaller than the Nano mainly due to elimination of dead space in the cup; with the Basket Plus kit installed, the two machines weigh approximately the same. *(via YDgNc9q0is0)*
+- The manual grinder market today is dramatically different from 2015, when only about three good options existed. *(via -cin2IZbKzU)*
+- The dominant manual grinder design today is a barrel shape with a slightly bent handle and a ball-bearing-stabilized axle. *(via -cin2IZbKzU)*
+- Older 'big box' mill-style manual grinders are largely absent from the market because they perform poorly compared to the modern barrel design. *(via -cin2IZbKzU)*
+- Attempts to deviate from the standard barrel design tend to result in worse user experience, ease of use, and grinding speed. *(via -cin2IZbKzU)*
+- Approximately 98% of all manual grinders follow the standard barrel-shape formula. *(via -cin2IZbKzU)*
+- The Commandante C60 and Commandante Pro are positioned at a price point where electric flat-burr grinders become more competitive alternatives. *(via -cin2IZbKzU)*
+- Some highly recommended 'classic' manual grinders built their reputations between 2016 and 2018. *(via -cin2IZbKzU)*
+- The mean TDS across all tested Italian espresso samples was 10.40%. *(via 5Kb0wQxi6PU)*
+- The average TDS across 10 shots tested in Naples was 12.24%. *(via 5Kb0wQxi6PU)*
+- The standard considered range for espresso TDS is 8–12%. *(via 5Kb0wQxi6PU)*
+- Naples espresso at ~12.24% TDS falls outside the standard espresso range. *(via 5Kb0wQxi6PU)*
+- Virtually every cafe in Naples uses the same espresso machine: a La San Marco lever (spring lever) machine. *(via 5Kb0wQxi6PU)*
+- La San Marco is based in the northeast of Italy, near the Slovenian border. *(via 5Kb0wQxi6PU)*
+- In northern Italy, pump-driven machines are used; lever machines were not observed outside Naples. *(via 5Kb0wQxi6PU)*
+- Italian espresso roasting and blending is oriented toward reducing acidity. *(via 5Kb0wQxi6PU)*
+- Almost every Italian shot tasted like cocoa powder, sometimes with chocolate, nuts, or occasionally dried fruit, but never citrus or tropical fruit. *(via 5Kb0wQxi6PU)*
+- Naples coffee is roasted darker than northern Italy, with charcoal and burned notes present. *(via 5Kb0wQxi6PU)*
+- Northern Italian espresso was characterized as closer to a medium roast, less developed than something like Starbucks. *(via 5Kb0wQxi6PU)*
+- The creator used a refractometer to measure TDS on location in Italy. *(via 5Kb0wQxi6PU)*
+- The Lassen X is sold by a brand called Maxim's Espresso. *(via zvVQrdJXaNQ)*
+- Maxim's is also the name of a famous old restaurant in Paris that ran into financial trouble in the 1970s and 1980s and was subsequently purchased by fashion mogul and businessman Pierre Cardin (referred to as 'Pakadang' in the captions). *(via zvVQrdJXaNQ)*
+- The machine's manual is written entirely in Chinese. *(via zvVQrdJXaNQ)*
+- The companion app connects through what appears to be a Chinese platform. *(via zvVQrdJXaNQ)*
+- Patents related to the machine were filed in 2022 and 2023. *(via zvVQrdJXaNQ)*
+- The machine is not a dual boiler or a single boiler; it uses a hybrid system where water is preheated in a coil, then fed into a small boiler-like chamber for temperature stabilization. *(via zvVQrdJXaNQ)*
+- A vibration pump and electronically controlled valves, including an electronic pressure relief valve, work together to manage pressure and enable pressure profiling. *(via zvVQrdJXaNQ)*
+- The machine features a built-in grinder with weight-based dosing. *(via zvVQrdJXaNQ)*
+- In the reviewer's testing, the grinder's weight-based dosing was accurate to within 0.1 to 0.2 grams of the target dose. *(via zvVQrdJXaNQ)*
+- The machine includes built-in predictive scales and infrared sensors. *(via zvVQrdJXaNQ)*
+- The reviewer tested the machine for over 10 weeks and pulled more than 200 shots. *(via zvVQrdJXaNQ)*
+- The retail price had not been confirmed at the time of the review. *(via zvVQrdJXaNQ)*
+- Coffee should be stored in its original resealable bag rather than transferred to a separate jar. *(via Y9AEJMrFkB8)*
+- Coffee bags should be kept at room temperature — not too hot, not too cold. *(via Y9AEJMrFkB8)*
+- A bag with a degassing valve allows CO2 to escape while keeping the coffee fresh. *(via Y9AEJMrFkB8)*
+- Buying smaller bags (100–200g) is a practical storage approach for home brewers. *(via Y9AEJMrFkB8)*
+- Water is considered a critically important and frequently overlooked variable in home brewing. *(via Y9AEJMrFkB8)*
+- Kopi Luwak is widely associated with tourism in Indonesia rather than high-quality specialty coffee. *(via Y9AEJMrFkB8)*
+- Indonesia has many high-quality coffees beyond Kopi Luwak. *(via Y9AEJMrFkB8)*
+- The Origami dripper is compatible with both cone and flat-bottom filters, allowing brewers to experiment with both shapes using one device. *(via Y9AEJMrFkB8)*
+- Martin Wolf won the World Brewers Cup championship in 2024. *(via eb_zryyEHXk)*
+- The World Brewers Cup 2024 finals were held in Chicago. *(via eb_zryyEHXk)*
+- Martin Wolf's winning routine presentation was titled or themed around 'six innovations' and the people behind them. *(via eb_zryyEHXk)*
+- Martin Wolf's coach is named Shanin, and he also worked closely with Hardi from Wil Cafe. *(via eb_zryyEHXk)*
+- In the first round, Martin Wolf experienced a blackout and missed his opening sentence. *(via eb_zryyEHXk)*
+- Before the final, a clip from the first round (including his mistake) was played on the video wall, causing another blackout. *(via eb_zryyEHXk)*
+- Despite the blackouts, Martin Wolf won the championship. *(via eb_zryyEHXk)*
+- The competition judging panel consisted of three head judges and three sensory judges. *(via eb_zryyEHXk)*
+- Martin Wolf previously played drums in concerts and draws parallels between performing on stage and competing. *(via eb_zryyEHXk)*
+- PAC (Puck Press) was founded by Lawrence in 2011. *(via JAMbW2I53Bg)*
+- PAC has built over 100,000 puck press machines as of August 2023. *(via JAMbW2I53Bg)*
+- PAC produces between 20,000 and 25,000 puck presses per year. *(via JAMbW2I53Bg)*
+- PAC's factory is located in the Netherlands. *(via JAMbW2I53Bg)*
+- The factory expanded by approximately 2,000 square meters since European Coffee Trip's visit 8 years prior. *(via JAMbW2I53Bg)*
+- The factory is divided into a pre-production area, assembly lines for standalone and integrated models, testing, and a packaging area. *(via JAMbW2I53Bg)*
+- 40% of PAC's production is integrated models (designed to fit underneath a grinder). *(via JAMbW2I53Bg)*
+- PAC distributes to 92 distributors across 17 countries, including Argentina, the United States, and India. *(via JAMbW2I53Bg)*
+- PAC maintains 5 to 6 months of stock in-house. *(via JAMbW2I53Bg)*
+- Production is done in-house, allowing feedback to be acted upon within weeks rather than 5–6 months as with outsourcing. *(via JAMbW2I53Bg)*
+- The iconic 'banana shape' design of the puck press has been the basis for all PAC models. *(via JAMbW2I53Bg)*
+- PAC's product line has evolved through at least 6 generations, with Gen 6 being the most current at time of filming. *(via JAMbW2I53Bg)*
+- The Mini puck press model was introduced in Gen 5 and made stronger in Gen 6. *(via JAMbW2I53Bg)*
+- PAC also launched a product called the Navigator alongside Gen 6. *(via JAMbW2I53Bg)*
+- The Bom family farm is located in South Minas Gerais, bordering São Paulo, which is traditionally one of the largest coffee-producing states in Brazil and has historically produced some of the best coffees in the country. *(via kLJbQqFSd8A)*
+- The family's main farm (referred to as 'Amas') started with tight tree spacing intended for mechanized harvesting, but the terrain was too hilly for mechanization. *(via kLJbQqFSd8A)*
+- The farm currently grows 48 different varietals, which the speaker claims is unique among Brazilian farms. *(via kLJbQqFSd8A)*
+- The family began competing in barista competitions in 2016. *(via kLJbQqFSd8A)*
+- Boram's first café opened in 2016 at their headquarters in São Paulo; a third location opened in 2018. *(via kLJbQqFSd8A)*
+- The high-volume third café serves approximately 700–800 customers per day during the week. *(via kLJbQqFSd8A)*
+- Brazilian coffee culture is highly based on Italian coffee culture, with customers enjoying milk drinks in the mornings and espresso in the afternoons, particularly after lunch. *(via kLJbQqFSd8A)*
+- Stefan (the father) bought the family's first coffee farm in 2009. *(via kLJbQqFSd8A)*
+- Boram obtained a Q Grader license early in his career and attempted to sell the family's coffees abroad. *(via kLJbQqFSd8A)*
+- The family decided to shift strategy from commodity volume to quality and specialty markets after the first 3–4 years of farming proved financially unsustainable at commodity prices. *(via kLJbQqFSd8A)*
+- A 'Shop Master' machine was being installed and showcased for the first time in the Brazilian market at their high-volume café. *(via kLJbQqFSd8A)*
+- Mame's first café opened in 2017 in Zurich, Switzerland. *(via 2g3xw7dGR74)*
+- A second Mame location opened in Zurich in 2018. *(via 2g3xw7dGR74)*
+- In 2018, Amy Fukahori became World Brewers Cup Champion. *(via 2g3xw7dGR74)*
+- In 2018, Matthew (co-founder) placed third at the World Barista Championship. *(via 2g3xw7dGR74)*
+- Mame began roasting their own coffee in 2020. *(via 2g3xw7dGR74)*
+- Before roasting in-house, Mame served coffees from Gardelli, Coffee Collective, and La Cabra. *(via 2g3xw7dGR74)*
+- Mame uses dedicated EK grinders — one for espresso and one for filter — to reduce retention and keep workflows separate. *(via 2g3xw7dGR74)*
+- During the week, a single barista manages all tasks (orders, filter, espresso-based drinks); on weekends a maximum of three baristas work together with defined roles. *(via 2g3xw7dGR74)*
+- Barista competition format: 15 minutes to produce 12 drinks. *(via 2g3xw7dGR74)*
+- Starting their own roastery created direct relationships with farmers and gave baristas more detailed origin information than was available from packaged roasted coffees. *(via 2g3xw7dGR74)*
+- A Q-grader is described as a top-level sommelier equivalent in the coffee world. *(via WuLSkhEBocE)*
+- Very dark, oily roasted beans are associated with lower-quality or commercial coffee. *(via WuLSkhEBocE)*
+- Specialty coffee cannot contain too many defect beans by definition. *(via WuLSkhEBocE)*
+- Lighter roasted beans that show 'tipping' (a small burned spot on the soft part of the bean) is a common roasting defect that occurs more often with lighter roasts. *(via WuLSkhEBocE)*
+- Robusta coffees are commonly associated with rubbery, cocoa, and smoky flavor notes. *(via WuLSkhEBocE)*
+- Oily beans are a visual indicator of very dark roasting. *(via WuLSkhEBocE)*
+- Peaberries are a distinct bean shape that can appear within a lot of mixed bean sizes. *(via WuLSkhEBocE)*
+- Round 1, Coffee A: specialty single-origin 100% Arabica from Brazil, naturally processed, roasted for espresso — priced at €40/kg. *(via WuLSkhEBocE)*
+- Round 1, Coffee B: commercial blend of Arabica and Robusta, roasted for espresso — priced at €9/kg. *(via WuLSkhEBocE)*
+- Round 2, Coffee A: commercial blend of 100% Arabica from Brazil and Colombia, roasted relatively light — priced at €12/kg. *(via WuLSkhEBocE)*
+- Round 2, Coffee B: premium single-origin 100% Arabica from Colombia (Supremo), roasted very dark — priced at €35/kg. *(via WuLSkhEBocE)*
+- Commandante C40 MK4 was released in 2021. *(via l2asYfh-Apk)*
+- The MK1 was the first series ever produced, back in 2013. *(via l2asYfh-Apk)*
+- The iconic MK3 launched globally in 2016 and was fully manufactured at the Commandante facility in Unterhaching, near Munich, Germany. *(via l2asYfh-Apk)*
+- The C40 designation means the grinder can hold and grind up to 40 grams of beans at a time. *(via l2asYfh-Apk)*
+- Commandante designed and engineered their own burr set using custom steel called Nitroblade, cut from a solid block of high-nitrogen stainless steel. *(via l2asYfh-Apk)*
+- Commandante offers a lifetime warranty on the Nitroblade burr set. *(via l2asYfh-Apk)*
+- MK4 improvements over MK3 include: new optimized internals with different materials, a new bean inlet that eliminates beans getting stuck, a new near-unbreakable polymer glass jar that helps collect and separate fines, lower weight, and increased durability. *(via l2asYfh-Apk)*
+- MK3 and MK4 maintain 100% backward compatibility with all accessories. *(via l2asYfh-Apk)*
+- Current wooden finish options are: chocolate, fineline, american cherry, liquid amber, and virginia walnut. *(via l2asYfh-Apk)*
+- Current powder-coated options are: black and alpine lagoon. *(via l2asYfh-Apk)*
+- Both finish types offer the same grinding performance. *(via l2asYfh-Apk)*
+- Grind size is adjusted by identifying the 'first click' — the first counterclockwise adjustment from the zero/locked position. *(via l2asYfh-Apk)*
+- Recommended click ranges: Turkish coffee = 3–9 clicks; espresso = 7–13 clicks; filter coffee = 18–30+ clicks. *(via l2asYfh-Apk)*
+- Popular hand grinders from Hario or Porlex cost around 50 euros or less at the time the MK3 launched. *(via l2asYfh-Apk)*
+- The MK3 launched at over 200 euros, which at the time created a new category of premium hand grinders. *(via l2asYfh-Apk)*
+- Commandante is a long-term partner of European Coffee Trip, and the video is explicitly not an unbiased review or comparison. *(via l2asYfh-Apk)*
+- The Morning coffee machine is designed with specialty coffee in mind. *(via a-1KvE8jjMI)*
+- The machine features a water tank with a lid holding 850 milliliters of water. *(via a-1KvE8jjMI)*
+- The machine includes a built-in scale, drip tray, drip tray cover, capsule container for 8–10 capsules, dial control, and an OLED screen. *(via a-1KvE8jjMI)*
+- Brewing temperature can be set from 85 to 98 degrees Celsius. *(via a-1KvE8jjMI)*
+- Recipes are defined by yield in grams, with a range of 20 grams to 200 grams. *(via a-1KvE8jjMI)*
+- Pressure profiling allows selection from 1 to 7 bars of pressure in different stages of brewing. *(via a-1KvE8jjMI)*
+- The machine comes with 10 predefined profiles covering a range from short espresso-style drinks to longer, filter-style coffees. *(via a-1KvE8jjMI)*
+- The machine has a capsule slot with a lever and recognizes when the cup is removed from the drip tray via the built-in scale. *(via a-1KvE8jjMI)*
+- A water bypass function allows clean, temperature-controlled water to be dispensed by holding the confirm button. *(via a-1KvE8jjMI)*
+- There is an LED light in the spout to illuminate the cup. *(via a-1KvE8jjMI)*
+- The machine connects to a mobile app via Wi-Fi to upload custom roaster recipes. *(via a-1KvE8jjMI)*
+- The machine has 10 recipe slots in its memory; adding or changing custom/roaster recipes requires removing existing ones first via the app. *(via a-1KvE8jjMI)*
+- The machine was received as a free test unit from the manufacturer in summer 2021. *(via a-1KvE8jjMI)*
+- The available color options are Saturn Black and Silver White. *(via a-1KvE8jjMI)*
+- Doubleshot is described as a Prague-based specialty coffee roastery. *(via a-1KvE8jjMI)*
+- The Doubleshot funky capsule requires shaking before use. *(via a-1KvE8jjMI)*
+- Longer espresso shots produce a weaker but higher-extraction espresso that is sweeter and more balanced. *(via JgRufU-0cO4)*
+- Shorter espresso shots move toward under-extraction. *(via JgRufU-0cO4)*
+- TDS (total dissolved solids) decreases as shot length increases. *(via JgRufU-0cO4)*
+- Pressure in espresso is primarily a tool for manipulating flow rate, not a magic variable in itself. *(via JgRufU-0cO4)*
+- Fat content in milk can offset dilution when pulling a longer espresso shot. *(via JgRufU-0cO4)*
+- The bloom stage in pour-over primarily extends total brew time rather than performing a unique extraction function. *(via JgRufU-0cO4)*
+- Espresso does not use pre-infusion as a required step, nor do immersion brews like plungers, siphons, or AeroPress, yet they produce good results. *(via JgRufU-0cO4)*
+- A 30–45 second bloom extends pour-over brew time by that amount, whereas pouring all water at once would yield a brew time of roughly 1.5 minutes. *(via JgRufU-0cO4)*
+- The Origami Pin dripper is shorter than a standard V60 01 dripper. *(via ZWs08h2fj34)*
+- The Origami Pin has more indents than a standard Origami dripper, which promotes faster or more consistent flow. *(via ZWs08h2fj34)*
+- The shorter height of the Origami Pin allows the brewer to get physically closer to the coffee bed when pouring. *(via ZWs08h2fj34)*
+- The Origami Pin can be used with low doses, around 10–12 grams. *(via ZWs08h2fj34)*
+- The Cris Slow filter is described on its packaging as a 'limited collection' (Rarities) that increases flow resistance for a longer dry down and outstanding cup cleanliness. *(via ZWs08h2fj34)*
+- The Cris Slow filter packaging states it enables coarser grinds and exploration of profiles in highly soluble coffees or intensely fermented lots. *(via ZWs08h2fj34)*
+- Cris also makes a 'fast' (high permeability) filter faster than their standard fast filter. *(via ZWs08h2fj34)*
+- A 50-gram bloom was used for a 12g dose brewed to 200g total. *(via ZWs08h2fj34)*
+- The brew was done in two pours. *(via ZWs08h2fj34)*
+- A pre-wet of the paper filter was performed before brewing. *(via ZWs08h2fj34)*
+- The Origami Pin is compatible with the 'vase' server/stand, which helps align the dripper. *(via ZWs08h2fj34)*
+- Flow rate during the brew was estimated at approximately 1 ml per second. *(via ZWs08h2fj34)*
+- The mobile coffee setup is built into a Cybertruck and is designed to keep the back seats fully functional. *(via Z8quHVIMNIs)*
+- The system is built like a pallet that slides in and out, secured with screws, making it transferable to another vehicle. *(via Z8quHVIMNIs)*
+- The setup includes a drop platform on a four-bar linkage to bring the workspace to a workable height because the Cybertruck is very tall. *(via Z8quHVIMNIs)*
+- The rig includes a rinser, grinders, and a Slayer One Group espresso machine. *(via Z8quHVIMNIs)*
+- There is a slide-out platform for pourover on one side. *(via Z8quHVIMNIs)*
+- The custom materials used include carbon kevlar, which is difficult to machine because the kevlar frays. *(via Z8quHVIMNIs)*
+- The Slayer's original needle valve is buried underneath the machine and the manufacturer advises not to touch it because it is delicate. *(via Z8quHVIMNIs)*
+- A secondary valve was added that provides max flow by removing the flow restrictor. *(via Z8quHVIMNIs)*
+- The flow rate demonstrated reached 20 mL per second. *(via Z8quHVIMNIs)*
+- The builder works in aviation, and aviation-inspired design elements are incorporated throughout, including a truss-style structure. *(via Z8quHVIMNIs)*
+- The steam and hot water actuators are styled after F1 wheel nuts. *(via Z8quHVIMNIs)*
+- Gold PVD finish was applied to the machine. *(via Z8quHVIMNIs)*
+- Agua Catio is a first-place auction lot coffee from Lamastus Axis of Elevation. *(via 6LxBXqaDVwY)*
+- The coffee cost approximately $3,000 per kilo green. *(via 6LxBXqaDVwY)*
+- The batch was roasted in January and yielded approximately one quaker from the entire roasted batch. *(via 6LxBXqaDVwY)*
+- The GX2 is made by Origami and uses a siphon dripper mechanism. *(via 6LxBXqaDVwY)*
+- The GX2 uses V60-style paper filters that are shaped using a mold. *(via 6LxBXqaDVwY)*
+- The GX2 brewer works with a specific vase (described as a Triton) that allows the siphon action to function properly; not all carafes (e.g., a standard Kinto) fit or work as well. *(via 6LxBXqaDVwY)*
+- A brew of approximately 14–15 grams of coffee completed in around 1 minute to 1 minute 30 seconds. *(via 6LxBXqaDVwY)*
+- The Acaia Horizon scale was used during the brew session. *(via 6LxBXqaDVwY)*
+- The brew session was conducted as part of a live stream. *(via 6LxBXqaDVwY)*
+- The portable espresso machine connects to a smartphone app called the Happy Go app. *(via li2HDt8FEQU)*
+- The machine charges via USB-C. *(via li2HDt8FEQU)*
+- The machine is available in two basket sizes: 58mm and 49mm. *(via li2HDt8FEQU)*
+- The machine's chamber heats water internally, eliminating the need for a separate kettle. *(via li2HDt8FEQU)*
+- The machine includes a self-leveling palm tamper. *(via li2HDt8FEQU)*
+- The machine has a pre-soak function that can be set via the app (demonstrated at 4 seconds pre-soak, 1 second pause, then extraction begins). *(via li2HDt8FEQU)*
+- The machine displays current water temperature and can be controlled via app or a physical button on the device. *(via li2HDt8FEQU)*
+- The Timemore Whirly is a portable electric grinder. *(via li2HDt8FEQU)*
+- The dose used for the session was 17g. *(via li2HDt8FEQU)*
+- The target brew temperature was set to 90°C, later discussed as potentially lowering to 88°C. *(via li2HDt8FEQU)*
+- The water reservoir holds approximately 90ml. *(via li2HDt8FEQU)*
+- The Santa Felisa La Arena coffee is a Natural-process Guatemala. *(via li2HDt8FEQU)*
+- The farm owner of Santa Felisa is connected to one of the channel's staff baristas. *(via li2HDt8FEQU)*
+- New Berry Street Coffee Roasters is based in Boston, Massachusetts. *(via LjcCncNeOew)*
+- The competition blend consists of 20% Thai Geisha and 80% Panamanian Geisha. *(via LjcCncNeOew)*
+- Both coffees in the blend were roasted 5 days before the competition. *(via LjcCncNeOew)*
+- The roast targeted 13% development time ratio for both coffees to align solubility. *(via LjcCncNeOew)*
+- The brewer used is described as the 'AeroPress in one,' a zero-bypass brewer created by Hario, developed through 70 iterations. *(via LjcCncNeOew)*
+- The brewer is made of Triton plastic. *(via LjcCncNeOew)*
+- The brewing water composition is 2.7 parts magnesium and 1 part calcium, with a total hardness of 80 ppm. *(via LjcCncNeOew)*
+- Brew water temperature is 96 degrees Celsius. *(via LjcCncNeOew)*
+- The first pour is 50 ml of water with a 40-second bloom. *(via LjcCncNeOew)*
+- A gentle swirl is performed on the first pour to promote uniform extraction. *(via LjcCncNeOew)*
+- An aroma scent glass with a narrow neck is used for judges to evaluate aroma. *(via LjcCncNeOew)*
+- Pat has competed in national barista competition finals three times. *(via LjcCncNeOew)*
+- The Panamanian Geisha used in the blend is sourced from Jose Galdo, Panama. *(via LjcCncNeOew)*
+- The Thai Geisha is a honey-processed coffee personally grown and donated to by Pat 4 years ago. *(via LjcCncNeOew)*
+- Research conducted with Terry and Juan from MIT lab informed brewing parameters: longer brewing time enhances sweetness, and a 40-second bloom highlights body and top acidity. *(via LjcCncNeOew)*
+- The dose used for almost all brews is 15 g. *(via r1vlSo9apVQ)*
+- The Oreya Z1 is the current brewer being used and is described as very forgiving. *(via r1vlSo9apVQ)*
+- The brew temperature used is 95°C. *(via r1vlSo9apVQ)*
+- The water recipe consists of one stick of Third Wave Classic concentrate dissolved in 1 gallon of distilled water, then mixed at a 1:3 to 1:4 ratio of concentrate to plain distilled water in the kettle (e.g., 100 ml concentrate + 350–400 ml distilled). *(via r1vlSo9apVQ)*
+- The recipe uses three pours, with the first pour being very fast (10–15 seconds implied). *(via r1vlSo9apVQ)*
+- On the M98V grinder, the target grind size is approximately 300 microns. *(via r1vlSo9apVQ)*
+- On the ZP6 grinder, the target grind size is around a setting of 5. *(via r1vlSo9apVQ)*
+- Target brew time for the Z1 with this recipe is approximately 2.5 to 3 minutes. *(via r1vlSo9apVQ)*
+- 15 g from a bag typically yields three to six brews, enough to understand the coffee. *(via r1vlSo9apVQ)*
+- Cabin is a Nordic cocktail bar in New York City that has added a coffee program. *(via CKkk-GyN8dw)*
+- Rohit, the coffee program director at Cabin, previously worked at La Cabra and in fine dining before joining Cabin. *(via CKkk-GyN8dw)*
+- Cabin's primary roaster is La Cabra, with beans imported from Brooklyn (La Cabra Brooklyn) and other sources including April and SP (sister companies). *(via CKkk-GyN8dw)*
+- Most of the coffee served at Cabin is imported, consistent with an all-Nordic coffee focus. *(via CKkk-GyN8dw)*
+- Cabin's bar staff was recruited from bartender backgrounds rather than traditional barista backgrounds. *(via CKkk-GyN8dw)*
+- The bar model allows customers to open a tab, interact with staff directly, and watch drinks being made in front of them — unlike most coffee shop experiences. *(via CKkk-GyN8dw)*
+- Rohit moved from Texas to New York approximately three years before the video was filmed, having previously worked in coffee and hospitality throughout undergrad and medical school before dropping out. *(via CKkk-GyN8dw)*
+- A pour-over of the Communist States SL-34 was brewed during the session. *(via CKkk-GyN8dw)*
+- A single shot of espresso in a 12oz cup is a standard fulfillment of a 'single shot oat latte in the large size'. *(via 1j4cwje)*
+- Lavender latte is made with lavender syrup, which is a flavored syrup. *(via 1j4cwje)*
+- The shop's house-made vanilla syrup is made from sugar, water, and scraped vanilla pods. *(via 1j4cwje)*
+- Lavender syrup contains sweet artificial flavors. *(via 1j4cwje)*
+- The poster worked as a full-time casual barista in a busy cafe run by a married couple. *(via 1agwf76)*
+- The poster was 18 years old when they started the job. *(via 1agwf76)*
+- The poster was paid $25/hr, which they state is the legal minimum for their age. *(via 1agwf76)*
+- The poster frequently served as head barista and de facto front-of-house manager when the owners were absent. *(via 1agwf76)*
+- The poster quit without providing the customary two weeks' notice. *(via 1agwf76)*
+- The poster states that quitting with short notice is legally within their rights. *(via 1agwf76)*
+- Switching from instant Folgers to coffee from small roasters produced a noticeably better experience. *(via sc1eth)*
+- Switching from pre-ground coffee to freshly grinding whole beans improved the experience further. *(via sc1eth)*
+- Switching from a standard drip coffee maker to a Clever dripper, while weighing coffee and water, produced what the author described as the best coffee they had ever had. *(via sc1eth)*
+- A flat white is a type of espresso-based drink. *(via 1myz20x)*
+- Microfoam is a distinguishing characteristic of a flat white. *(via 1myz20x)*
+- Flat whites are distinct from regular lattes. *(via 1myz20x)*
+- Dialing in a new espresso machine requires grind setting adjustments. *(via 1hx015p)*
+- Switching to a different machine (or basket size) necessitates re-dialing grind settings. *(via 1hx015p)*
+- Dialing in a new machine can consume a significant amount of coffee — the poster used approximately 1/3 of a bag during the process. *(via 1hx015p)*
+- The Rancilio Silvia is available on the used market. *(via 1hx015p)*
+- Lever espresso machines are available in multiple colors. *(via 1hx015p)*
+- Sourcing a specific color of a lever espresso machine in Canada may require contacting multiple retailers. *(via 1hx015p)*
+- The Aeropress is described as suitable both for home and workplace use. *(via x1e3hm)*
+- A V60 setup with scales and a hand grinder is used for pour-over coffee. *(via x1e3hm)*
+- Bean-to-cup DeLonghi machines can produce something closer to espresso and allow steaming milk for milk-based drinks. *(via x1e3hm)*
+- A bean-to-cup machine can be operated with minimal effort (described as '3 button clicks at 5am'). *(via x1e3hm)*
+- The espresso world involves puck prep and managing channelling. *(via x1e3hm)*
+- James Hoffmann is a recognizable and influential figure in online coffee communities, particularly on Reddit. *(via 1qb3stj)*
+- The JamesHoffmann subreddit is a common entry point for people learning about pour over coffee. *(via 1qb3stj)*
+- Coffee hobbyist culture frequently progresses from pour over to espresso over time. *(via 1qb3stj)*
+- The device is a modified generic 3-cup aluminum moka pot sold by an Indonesian store called Mokopi.id on Shopee Philippines. *(via 1msk8hy)*
+- The spout of the original moka pot was cut out and replaced with a removable reverse portafilter-looking insert. *(via 1msk8hy)*
+- The insert contains a 51mm basket. *(via 1msk8hy)*
+- The product comes with a matching puck screen and a puck screen lock designed to hold the puck in place while inverted. *(via 1msk8hy)*
+- The product also includes a basket funnel. *(via 1msk8hy)*
+- The seller's instruction video recommends 15g of finely ground coffee, tamped. *(via 1msk8hy)*
+- The portafilter insert is placed in a hole in the upper chamber. *(via 1msk8hy)*
+- The boiler is filled with water just below the valve, as with a standard moka pot. *(via 1msk8hy)*
+- The poster used hot (not boiling) water and low heat. *(via 1msk8hy)*
+- Brew time is approximately the same as a regular moka pot. *(via 1msk8hy)*
+- The faux crema dissipates after pouring the coffee into a cup or glass. *(via 1msk8hy)*
+- The poster used medium-fine pre-ground coffee rather than the recommended fine grind. *(via 1msk8hy)*
+- The poster made a latte from the resulting brew. *(via 1msk8hy)*
+
+## French Press
+
+- The Faza farm is located in the South Minas (Sul de Minas) region of Brazil. *(via Fz8b6z1-OXA)*
+- The farm was purchased in 2009, cleared, and 200,000 trees were planted in 2011. *(via Fz8b6z1-OXA)*
+- Almost half of the initial planting was lost due to inexperience in farm management. *(via Fz8b6z1-OXA)*
+- The initial varieties planted were red Catuai, yellow Bourbon, and Mundov. *(via Fz8b6z1-OXA)*
+- The farm originally started as a commercial coffee operation, not a specialty one. *(via Fz8b6z1-OXA)*
+- The shift toward specialty coffee began around 2014 when the team recognized the cost of production exceeded market selling prices. *(via Fz8b6z1-OXA)*
+- The farm has about 6–7 hectares dedicated to shade-grown exotic varieties, including Geisha and Wush Wush. *(via Fz8b6z1-OXA)*
+- Graviola trees are being planted to provide shade in the exotic variety section. *(via Fz8b6z1-OXA)*
+- The Pink Bourbon plot has approximately 15,000 trees and produces around 30–60 bags per year. *(via Fz8b6z1-OXA)*
+- The Pink Bourbon coffee used at WBC came from this specific plot. *(via Fz8b6z1-OXA)*
+- Inconsistent flowering and cherry production cycles are occurring simultaneously on some trees, which the farmer attributes to climate disruption. *(via Fz8b6z1-OXA)*
+- In the South Minas region, a single harvest season is the norm, but the farm is now experiencing two production seasons. *(via Fz8b6z1-OXA)*
+- Geisha trees in the heavy-shade area produced floral cups but lacked sweetness, which the farmer attributes to either insufficient maturity or needing different processing. *(via Fz8b6z1-OXA)*
+- The Pink Bourbon plot uses partial sun throughout the day and also receives natural shade from eucalyptus trees. *(via Fz8b6z1-OXA)*
+- The morning sun does not reach the Pink Bourbon plot because of the terrain orientation. *(via Fz8b6z1-OXA)*
+- Freshly roasted beans were recommended by multiple members of the r/Coffee community as important. *(via 5nxd2u)*
+- The poster purchased medium roast beans from a South American origin at a local Italian market for $10 per pound. *(via 5nxd2u)*
+- Stirring the grounds during steeping is a technique highlighted in French press instructional content. *(via 5nxd2u)*
+- French press coffee produced a stronger caffeine effect and richer taste than the poster's usual drip coffee. *(via 5nxd2u)*
+- The poster's girlfriend found the French press coffee too strong to finish. *(via 5nxd2u)*
+
+## General
+
+- The Hungarian-style moka pot is called a 'kotyogó.' *(via 1isy88s)*
+- The kotyogó was made by a Hungarian porcelain company called Hollóháza. *(via 1isy88s)*
+- The example found was produced in the 1970s–80s. *(via 1isy88s)*
+- The kotyogó uses a bayonet top closure rather than a screw top. *(via 1isy88s)*
+- The relief valve on the kotyogó is located on the top, not on the side as on a traditional moka pot. *(via 1isy88s)*
+- The pot was purchased at a thrift store for 20€. *(via 1isy88s)*
+- The pot was in perfect condition except for a missing rubber seal. *(via 1isy88s)*
+- A silicone seal for a Bialetti 4-cup moka pot fits the kotyogó perfectly. *(via 1isy88s)*
+
+## Grinders
+
+- The French Press is one of the most popular and approachable coffee brewing methods. *(via https://pullandpourcoffee.com/the-ultimate-guide-to-french-press-coffee/)*
+- Paper filters trap coffee bean oils; the French Press's metal mesh filter allows those oils into the brew. *(via https://pullandpourcoffee.com/the-ultimate-guide-to-french-press-coffee/)*
+- Coffee bean oils contribute to a richer, deeper flavor in the cup. *(via https://pullandpourcoffee.com/the-ultimate-guide-to-french-press-coffee/)*
+- The recommended brewing water temperature range is 195°F to 205°F (90.6°C to 96°C). *(via https://pullandpourcoffee.com/the-ultimate-guide-to-french-press-coffee/)*
+- Boiling water and letting it rest for ~30 seconds brings it to approximately the ideal brewing temperature. *(via https://pullandpourcoffee.com/the-ultimate-guide-to-french-press-coffee/)*
+- A coarser grind is required for French Press than for drip coffee makers. *(via https://pullandpourcoffee.com/the-ultimate-guide-to-french-press-coffee/)*
+- Fine grinds produce bitter-tasting French Press coffee; too coarse a grind produces weak coffee. *(via https://pullandpourcoffee.com/the-ultimate-guide-to-french-press-coffee/)*
+- The standard dose guideline is one rounded tablespoon of ground coffee per 4-ounce cup. *(via https://pullandpourcoffee.com/the-ultimate-guide-to-french-press-coffee/)*
+- After brewing, coffee should be immediately decanted to prevent over-extraction and bitterness. *(via https://pullandpourcoffee.com/the-ultimate-guide-to-french-press-coffee/)*
+- The first official patent for the French Press was filed by Italians Attilio Calimani and Giulio Moneta in 1929. *(via https://pullandpourcoffee.com/the-ultimate-guide-to-french-press-coffee/)*
+- French Press 'cup' sizing is based on 4-ounce European cups, not 8–10 ounce American mugs. *(via https://pullandpourcoffee.com/the-ultimate-guide-to-french-press-coffee/)*
+- A 3-cup French Press yields ~12 oz; an 8-cup yields ~34 oz; a 12-cup yields ~51 oz. *(via https://pullandpourcoffee.com/the-ultimate-guide-to-french-press-coffee/)*
+- Preheating the brewer and plunger with hot water before brewing is recommended. *(via https://pullandpourcoffee.com/the-ultimate-guide-to-french-press-coffee/)*
+- Water quality directly affects coffee taste — poor-tasting water produces poor-tasting coffee. *(via https://pullandpourcoffee.com/the-ultimate-guide-to-french-press-coffee/)*
+- Guatemala began growing coffee commercially in 1850, relatively late compared to some of its Central American neighbors. *(via https://sprudge.com/green)*
+- Guatemala has an abundance of water, volcanic soil, and very distinct micro-climates compared to its neighbors. *(via https://sprudge.com/green)*
+- Guatemala recognized and responded to the needs of the emerging specialty coffee sector earlier than most coffee producing regions. *(via https://sprudge.com/green)*
+- Finca Danilandia is grown in the crater of Volcan Tecuamburro. *(via https://sprudge.com/green)*
+- Finca Danilandia is operated under the stewardship of producer Luis Arimany, who grew up helping his grandfather farm coffee in nearby Esquintla. *(via https://sprudge.com/green)*
+- Finca Danilandia has joined the regenerative agriculture movement under the consultation of engineer Eduardo Sampaio. *(via https://sprudge.com/green)*
+- The farm thrives in the crater's environment of shady planting within rich volcanic soil. *(via https://sprudge.com/green)*
+- The SCA's Evolved Q Grader Program is built around the Coffee Value Assessment (CVA). *(via https://sprudge.com/green)*
+- The new Q Grader program moves beyond a single score to consider what a coffee tastes like, how it is experienced, and how context shapes its value. *(via https://sprudge.com/green)*
+- The Q Arabica Grader Course is a six-day program combining sensory training with hands-on learning. *(via https://sprudge.com/green)*
+- Students in the Q course cup extensively and develop a shared language for discussing coffee. *(via https://sprudge.com/green)*
+- The term 'Direct Trade' has little to no regulations for roasters using it. *(via https://sprudge.com/green)*
+- Direct Trade implies a roaster has directly communicated and negotiated with producers to determine the price of the coffee being purchased. *(via https://sprudge.com/green)*
+- Direct Trade implies there is no middleman involved — no importer. *(via https://sprudge.com/green)*
+- The AeroPress is one of the most travel-proof brewers ever made. *(via https://pullandpourcoffee.com/my-current-coffee-travel-setup-for-every-situation/)*
+- A compact hand grinder can fit inside the AeroPress, saving space. *(via https://pullandpourcoffee.com/my-current-coffee-travel-setup-for-every-situation/)*
+- Pre-dosing beans inside the AeroPress saves packing space. *(via https://pullandpourcoffee.com/my-current-coffee-travel-setup-for-every-situation/)*
+- Third Wave Water packets remove guesswork about local water quality when traveling. *(via https://pullandpourcoffee.com/my-current-coffee-travel-setup-for-every-situation/)*
+- Driving removes weight and outlet constraints, allowing for larger and more comfortable setups. *(via https://pullandpourcoffee.com/my-current-coffee-travel-setup-for-every-situation/)*
+- The Orea Big Boy allows for larger batch brews and is described as portable and durable. *(via https://pullandpourcoffee.com/my-current-coffee-travel-setup-for-every-situation/)*
+- The Fellow Ode grinder is efficient for brewing multiple cups in succession. *(via https://pullandpourcoffee.com/my-current-coffee-travel-setup-for-every-situation/)*
+- The Cafec drip kettle is lightweight and packable. *(via https://pullandpourcoffee.com/my-current-coffee-travel-setup-for-every-situation/)*
+- The Whirly grinder offers excellent grind consistency in a compact form. *(via https://pullandpourcoffee.com/my-current-coffee-travel-setup-for-every-situation/)*
+- Coffee color is the best predictor of flavor. *(via https://www.scottrao.com/blog/color-measurement)*
+- Color measurement is a useful tool in roasting quality control. *(via https://www.scottrao.com/blog/color-measurement)*
+- Some color meters require upwards of 100g of ground coffee per measurement, while others require as little as 5g. *(via https://www.scottrao.com/blog/color-measurement)*
+- Grind size has a significant impact on color measurement — on an EK grinder, grinding on setting #1 vs. #5 produces a color reading approximately 25 points higher on the finer setting. *(via https://www.scottrao.com/blog/color-measurement)*
+- Using the same grind setting consistently is essential for reliable color readings. *(via https://www.scottrao.com/blog/color-measurement)*
+- A dedicated low-retention grinder used exclusively for color readings helps prevent drift in readings over time. *(via https://www.scottrao.com/blog/color-measurement)*
+- Burr dulling in a heavily used café grinder can cause color readings to drift 5–6 points within a year. *(via https://www.scottrao.com/blog/color-measurement)*
+- A relatively fine grind and tamping the ground sample improves measurement accuracy. *(via https://www.scottrao.com/blog/color-measurement)*
+- A coarser grind may cause larger chaff particles to float on top of the sample, making the result appear lighter. *(via https://www.scottrao.com/blog/color-measurement)*
+- Whole-bean color readings are less reliable than ground-color readings due to rounded bean surfaces, variability in crack orientation, and variation in silverskin on bean exteriors. *(via https://www.scottrao.com/blog/color-measurement)*
+- Variability in the number of quakers in a sample can impact color readings, since quakers tend to be much lighter in color than mature seeds. *(via https://www.scottrao.com/blog/color-measurement)*
+- Weight loss is a great proxy for overall roast development. *(via https://www.scottrao.com/blog/color-measurement)*
+- Color readings and weight-loss readings complement each other and cross-validate roasting consistency. *(via https://www.scottrao.com/blog/color-measurement)*
+- Recalibrating the color meter before each roast session is recommended. *(via https://www.scottrao.com/blog/color-measurement)*
+- It is essential to precisely measure the weight loss of every batch. *(via https://www.scottrao.com/blog/color-measurement)*
+
+## Origins
+
+- Sprudge hosts an event submission form for coffee-related events. *(via https://sprudge.com/event-submission)*
+- The form accepts in-person coffee events, digital coffee events, public cuppings, open-mic nights, poetry slams, and latte art throwdowns. *(via https://sprudge.com/event-submission)*
+- The form supports multiple time zones including MST (UTC-07:00), AST (UTC-04:00), AEST (UTC+10:00), and NZST (UTC+12:00). *(via https://sprudge.com/event-submission)*
+- Submitters can upload up to 3 files via drag and drop. *(via https://sprudge.com/event-submission)*
+- The form allows organizers to optionally list a phone number and email address. *(via https://sprudge.com/event-submission)*
+- The form supports free events (entered as 0) as well as paid events. *(via https://sprudge.com/event-submission)*
+- Submissions show a preview before final submission. *(via https://sprudge.com/event-submission)*
+- Sub Zero is a pop-up coffee concept run by Kirk Pearson. *(via 9YUFe4eQYnk)*
+- The Sub Zero pop-up was held at Abacus Coffee. *(via 9YUFe4eQYnk)*
+- Sub Zero uses a freezer (described as an 'ice cream freezer') to store coffees. *(via 9YUFe4eQYnk)*
+- The Sub Zero menu was described as one of the largest coffee menus Matt Perger has ever seen. *(via 9YUFe4eQYnk)*
+- Coffees served at the event included a Kona coffee and a Cup of Excellence coffee. *(via 9YUFe4eQYnk)*
+- A Slayer espresso machine was in use at the event. *(via 9YUFe4eQYnk)*
+- Matt Perger was showing a Tamper Pro prototype (described as 75 grams) to attendees at the event. *(via 9YUFe4eQYnk)*
+
+## Pour Over
+
+- African coffees have long been considered foundational in specialty coffee. *(via https://pullandpourcoffee.com/introducing-pull-pours-best-of-africa-set/)*
+- Ethiopia and Kenya are among the most celebrated coffee origins in the world. *(via https://pullandpourcoffee.com/introducing-pull-pours-best-of-africa-set/)*
+- Kenya is associated with precision in processing and grading. *(via https://pullandpourcoffee.com/introducing-pull-pours-best-of-africa-set/)*
+- The set includes eight coffees from five African origins: Ethiopia, Kenya, Burundi, Rwanda, and Uganda. *(via https://pullandpourcoffee.com/introducing-pull-pours-best-of-africa-set/)*
+- The coffees are portioned into 50g jars, described as enough for a couple of brews per coffee. *(via https://pullandpourcoffee.com/introducing-pull-pours-best-of-africa-set/)*
+- The set includes washed, natural, and experimental processing styles. *(via https://pullandpourcoffee.com/introducing-pull-pours-best-of-africa-set/)*
+- Roasters featured include Onyx, Manhattan, Regalia, Wonderstate, and Red Rooster. *(via https://pullandpourcoffee.com/introducing-pull-pours-best-of-africa-set/)*
+- The set includes a Uganda anaerobic natural and contrasting washed and natural processed coffees from Burundi. *(via https://pullandpourcoffee.com/introducing-pull-pours-best-of-africa-set/)*
+- Burundi, Rwanda, and Uganda are gaining more recognition in the specialty coffee world. *(via https://pullandpourcoffee.com/introducing-pull-pours-best-of-africa-set/)*
+- The set is released as a pre-order to ensure freshness and coordination across roasters. *(via https://pullandpourcoffee.com/introducing-pull-pours-best-of-africa-set/)*
+- Pre-orders open May 14 and close around June 1; sets ship around June 8–10 with expected arrival June 10–17. *(via https://pullandpourcoffee.com/introducing-pull-pours-best-of-africa-set/)*
+- International shipping costs can be $40–50 per set, with delivery times of 3–4 weeks or more. *(via https://pullandpourcoffee.com/introducing-pull-pours-best-of-africa-set/)*
+- The set comes with a printable coffee brew guide cheatsheet covering 8 brew methods including Chemex, V60, and AeroPress. *(via https://pullandpourcoffee.com/introducing-pull-pours-best-of-africa-set/)*
+- The author brewed hundreds of coffees from roasters all over the world in 2025. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- The highlighted coffees span dozens of origins, processing styles, and varietals. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- The Diego Bermundez Hachi Project Gesha was roasted by NATIVE and processed as a washed Gesha. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- The Poem co-fermented Pink Bourbon was washed and co-fermented. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- The Yemen coffee was a special release drop from the Pull & Pour Coffee Club. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- The melon creamsicle blend pairs 65% co-ferment with 35% natural Ethiopian. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- The anaerobic coffee was described on its label as having 'Trix cereal' flavor notes. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- The Peru coffee was an exclusive lot for the coffee club produced by SEY in the Cusco region. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- The Colombian set came from four unique varietals from Nestor Lasso, all harvested simultaneously and processed using the same anaerobic washed method. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- Nestor Lasso is a world-renowned Colombian producer whose name is associated with Championship coffees. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- The Pink Bourbon from Wonderstate led with tangy red currant and zesty citrus, finishing with stone fruit and Demerara sugar sweetness. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- Inmaculada is identified as one of the top farms in Colombia. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- The Sudan Rume coffee from Inmaculada was roasted by Corvus. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- The Ethiopian coffee came from producer Tamiru Tadesse. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- The final coffee on the list was roasted by Aviary and was part of a 12 Days of Coffee Christmas set. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- The Pull & Pour site offers a printable coffee brew guide covering 8 brew methods including Chemex, V60, AeroPress, and more. *(via https://pullandpourcoffee.com/top-coffees-from-2025/)*
+- Nepal produces only around 400 tons of specialty coffee per year, making it one of the rarest origins in the world. *(via https://pullandpourcoffee.com/taste-of-nepal-specialty-coffee-set/)*
+- Nepal is geographically situated between China and India. *(via https://pullandpourcoffee.com/taste-of-nepal-specialty-coffee-set/)*
+- Nepal's range of microclimates spans from subtropical to alpine. *(via https://pullandpourcoffee.com/taste-of-nepal-specialty-coffee-set/)*
+- The coffees in this set use Red Bourbon and Caturra varietals grown at 1300+ MASL. *(via https://pullandpourcoffee.com/taste-of-nepal-specialty-coffee-set/)*
+- All three coffees in the set are roasted by Kaldi's Coffee. *(via https://pullandpourcoffee.com/taste-of-nepal-specialty-coffee-set/)*
+- The set contains three coffees, each with a distinct processing method: washed, 9-day anaerobic natural, and 13-day anaerobic natural. *(via https://pullandpourcoffee.com/taste-of-nepal-specialty-coffee-set/)*
+- Nepal is geographically close to some of the most famous tea-producing regions on earth. *(via https://pullandpourcoffee.com/taste-of-nepal-specialty-coffee-set/)*
+- A 500mm Graham condenser can be used to rapidly chill hot-brewed coffee as it is dispensed. *(via 1i0k6b3)*
+- A fish pump is used to circulate ice water around the condenser coil. *(via 1i0k6b3)*
+- The apparatus drops coffee temperature from near boiling to the low 40s (°F). *(via 1i0k6b3)*
+- When brewing in a separate device (Chemex or AeroPress) and passing through the condenser, approximately 3 passes with regular ice water are needed to reach the low 40s (°F). *(via 1i0k6b3)*
+- Using salty ice water chilled to 20°F reduces the number of passes needed to two. *(via 1i0k6b3)*
+- Using a V60 filter in the cone at the top of the condenser during a single brew achieves low-40s (°F) temperatures without extra passes. *(via 1i0k6b3)*
+- The poster reports the resulting coffee tastes really good. *(via 1i0k6b3)*
+
+## Roast
+
+- Malawi is a landlocked country in southeast Africa with a population of more than 19 million people. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Malawi's main agricultural exports in 2018 were raw tobacco (valued at US $694 million) and tea (US $89.9 million). *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Malawi exported approximately 109,000 60kg bags of coffee in 1993; that figure now sits at around 9,000 bags a year. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Coffee was introduced to Malawi in the late 1800s when Dr. John Buchanan brought the Nyasaland variety (a Bourbon/Typica derivative) from the Royal Botanic Gardens in Edinburgh. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Before Malawi's independence in 1964, many large coffee farms were owned by British colonists and concentrated in the Thyolo and Mulanje regions. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- In 1971, the newly independent Malawian government reformed the smallholder coffee sector using the Smallholder Coffee Authority (SCA). *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Most active coffee estates are confined to southern Malawi in the regions of Mangochi, Mulanje, Zomba, and Thyolo. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- There are only five active major coffee estates in Malawi. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Most estates use irrigation to water their coffee. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- There are an estimated 4,000 smallholder farms in northern and central Malawi, most with fewer than 200 plants. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- The Mzuzu Coffee Planters Cooperative Union (MCPCU) comprises six primary co-operative societies headquartered in northern Malawi. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- The six co-operative societies under the MCPCU produce between 400 and 450 metric tonnes of coffee per annum. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- The MCPCU exports its members' coffee worldwide using fixed contracts. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Main target markets for Malawian coffee are South Africa, Germany, Japan, Holland, the USA, and the UK. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Only an estimated 24 tonnes of coffee are consumed domestically in Malawi. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Arabica is the only species of coffee grown in Malawi. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Until the 2000s, Caturra was the most popular variety in Malawi. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Between 1999 and 2007, most Caturra plants were replaced with Catimor, a Caturra-Timor hybrid resistant to coffee leaf rust. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Other popular varieties include Catuai (a Mundo Novo and Caturra hybrid), K7 (matures quickly), Ruiru 11 (high disease resistance and good cup quality), and SL28 and SL34 (high cup quality but susceptible to disease). *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Rarer varieties grown in Malawi include Geisha, Nyika 129, and S. Agaro. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- The harvest season in Malawi runs from April to September. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Total production for both smallholder farms and estates is around 2,000 tonnes per annum. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Both washed and natural processing are used in Malawi. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Most coffee is processed at local washing stations before being transported to secondary processing facilities in Mzuzu. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- Coffee plants in Malawi are also grown to defend against soil erosion, sometimes planted in contours to control soil run-off. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- The Smallholder Coffee Farmer's Trust (SCFT) was founded in 1999 after farmers agreed to abolish the SCA, at which time farmers were being paid only 20–30% of their full sales price. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- The SCFT's principal aims were to increase coffee quality and add value across the supply chain. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- The SCFT initiated a mass Catimor replanting effort through the early and mid-2000s. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- In 2007, the SCFT was converted into the MCPCU, under which farmers could own shares through the co-operative society model. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- After the MCPCU reform, earnings for producers increased to 70–80% of the final sales price. *(via https://perfectdailygrind.com/2021/05/exploring-malawi-as-a-coffee-origin/)*
+- In the 2005/06 crop year, Chinese coffee production totalled approximately 359,000 60kg bags, ranking China 30th in the world by volume. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- China is now estimated to be one of the 15 largest coffee producers in the world. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- 98% of all Chinese coffee is produced in Yunnan province. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- Yunnan borders Myanmar, Laos, Thailand, and Vietnam. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- Coffee was first brought to China in the 19th century but was not cultivated at scale until 1988. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- Large-scale coffee production in China increased significantly in the early 1990s. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- Catimor is the most common arabica variety in Yunnan. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- Catimor is a hybrid of the Caturra and Timor varieties, naturally resistant to pests and coffee leaf rust. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- Catimor plants fruit quickly and deliver high yields but require significant maintenance to reliably deliver good quality beans. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- Catimor has typically been processed as a washed coffee at local wet mills in Yunnan. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- The main coffee-growing regions in Yunnan are Baoshan, Pu'er, Dehong, Lincang, and Menglian. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- Pu'er is at approximately 900–1,100 m.a.s.l.; other areas range up to 1,400–1,600 m.a.s.l. and higher, with elevations near Kunming reaching almost 2,000 m.a.s.l. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- Yunnan has historically had a reputation for producing low-quality coffee, partly because Chinese companies in the soluble coffee sector bought in volume without focusing on quality. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- Around 30% of Yunnan coffee is consumed domestically; the remaining 70% is exported. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- The largest importers of Yunnan coffee are based in Europe, with strong demand from other Asian countries and growing demand from North America. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- Sucafina opened its first Chinese office in November 2020 to support work with coffee growers in Yunnan. *(via https://perfectdailygrind.com/2021/03/exploring-the-chinese-coffee-supply-chain/)*
+- Ghana is located on West Africa's Gulf of Guinea, a few degrees north of the equator. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- Ghana is the second largest producer of cocoa in the world. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- Ghana ranks 42nd globally in coffee production. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- The earliest evidence of structured coffee production in Ghana dates to the mid-18th century. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- A coffee price crash in the 1980s caused many Ghanaian farmers to abandon coffee in favour of cocoa. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- The Ghanaian government established 19 nationalised coffee farms in the 1980s, which were later divided and sold to private farmers. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- In 2001, 2,400ha of new or revitalised farmland for coffee production was developed. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- Ghana's Coffee Rehabilitation Program (CRP) was approved in 2014 and has provided technical and financial support to over 4,500 smallholder farmers. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- Ghana is still the third smallest coffee producer in sub-Saharan Africa, behind Liberia and the Central African Republic. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- Virtually all Ghanaian coffee is robusta, as the country is broadly low-altitude with a climate unsuitable for arabica. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- Much of Ghana's farmland sits between 400 and 800 m.a.s.l., which is not appropriate for cultivating high-quality arabica. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- Coffee is mainly cultivated in the Ashanti, Bono Ahafo, Eastern, Central, Western, and Volta regions. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- The harvest in Ghana starts in September. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- Ghana produces around 37,000 60kg bags of coffee per year. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- Ghanaian coffee producers are mainly smallholder farmers with an estimated average yield of 300kg of coffee cherries per hectare. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- Farms are on average between half an acre to 1.5 acres in size. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- Large-scale farms have an estimated average yield of 1,500kg per hectare. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- Coffee is generally natural processed and sun-dried on raised beds (normally used for cocoa drying), then sold at mills or hulling centres. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- An estimated 17,000ha of farmland in Ghana is used for coffee cultivation. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- Coffee is a major source of income for around 8,000 smallholder farmers in Ghana. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- COCOBOD was established in 1947 and oversees coffee, cocoa, and shea production in Ghana. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- There is now a Coffee Roasters Association of Ghana (CRAG). *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- The Sustainable Coffee Farmers Association has five co-operatives, one of which is entirely made up of women. *(via https://perfectdailygrind.com/2021/11/exploring-coffee-production-in-ghana/)*
+- The International Coffee Organisation's February 2022 report estimated a global deficit of more than 3.1 million 60kg bags of coffee. *(via https://perfectdailygrind.com/2022/09/the-impact-of-long-term-sustainable-coffee-sourcing/)*
+- Smallholders produce up to 70 to 80% of the global coffee supply. *(via https://perfectdailygrind.com/2022/09/the-impact-of-long-term-sustainable-coffee-sourcing/)*
+- As recently as 2018, the coffee market price fluctuated around US $1/lb. *(via https://perfectdailygrind.com/2022/09/the-impact-of-long-term-sustainable-coffee-sourcing/)*
+- The Fairtrade model is focused on ensuring companies pay the Fairtrade Minimum Price and a Fairtrade Premium to improve the socioeconomic livelihoods of smallholder producers. *(via https://perfectdailygrind.com/2022/09/the-impact-of-long-term-sustainable-coffee-sourcing/)*
+- The Fairtrade Premium allows producers to earn US 20 cents/lb on top of the price paid for the coffee. *(via https://perfectdailygrind.com/2022/09/the-impact-of-long-term-sustainable-coffee-sourcing/)*
+- At least 25% of the Fairtrade Premium is invested in training and support to improve coffee quality, productivity, and sustainability. *(via https://perfectdailygrind.com/2022/09/the-impact-of-long-term-sustainable-coffee-sourcing/)*
+- The Fairtrade Minimum Price guarantee protects farmers when the market price falls below a certain value, preventing buyers from purchasing coffee below that minimum price. *(via https://perfectdailygrind.com/2022/09/the-impact-of-long-term-sustainable-coffee-sourcing/)*
+- When the market price is above the minimum price, producers receive the market price plus a premium based on coffee quality. *(via https://perfectdailygrind.com/2022/09/the-impact-of-long-term-sustainable-coffee-sourcing/)*
+- One UK green coffee trader was the first in the UK to receive a Fairtrade certification. *(via https://perfectdailygrind.com/2022/09/the-impact-of-long-term-sustainable-coffee-sourcing/)*
+- Approximately 30% of that trader's coffee is Fairtrade-certified. *(via https://perfectdailygrind.com/2022/09/the-impact-of-long-term-sustainable-coffee-sourcing/)*
+- A Brazilian co-operative with more than 180 members has been Fairtrade-certified since 2008. *(via https://perfectdailygrind.com/2022/09/the-impact-of-long-term-sustainable-coffee-sourcing/)*
+- Some Glasgow roasters have maintained sourcing relationships with core suppliers for at least 10 years, some spanning 25 years. *(via https://perfectdailygrind.com/2022/09/the-impact-of-long-term-sustainable-coffee-sourcing/)*
+- Half of the world's 25 million coffee growers earn significantly less per day than the cost of a single coffee in a high-income country. *(via https://perfectdailygrind.com/2016/06/the-20-20-project-why-sustainable-coffee-means-listening-to-farmers/)*
+- In Ireland, 36% of consumers indicate they want to commit their loyalty to a coffee brand with ethical accreditation. *(via https://perfectdailygrind.com/2016/06/the-20-20-project-why-sustainable-coffee-means-listening-to-farmers/)*
+- Nielsen found that 55% of global consumers are willing to pay more for ethically produced coffee. *(via https://perfectdailygrind.com/2016/06/the-20-20-project-why-sustainable-coffee-means-listening-to-farmers/)*
+- The 20/20 Project arranged for 10,000 Red Caturra coffee trees to be planted in a Nepalese community over six months. *(via https://perfectdailygrind.com/2016/06/the-20-20-project-why-sustainable-coffee-means-listening-to-farmers/)*
+- The 20/20 Project plans to train 300 farmers in climate-smart agricultural strategies in Nepal. *(via https://perfectdailygrind.com/2016/06/the-20-20-project-why-sustainable-coffee-means-listening-to-farmers/)*
+- The 20/20 Project specifically works with smallholder coffee producers who grow coffee on less than three hectares and live below the poverty line. *(via https://perfectdailygrind.com/2016/06/the-20-20-project-why-sustainable-coffee-means-listening-to-farmers/)*
+- The 20/20 Project's approach is based on 140 years of experience in poverty-reduction initiatives in coffee-growing communities. *(via https://perfectdailygrind.com/2016/06/the-20-20-project-why-sustainable-coffee-means-listening-to-farmers/)*
+- Coffee production is in its infancy in Nepal and has been hampered by a changing climate and pests such as coffee berry borer. *(via https://perfectdailygrind.com/2016/06/the-20-20-project-why-sustainable-coffee-means-listening-to-farmers/)*
+- The 20/20 Project operates in coffee communities in Asia and Africa. *(via https://perfectdailygrind.com/2016/06/the-20-20-project-why-sustainable-coffee-means-listening-to-farmers/)*
+- Farmers in the Kaski District of Nepal built a polytunnel with The 20/20 Project's guidance. *(via https://perfectdailygrind.com/2016/06/the-20-20-project-why-sustainable-coffee-means-listening-to-farmers/)*
+- Ecuador is not among the world's most-famous coffee-producing countries. *(via https://perfectdailygrind.com/2018/10/origin-spotlight-exploring-ecuadors-specialty-coffee/)*
+- Coffee is grown in Ecuador's Andean mountains and the Amazonian basin on small farms. *(via https://perfectdailygrind.com/2018/10/origin-spotlight-exploring-ecuadors-specialty-coffee/)*
+- According to the USDA FAS report 2017/2018, Ecuador harvested just 87,000 hectares of coffee even though 200,000 hectares were planted. *(via https://perfectdailygrind.com/2018/10/origin-spotlight-exploring-ecuadors-specialty-coffee/)*
+- FAS Quito revised MY 2016/17 coffee production down to 170,000 bags, a 24% decline compared to MY 2015/16. *(via https://perfectdailygrind.com/2018/10/origin-spotlight-exploring-ecuadors-specialty-coffee/)*
+- Production fell due to lower yields resulting from a lack of investment in rejuvenating plantations. *(via https://perfectdailygrind.com/2018/10/origin-spotlight-exploring-ecuadors-specialty-coffee/)*
+- Ecuadorian farms produce on average 400 kg of coffee per hectare, approximately one-third of Colombia's productivity. *(via https://perfectdailygrind.com/2018/10/origin-spotlight-exploring-ecuadors-specialty-coffee/)*
+- Ecuador adopted the US dollar following an economic crisis, giving the country little control over its own monetary policy. *(via https://perfectdailygrind.com/2018/10/origin-spotlight-exploring-ecuadors-specialty-coffee/)*
+- Dollarisation tied the price of goods in Ecuador to the strength of the US economy. *(via https://perfectdailygrind.com/2018/10/origin-spotlight-exploring-ecuadors-specialty-coffee/)*
+- A coffee picker in Ecuador earns around US $20 a day, significantly higher than in neighbouring Colombia. *(via https://perfectdailygrind.com/2018/10/origin-spotlight-exploring-ecuadors-specialty-coffee/)*
+- The average age of a coffee producer in Ecuador is 60 years old. *(via https://perfectdailygrind.com/2018/10/origin-spotlight-exploring-ecuadors-specialty-coffee/)*
+- Younger generations have migrated away from farms to countries such as Spain, Italy, USA, Canada, and the UK. *(via https://perfectdailygrind.com/2018/10/origin-spotlight-exploring-ecuadors-specialty-coffee/)*
+- In the north of the country, in mountainous Pichincha and Imbabura, professionals from other industries such as architects and doctors have started farming specialty coffee. *(via https://perfectdailygrind.com/2018/10/origin-spotlight-exploring-ecuadors-specialty-coffee/)*
+- San Cristóbal Island (Galápagos) is referenced as a coffee-growing location where Typica is grown. *(via https://perfectdailygrind.com/2018/10/origin-spotlight-exploring-ecuadors-specialty-coffee/)*
+- Smallholder producers in Ecuador typically have two to three hectares of coffee and are forced to grow other crops as well. *(via https://perfectdailygrind.com/2018/10/origin-spotlight-exploring-ecuadors-specialty-coffee/)*
+- Nikolai mills coffee in Medellín for several of Colombia's best producers, including Wilder Lazo. *(via https://www.scottrao.com/blog/viva-colombia)*
+- The Coffee Quest mill is located near the Medellín airport. *(via https://www.scottrao.com/blog/viva-colombia)*
+- Prodigal's Perlitas, Pradera, Finca Costa Rica, and Las Jazmines coffees came from Coffee Quest. *(via https://www.scottrao.com/blog/viva-colombia)*
+- Finca Betel is owned by César and his family and is perched on a hillside overlooking Calima Lake. *(via https://www.scottrao.com/blog/viva-colombia)*
+- César produces a clean, delicate, lactic-fermented natural Laurina. *(via https://www.scottrao.com/blog/viva-colombia)*
+- Diego Bermudez and César co-own a cafe in the town of Florida. *(via https://www.scottrao.com/blog/viva-colombia)*
+- The cafe in Florida has a Stronghold roaster and a modern third-wave coffee bar. *(via https://www.scottrao.com/blog/viva-colombia)*
+- Finca Las Palmas is owned by Efren and Adriana Mora, and Prodigal purchased from them in 2023. *(via https://www.scottrao.com/blog/viva-colombia)*
+- Las Palmas produces an alcoholic-fermentation natural coffee. *(via https://www.scottrao.com/blog/viva-colombia)*
+- Most producers and exporters in Colombia roast rather dark by modern standards. *(via https://www.scottrao.com/blog/viva-colombia)*
+- Nikolai used a Roest for sample roasting and a Diedrich IR-12 as his main roaster. *(via https://www.scottrao.com/blog/viva-colombia)*
+- The Aeropress is a home brewing method that involves assembling the device, loading it with ground coffee, and adding water. *(via 10p4l8e)*
+- A kettle that boils water clicks off when water reaches 100°C. *(via 10p4l8e)*
+- The post describes the author's partner pouring 100°C water directly onto a medium-dark roast, resulting in a cup the author describes as unpleasantly sour. *(via 10p4l8e)*
+- Square Mile Roasters is a coffee roastery located in England. *(via 10p4l8e)*
+- James Hoffmann is associated with Square Mile Roasters. *(via 10p4l8e)*
+
+## Troubleshooting
+
+- The Sprometheus channel started in 2018. *(via eOTPoGBt7Us)*
+- The creator has produced one video per week for approximately 313 weeks (about 6 years). *(via eOTPoGBt7Us)*
+- The creator works from home. *(via eOTPoGBt7Us)*
+- Coffee video content has become more resource-heavy over time as basics have been exhausted and topics become more in-depth. *(via eOTPoGBt7Us)*
+- The creator is not quitting the Sprometheus channel. *(via eOTPoGBt7Us)*

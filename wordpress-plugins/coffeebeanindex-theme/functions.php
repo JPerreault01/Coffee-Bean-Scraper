@@ -423,14 +423,17 @@ function cbi_bean_schema() {
 
     if ( $rating ) {
         $schema['review'] = [
-            '@type'        => 'Review',
-            'reviewRating' => [
+            '@type'         => 'Review',
+            'reviewRating'  => [
                 '@type'       => 'Rating',
                 'ratingValue' => floatval( $rating ),
                 'bestRating'  => 10,
                 'worstRating' => 1,
             ],
-            'author'       => [ '@type' => 'Organization', 'name' => 'Coffee Bean Index' ],
+            'author'        => [ '@type' => 'Organization', 'name' => 'Coffee Bean Index' ],
+            'reviewBody'    => $description ?: '',
+            'datePublished' => get_the_date( 'c' ),
+            'url'           => $url,
         ];
         $schema['aggregateRating'] = [
             '@type'       => 'AggregateRating',

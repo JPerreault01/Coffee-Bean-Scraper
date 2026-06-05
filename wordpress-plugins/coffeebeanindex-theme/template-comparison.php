@@ -45,9 +45,9 @@ while ( have_posts() ) : the_post();
     <div class="cbi-container">
         <?php
         cbi_breadcrumb( [
-            [ 'label' => 'Home',       'url' => home_url() ],
-            [ 'label' => 'Comparisons','url' => home_url( '/category/comparisons/' ) ],
-            [ 'label' => $title,       'url' => $url ],
+            [ 'label' => 'Home',    'url' => home_url() ],
+            [ 'label' => 'Reviews', 'url' => get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' ) ],
+            [ 'label' => $title,    'url' => $url ],
         ] );
         ?>
         <p class="vs-hero__label">Comparison &middot; <?php echo get_the_date( 'F Y' ); ?></p>

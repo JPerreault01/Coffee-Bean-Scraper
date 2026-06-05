@@ -1,0 +1,6 @@
+{
+  "enabledPlugins": {
+    "claude-seo@agricidaniel-claude-seo": true,
+    "rampstack-skills@rampstack": true
+  }
+}
