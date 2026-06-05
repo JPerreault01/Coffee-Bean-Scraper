@@ -144,154 +144,156 @@ get_header(); ?>
         <!-- ===================== LEFT COLUMN ===================== -->
         <main class="bean-main">
 
-            <!-- Spec Table -->
+            <!-- Profile: spec table + sensory bars + flavor radar, grouped into
+                 one balanced two-column card so the radar reads as part of the
+                 product profile instead of floating in dead space. -->
             <div class="cbi-section">
-                <div class="cbi-section__heading">Specs</div>
-                <div class="bean-specs">
-                    <?php if ( $roaster_name ) : ?>
-                    <div class="bean-specs__row">
-                        <div class="bean-specs__label">Roaster</div>
-                        <div class="bean-specs__value">
-                            <a href="<?php echo esc_url( get_term_link( $roasters[0] ) ); ?>"><?php echo esc_html( $roaster_name ); ?></a>
+                <div class="cbi-section__heading">Profile</div>
+                <div class="bean-profile<?php echo $has_sensory ? '' : ' bean-profile--specs-only'; ?>">
+
+                    <!-- Left column: specs -->
+                    <div class="bean-profile__col">
+                        <div class="bean-specs">
+                            <?php if ( $roaster_name ) : ?>
+                            <div class="bean-specs__row">
+                                <div class="bean-specs__label">Roaster</div>
+                                <div class="bean-specs__value">
+                                    <a href="<?php echo esc_url( get_term_link( $roasters[0] ) ); ?>"><?php echo esc_html( $roaster_name ); ?></a>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+
+                            <?php if ( $roast_name ) : ?>
+                            <div class="bean-specs__row">
+                                <div class="bean-specs__label">Roast</div>
+                                <div class="bean-specs__value">
+                                    <a href="<?php echo esc_url( get_term_link( $roast_levels[0] ) ); ?>"><?php echo esc_html( $roast_name ); ?></a>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+
+                            <?php if ( $origin_name ) : ?>
+                            <div class="bean-specs__row">
+                                <div class="bean-specs__label">Origin</div>
+                                <div class="bean-specs__value">
+                                    <a href="<?php echo esc_url( get_term_link( $origins[0] ) ); ?>"><?php echo esc_html( $origin_name ); ?></a>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+
+                            <?php if ( $process_name ) : ?>
+                            <div class="bean-specs__row">
+                                <div class="bean-specs__label">Process</div>
+                                <div class="bean-specs__value">
+                                    <a href="<?php echo esc_url( get_term_link( $processes[0] ) ); ?>"><?php echo esc_html( $process_name ); ?></a>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+
+                            <?php if ( $brew_methods && ! is_wp_error( $brew_methods ) ) : ?>
+                            <div class="bean-specs__row">
+                                <div class="bean-specs__label">Best For</div>
+                                <div class="bean-specs__value">
+                                    <?php foreach ( $brew_methods as $term ) : ?>
+                                        <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--brew"><?php echo esc_html( $term->name ); ?></a>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+
+                            <?php if ( $weight_oz ) : ?>
+                            <div class="bean-specs__row">
+                                <div class="bean-specs__label">Weight</div>
+                                <div class="bean-specs__value tabular-nums"><?php echo esc_html( $weight_oz ); ?> oz</div>
+                            </div>
+                            <?php endif; ?>
+
+                            <?php if ( $price_per_oz ) : ?>
+                            <div class="bean-specs__row">
+                                <div class="bean-specs__label">Price / oz</div>
+                                <div class="bean-specs__value tabular-nums">$<?php echo esc_html( number_format( $price_per_oz, 2 ) ); ?></div>
+                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
-                    <?php endif; ?>
 
-                    <?php if ( $roast_name ) : ?>
-                    <div class="bean-specs__row">
-                        <div class="bean-specs__label">Roast</div>
-                        <div class="bean-specs__value">
-                            <a href="<?php echo esc_url( get_term_link( $roast_levels[0] ) ); ?>"><?php echo esc_html( $roast_name ); ?></a>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-
-                    <?php if ( $origin_name ) : ?>
-                    <div class="bean-specs__row">
-                        <div class="bean-specs__label">Origin</div>
-                        <div class="bean-specs__value">
-                            <a href="<?php echo esc_url( get_term_link( $origins[0] ) ); ?>"><?php echo esc_html( $origin_name ); ?></a>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-
-                    <?php if ( $process_name ) : ?>
-                    <div class="bean-specs__row">
-                        <div class="bean-specs__label">Process</div>
-                        <div class="bean-specs__value">
-                            <a href="<?php echo esc_url( get_term_link( $processes[0] ) ); ?>"><?php echo esc_html( $process_name ); ?></a>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-
-                    <?php if ( $brew_methods && ! is_wp_error( $brew_methods ) ) : ?>
-                    <div class="bean-specs__row">
-                        <div class="bean-specs__label">Best For</div>
-                        <div class="bean-specs__value">
-                            <?php foreach ( $brew_methods as $term ) : ?>
-                                <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--brew"><?php echo esc_html( $term->name ); ?></a>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-
-                    <?php if ( $weight_oz ) : ?>
-                    <div class="bean-specs__row">
-                        <div class="bean-specs__label">Weight</div>
-                        <div class="bean-specs__value tabular-nums"><?php echo esc_html( $weight_oz ); ?> oz</div>
-                    </div>
-                    <?php endif; ?>
-
-                    <?php if ( $price_per_oz ) : ?>
-                    <div class="bean-specs__row">
-                        <div class="bean-specs__label">Price / oz</div>
-                        <div class="bean-specs__value tabular-nums">$<?php echo esc_html( number_format( $price_per_oz, 2 ) ); ?></div>
-                    </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <!-- Sensory Profile Bars -->
-            <?php if ( $has_sensory ) : ?>
-            <div class="cbi-section">
-                <div class="cbi-section__heading">Sensory Profile</div>
-                <div class="sensory-profile">
-                    <?php
-                    if ( $acidity )    cbi_sensory_bar( 'Acidity',    $acidity );
-                    if ( $body )       cbi_sensory_bar( 'Body',       $body );
-                    if ( $sweetness )  cbi_sensory_bar( 'Sweetness',  $sweetness );
-                    if ( $bitterness ) cbi_sensory_bar( 'Bitterness', $bitterness );
-                    if ( $roast_int )  cbi_sensory_bar( 'Roast',      $roast_int );
+                    <?php if ( $has_sensory ) :
+                        $radar_id   = 'bean-radar-' . $post_id;
+                        $radar_data = wp_json_encode( [
+                            intval( $acidity ),
+                            intval( $body ),
+                            intval( $sweetness ),
+                            intval( $bitterness ),
+                            intval( $roast_int ),
+                        ] );
                     ?>
-                </div>
-            </div>
-            <?php endif; ?>
-
-            <!-- Flavor Radar Chart — inline Chart.js driven by ACF sensory fields -->
-            <?php if ( $has_sensory ) :
-                $radar_id   = 'bean-radar-' . $post_id;
-                $radar_data = wp_json_encode( [
-                    intval( $acidity ),
-                    intval( $body ),
-                    intval( $sweetness ),
-                    intval( $bitterness ),
-                    intval( $roast_int ),
-                ] );
-            ?>
-            <div class="cbi-section">
-                <div class="cbi-section__heading">Flavor Radar</div>
-                <div class="radar-wrap" style="position:relative;height:280px;display:flex;align-items:center;justify-content:center;">
-                    <canvas id="<?php echo esc_attr( $radar_id ); ?>" style="max-height:260px;max-width:340px;" role="img" aria-label="Flavor radar chart for <?php echo esc_attr( $title ); ?>"></canvas>
-                </div>
-                <script>
-                (function() {
-                    function renderRadar() {
-                        var canvas = document.getElementById('<?php echo esc_js( $radar_id ); ?>');
-                        if ( ! canvas || typeof Chart === 'undefined' ) return;
-                        new Chart( canvas, {
-                            type: 'radar',
-                            data: {
-                                labels: ['Acidity', 'Body', 'Sweetness', 'Bitterness', 'Roast'],
-                                datasets: [{
-                                    data: <?php echo $radar_data; ?>,
-                                    backgroundColor: 'rgba(158, 43, 14, 0.10)',
-                                    borderColor: 'rgba(158, 43, 14, 0.75)',
-                                    borderWidth: 2,
-                                    pointBackgroundColor: '#9e2b0e',
-                                    pointRadius: 4,
-                                    pointHoverRadius: 5,
-                                }]
-                            },
-                            options: {
-                                scales: {
-                                    r: {
-                                        min: 0,
-                                        max: 5,
-                                        ticks: { stepSize: 1, display: false },
-                                        grid: { color: 'rgba(28, 20, 16, 0.10)' },
-                                        angleLines: { color: 'rgba(28, 20, 16, 0.10)' },
-                                        pointLabels: {
-                                            color: '#5c5048',
-                                            font: { family: "'DM Mono', monospace", size: 11 }
+                    <!-- Right column: sensory bars over the flavor radar -->
+                    <div class="bean-profile__col bean-profile__viz">
+                        <div class="sensory-profile">
+                            <?php
+                            if ( $acidity )    cbi_sensory_bar( 'Acidity',    $acidity );
+                            if ( $body )       cbi_sensory_bar( 'Body',       $body );
+                            if ( $sweetness )  cbi_sensory_bar( 'Sweetness',  $sweetness );
+                            if ( $bitterness ) cbi_sensory_bar( 'Bitterness', $bitterness );
+                            if ( $roast_int )  cbi_sensory_bar( 'Roast',      $roast_int );
+                            ?>
+                        </div>
+                        <div class="radar-wrap">
+                            <canvas id="<?php echo esc_attr( $radar_id ); ?>" role="img" aria-label="Flavor radar chart for <?php echo esc_attr( $title ); ?>"></canvas>
+                        </div>
+                        <script>
+                        (function() {
+                            function renderRadar() {
+                                var canvas = document.getElementById('<?php echo esc_js( $radar_id ); ?>');
+                                if ( ! canvas || typeof Chart === 'undefined' ) return;
+                                new Chart( canvas, {
+                                    type: 'radar',
+                                    data: {
+                                        labels: ['Acidity', 'Body', 'Sweetness', 'Bitterness', 'Roast'],
+                                        datasets: [{
+                                            data: <?php echo $radar_data; ?>,
+                                            backgroundColor: 'rgba(158, 43, 14, 0.10)',
+                                            borderColor: 'rgba(158, 43, 14, 0.75)',
+                                            borderWidth: 2,
+                                            pointBackgroundColor: '#9e2b0e',
+                                            pointRadius: 4,
+                                            pointHoverRadius: 5,
+                                        }]
+                                    },
+                                    options: {
+                                        maintainAspectRatio: true,
+                                        scales: {
+                                            r: {
+                                                min: 0,
+                                                max: 5,
+                                                ticks: { stepSize: 1, display: false },
+                                                grid: { color: 'rgba(28, 20, 16, 0.10)' },
+                                                angleLines: { color: 'rgba(28, 20, 16, 0.10)' },
+                                                pointLabels: {
+                                                    color: '#5c5048',
+                                                    font: { family: "'DM Mono', monospace", size: 11 }
+                                                }
+                                            }
+                                        },
+                                        plugins: { legend: { display: false } },
+                                        animation: {
+                                            duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 800
                                         }
                                     }
-                                },
-                                plugins: { legend: { display: false } },
-                                animation: {
-                                    duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 800
-                                }
+                                });
                             }
-                        });
-                    }
-                    if ( typeof Chart !== 'undefined' ) {
-                        renderRadar();
-                    } else {
-                        window.addEventListener('load', renderRadar);
-                    }
-                })();
-                </script>
+                            if ( typeof Chart !== 'undefined' ) {
+                                renderRadar();
+                            } else {
+                                window.addEventListener('load', renderRadar);
+                            }
+                        })();
+                        </script>
+                    </div>
+                    <?php endif; ?>
+
+                </div>
             </div>
-            <?php endif; ?>
 
             <!-- Tasting Notes -->
             <?php if ( $tasting_notes ) : ?>
@@ -504,6 +506,30 @@ get_header(); ?>
                     Affiliate links &mdash; we earn a small commission at no extra cost to you.
                 </div>
             </div>
+
+            <!-- At a glance — quick-scan summary that stays beside the review -->
+            <?php if ( ( $rating !== '' && $rating !== null ) || $roast_name || $origin_name || $price_per_oz ) : ?>
+            <div class="glance-card">
+                <div class="cbi-section__heading">At a glance</div>
+                <dl class="glance">
+                    <?php if ( $rating !== '' && $rating !== null ) : ?>
+                    <div class="glance__row"><dt>Rating</dt><dd class="tabular-nums"><?php echo esc_html( $rating ); ?>/10</dd></div>
+                    <?php endif; ?>
+                    <?php if ( $roast_name ) : ?>
+                    <div class="glance__row"><dt>Roast</dt><dd><?php echo esc_html( $roast_name ); ?></dd></div>
+                    <?php endif; ?>
+                    <?php if ( $origin_name ) : ?>
+                    <div class="glance__row"><dt>Origin</dt><dd><?php echo esc_html( $origin_name ); ?></dd></div>
+                    <?php endif; ?>
+                    <?php if ( $process_name ) : ?>
+                    <div class="glance__row"><dt>Process</dt><dd><?php echo esc_html( $process_name ); ?></dd></div>
+                    <?php endif; ?>
+                    <?php if ( $price_per_oz ) : ?>
+                    <div class="glance__row"><dt>Price / oz</dt><dd class="tabular-nums">$<?php echo esc_html( number_format( (float) $price_per_oz, 2 ) ); ?></dd></div>
+                    <?php endif; ?>
+                </dl>
+            </div>
+            <?php endif; ?>
 
             <!-- Similar Beans -->
             <div class="cbi-section similar-beans">

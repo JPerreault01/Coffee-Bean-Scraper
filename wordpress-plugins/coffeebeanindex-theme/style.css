@@ -270,6 +270,36 @@ h1, h2, h3 {
 }
 
 /* ============================================================
+   GP LAYOUT RESET — THE CORE FIX (paired with the body_class
+   filter in functions.php that adds .cbi-app + .full-width-content)
+
+   GeneratePress makes #content.site-content a flex container whose
+   direction is ROW on desktop and only COLUMN at <=768px. GP assumes a
+   single .content-area child. Our custom templates emit several direct
+   children (hero band, affiliate disclosure, content container). At
+   desktop GP squeezed them into cramped side-by-side columns — the bean
+   page's spec/sensory/radar collapsed to a ~280px column with the buy
+   rail detached. Confirmed via computed styles:
+     #content.site-content -> display:flex; flex-direction:row.
+   GP has no body class that unsets the flex row, so we do it here.
+   .full-width-content (added in PHP) already drops GP's 1200px container
+   cap and 40px padding so heroes render full-bleed; the rule below is the
+   robust, GP-internal-independent backstop.
+   ============================================================ */
+
+.cbi-app #content.site-content {
+  display: block;   /* kill GP's desktop flex row */
+  padding: 0;       /* full-bleed; our .cbi-container owns the gutters */
+}
+
+/* Only #page (it carries .site) goes full-width — header/nav/footer
+   inner containers (.inside-header / .inside-navigation, no .site class)
+   stay contained, so the masthead keeps its 1200px measure. */
+.cbi-app .site.grid-container {
+  max-width: 100%;
+}
+
+/* ============================================================
    HEADER & NAVIGATION
    ============================================================ */
 
@@ -286,16 +316,29 @@ h1, h2, h3 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 64px;
+  gap: var(--space-6);
+  min-height: 64px;
+}
+
+/* S2 fix: the site title must never wrap to multiple lines (it was
+   stacking "Coffee / Bean / Index" and overflowing the masthead because
+   the branding column was allowed to shrink inside the flex header). */
+.site-branding,
+.site-logo,
+.main-title {
+  flex-shrink: 0;
 }
 
 .site-logo a,
-.site-branding a {
+.site-branding a,
+.main-title a,
+.site-title a {
   font-family: var(--font-display);
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--cbi-text) !important;
   letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
 .site-logo a span,
@@ -368,16 +411,37 @@ h1, h2, h3 {
 
 .cbi-content-grid {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   gap: var(--space-12);
   align-items: start;
   padding: var(--space-12) 0;
 }
 
-@media (max-width: 960px) {
+/* Main column: min-width:0 lets the track shrink so wide children
+   (spec rows, price chart, tables) never blow the grid out. */
+.bean-main {
+  min-width: 0;
+}
+
+/* Full sticky rail — buy box → at-a-glance → similar → roaster/origin
+   travel together and stay in view while the long review scrolls. */
+.bean-sidebar {
+  position: sticky;
+  top: var(--space-6);
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+@media (max-width: 1024px) {
   .cbi-content-grid {
     grid-template-columns: 1fr;
+    gap: var(--space-8);
     padding: var(--space-8) 0;
+  }
+  .bean-sidebar {
+    position: static;
   }
 }
 
@@ -736,11 +800,9 @@ h1, h2, h3 {
 .buy-box {
   background: var(--cbi-surface);
   border: 1px solid var(--cbi-border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   padding: var(--space-6);
-  margin-bottom: var(--space-6);
-  position: sticky;
-  top: var(--space-6);
+  /* Stickiness is owned by .bean-sidebar (the whole rail) now. */
 }
 
 .buy-box__title {
@@ -815,6 +877,58 @@ h1, h2, h3 {
   font-family: var(--font-mono);
 }
 
+/* The sticky rail spaces its blocks with flex gap — neutralise the default
+   .cbi-section bottom margin so spacing stays even. */
+.bean-sidebar > .cbi-section,
+.bean-sidebar > .glance-card,
+.bean-sidebar > .similar-beans {
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   COMPONENTS — AT-A-GLANCE CARD (sidebar quick scan)
+   ============================================================ */
+
+.glance-card {
+  background: var(--cbi-bg);
+  border: 1px solid var(--cbi-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+.glance {
+  margin: 0;
+}
+
+.glance__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--cbi-border-light);
+}
+
+.glance__row:last-child {
+  border-bottom: none;
+}
+
+.glance__row dt {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cbi-text-dim);
+}
+
+.glance__row dd {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--cbi-text);
+  text-align: right;
+}
+
 /* ============================================================
    COMPONENTS — PRICE CHART WRAPPER
    ============================================================ */
@@ -828,15 +942,66 @@ h1, h2, h3 {
 }
 
 /* ============================================================
+   COMPONENTS — FLAVOR PROFILE CARD (specs | sensory + radar)
+   Groups the spec table, sensory bars and radar into one balanced
+   two-column block so the radar is contextualised instead of floating
+   in dead space. Single column under 760px.
+   ============================================================ */
+
+.bean-profile {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: var(--space-8);
+  align-items: start;
+  margin-bottom: var(--space-10);
+}
+
+/* No sensory data on this bean → spec table spans the full width */
+.bean-profile--specs-only {
+  grid-template-columns: 1fr;
+}
+
+.bean-profile__col {
+  min-width: 0;
+}
+
+/* spec table inside the profile keeps its own framed look */
+.bean-profile .bean-specs {
+  margin-bottom: 0;
+}
+
+.bean-profile__viz {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+@media (max-width: 760px) {
+  .bean-profile {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+}
+
+/* ============================================================
    COMPONENTS — RADAR CHART WRAPPER
    ============================================================ */
 
 .radar-wrap {
   background: var(--cbi-surface);
   border: 1px solid var(--cbi-border);
-  border-radius: var(--radius);
-  padding: var(--space-5);
-  margin-bottom: var(--space-8);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+}
+
+.radar-wrap canvas {
+  width: 100% !important;
+  max-width: 400px;
+  height: auto !important;
 }
 
 /* ============================================================
@@ -990,13 +1155,14 @@ details[open] .cbi-faq__question::after {
 }
 
 .bean-hero__title {
-  font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));
+  font-size: clamp(var(--text-3xl), 4vw, var(--text-4xl));
   font-family: var(--font-display);
   font-weight: 700;
   color: var(--cbi-text);
   margin: 0 0 var(--space-4);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  max-width: 18ch;
 }
 
 .bean-hero__verdict {

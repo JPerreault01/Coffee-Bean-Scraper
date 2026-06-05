@@ -6,12 +6,18 @@ Steps to complete after merging and running `deploy-theme`.
 
 ## 1. GeneratePress Customizer Settings
 
-Go to **Appearance → Customize** and set the following. These cannot be set via code — they must be done manually in the Customizer.
+> **Layout is now enforced in code.** As of the v2.1 layout rework, the `body_class` filter
+> in `functions.php` adds `full-width-content cbi-app` to every custom template and
+> `style.css` resets `.site-content` to block flow. This makes the heroes full-bleed and
+> fixes the desktop column-squeeze **without any Customizer step**. The settings below are
+> now optional cosmetic touches, not requirements — a fresh GP install renders correctly.
 
-### Layout
-- **Container Width**: set to the widest available option (or "Full Width" if available)
-- **Content Layout**: "One Column" — no sidebar globally (we handle sidebars in templates)
-- **Separate Containers**: Disable if enabled — this adds box shadows we don't want
+Go to **Appearance → Customize** only if you want to tune the cosmetic defaults:
+
+### Layout (optional — code already forces full-width on our templates)
+- **Container Width**: leave default; our templates override to full-width via body class
+- **Content Layout**: "One Column" — no sidebar globally (we also force this per-template)
+- **Separate Containers**: Disable if enabled — avoids stray box shadows
 - **Boxed Layout**: Off
 
 ### Colors

@@ -117,8 +117,11 @@ Based on 0.25rem units: `--space-1` through `--space-24` (0.25rem → 6rem).
 | Rating badge | `.bean-rating`, `.cbi-rating-badge` | |
 | Sensory bars | `cbi_sensory_bar()` PHP helper | |
 | Spec table | `.bean-specs`, `.bean-specs__row` | |
+| Profile card | `.bean-profile`, `.bean-profile__col`, `.bean-profile__viz` | 2-col (specs \| sensory+radar); `--specs-only` collapses to 1 col; stacks <760px |
+| At-a-glance | `.glance-card`, `.glance`, `.glance__row` | Sidebar quick-scan dl (rating/roast/origin/price) |
 | Tasting notes | `.tasting-notes` | List, dash before each item |
-| Buy box | `.buy-box` | Sticky sidebar |
+| Buy box | `.buy-box` | Lives inside the sticky `.bean-sidebar` rail |
+| Sticky rail | `.bean-sidebar` | `position:sticky` flex column: buy box → at-a-glance → similar → roaster/origin; static <1024px |
 | Similar beans | `.similar-beans`, `.similar-bean-card` | |
 | Bean card | `cbi_bean_card()` PHP helper | |
 | Archive grid | `.bean-grid` | Auto-fill, min 280px |
@@ -133,18 +136,46 @@ Based on 0.25rem units: `--space-1` through `--space-24` (0.25rem → 6rem).
 
 ## GeneratePress Integration
 
-**Approach**: Configure GP Customizer to use our paper-white background and remove default content padding on custom templates. We override specific GP elements with targeted selectors, not blanket !important blocks.
+**Approach**: Our custom templates own their layout end-to-end. Rather than depend on
+manual GP Customizer settings, the layout contract is enforced in code so a fresh GP
+install renders correctly with no Customizer steps.
 
-**GP settings required** (documented in DEPLOY_NOTES.md):
-- Container: Full Width
-- Content width: unconstrained on custom templates
-- Default background color: `#faf7f3`
-- Disable sidebar globally
-- Disable default page header on bean/archive/taxonomy pages
+### The layout contract (THE critical detail)
+
+GeneratePress makes `#content.site-content` a flex container whose `flex-direction` is
+**`row` on desktop** and only `column` at `<=768px`. GP assumes a *single* `.content-area`
+child. Our custom templates `get_header()` then emit **several** direct children of
+`.site-content` (full-bleed hero band, affiliate disclosure, content container). At desktop
+GP squeezed those into cramped side-by-side columns — the bean page's spec/sensory/radar
+collapsed into a ~280px column and the buy rail detached. (Confirmed via computed styles:
+`#content.site-content { display:flex; flex-direction:row }`.)
+
+The fix has two halves:
+1. **`functions.php` `body_class` filter** adds two classes to every custom template:
+   - `full-width-content` → triggers GP's own rules that drop the 1200px `.grid-container`
+     cap and the 40px `.site-content` padding, so heroes render full-bleed.
+   - `cbi-app` → the hook for our CSS reset.
+2. **`style.css`** `.cbi-app #content.site-content { display:block; padding:0 }` — GP has no
+   body class that unsets the flex row, so CSS does that half. `.cbi-app .site.grid-container
+   { max-width:100% }` is the GP-internal-independent backstop (targets only `#page`, so the
+   masthead keeps its contained measure).
+
+With `.site-content` back to block flow, our own `.cbi-container` / hero `__inner`
+(max-width 1200, centered) are the single source of width truth on every template.
+
+**No GP Customizer changes are required.** Setting Container → Full Width in the Customizer
+is now redundant (the body class does it); paper background + link colors there are cosmetic
+nice-to-haves only.
+
+**Stylesheet loading**: our `style.css` is enqueued once (handle `cbi-child`, depends on
+`generate-style`) so it cascades after GP's `main.css`. GP's automatic duplicate child
+enqueue (`generate-child`) is dequeued in `cbi_dequeue_duplicate_child_css()`.
 
 **Hooks used**:
+- `body_class` — add `cbi-app` + `full-width-content` to custom templates (layout contract)
 - `generate_footer` — custom footer HTML
 - `generate_show_title` — hide GP page title on custom templates (we render our own H1)
+- `generate_sidebar_layout` / `generate_content_width` — force no-sidebar + full width
 - `template_include` — route taxonomy archives to our template
 
 ---

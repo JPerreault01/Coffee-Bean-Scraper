@@ -20,3 +20,8 @@ voice_materials/*
 
 skill_data/
 data/*.json
+
+# Local design-QA screenshots (Stage 2 visual verification)
+.tmp-shots/
+# Stray empty artifact
+/[

@@ -19,18 +19,17 @@ function cbi_enqueue_styles() {
         null
     );
 
-    // Parent theme
-    wp_enqueue_style(
-        'generatepress-parent',
-        get_template_directory_uri() . '/style.css'
-    );
-
-    // Child theme
+    // Child theme stylesheet.
+    // S3 fix: previously this loaded our style.css a SECOND time (handle 'cbi-child')
+    // BEFORE GeneratePress's main.css, while GP auto-enqueued it again as 'generate-child'
+    // AFTER main.css. Two <link>s to the same file + a fragile cascade. We now enqueue once,
+    // depending on 'generate-style' (GP's main.css) so our overrides reliably cascade LAST,
+    // and dequeue GP's duplicate auto-enqueue in cbi_dequeue_duplicate_child_css().
     wp_enqueue_style(
         'cbi-child',
         get_stylesheet_directory_uri() . '/style.css',
-        [ 'generatepress-parent', 'cbi-fonts' ],
-        '2.0.0'
+        [ 'generate-style', 'cbi-fonts' ],
+        '2.1.0'
     );
 
     // Chart.js — only on bean pages (reduces page weight everywhere else)
@@ -61,6 +60,47 @@ add_action( 'wp_head', 'cbi_font_preconnect', 1 );
 function cbi_font_preconnect() {
     echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
     echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+}
+
+// S3 fix: remove GeneratePress's automatic child-theme stylesheet enqueue so our
+// style.css is not loaded twice. We enqueue it ourselves as 'cbi-child' (depends on
+// 'generate-style', so it still cascades after GP's main.css). Priority 100 ensures
+// this runs after GP has registered 'generate-child'.
+add_action( 'wp_enqueue_scripts', 'cbi_dequeue_duplicate_child_css', 100 );
+function cbi_dequeue_duplicate_child_css() {
+    wp_dequeue_style( 'generate-child' );
+}
+
+// ============================================================
+// 1b. BODY CLASSES — layout contract for custom templates
+//
+//     GeneratePress lays out .site-content as a desktop flex ROW that expects a
+//     single .content-area child. Our custom templates emit several direct children
+//     (hero band, disclosure, content container), which GP squeezed into cramped
+//     side-by-side columns at >768px. We tag every custom template with:
+//       - 'full-width-content'  → GP's own rules drop the 1200px container cap and the
+//                                  40px .site-content padding (full-bleed heroes).
+//       - 'cbi-app'             → our hook for the .site-content { display:block } reset
+//                                  in style.css (GP has no body class that unsets the
+//                                  flex row, so CSS handles that half).
+// ============================================================
+
+add_filter( 'body_class', 'cbi_template_body_classes' );
+function cbi_template_body_classes( $classes ) {
+    $is_cbi_template = (
+        is_singular( 'bean' )
+        || is_post_type_archive( 'bean' )
+        || is_tax( [ 'flavor-note', 'origin', 'roast-level', 'process-method', 'brew-method', 'roaster' ] )
+        || is_front_page()
+        || is_page_template( [ 'template-roundup.php', 'template-comparison.php', 'template-guide.php', 'page-explore.php' ] )
+    );
+    if ( $is_cbi_template ) {
+        $classes[] = 'cbi-app';
+        if ( ! in_array( 'full-width-content', $classes, true ) ) {
+            $classes[] = 'full-width-content';
+        }
+    }
+    return $classes;
 }
 
 // ============================================================

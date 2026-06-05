@@ -1,0 +1,8 @@
+# Keep the WordPress theme/source normalized to LF in the repository on every
+# platform. Windows checkouts may still use CRLF in the working tree (core.autocrlf),
+# but the committed bytes stay LF — this prevents the CRLF/LF drift that made the
+# server active theme and the repo show mismatched checksums.
+wordpress-plugins/coffeebeanindex-theme/** text=auto
+*.php text=auto
+*.css text=auto
+*.js  text=auto
