@@ -283,7 +283,7 @@ function cbi_bean_card( $post_id ) {
     <div class="bean-card">
         <?php if ( has_post_thumbnail( $post_id ) ) : ?>
         <div class="bean-card__image">
-            <?php echo get_the_post_thumbnail( $post_id, 'medium', [ 'loading' => 'lazy', 'width' => '400', 'height' => '225' ] ); ?>
+            <?php echo get_the_post_thumbnail( $post_id, 'medium', [ 'loading' => 'lazy', 'width' => '400', 'height' => '225', 'alt' => esc_attr( $title ) ] ); ?>
             <?php if ( $rating !== '' && $rating !== null ) : ?>
                 <span class="bean-card__rating-badge"><?php echo esc_html( $rating ); ?>/10</span>
             <?php endif; ?>

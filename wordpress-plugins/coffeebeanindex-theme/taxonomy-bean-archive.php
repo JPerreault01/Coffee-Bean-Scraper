@@ -58,24 +58,21 @@ if ( $term && $term->parent ) {
         <?php cbi_breadcrumb( $breadcrumb_items ); ?>
         <div class="archive-hero__eyebrow"><?php echo esc_html( $eyebrow ); ?></div>
         <h1 class="archive-hero__title"><?php echo esc_html( $term_name ); ?></h1>
+        <?php if ( $description ) : ?>
+        <p class="archive-hero__desc"><?php echo esc_html( wp_trim_words( wp_strip_all_tags( $description ), 30 ) ); ?></p>
+        <?php endif; ?>
         <p class="archive-hero__count">
             <?php echo esc_html( $bean_count ); ?> bean<?php echo 1 !== $bean_count ? 's' : ''; ?>
         </p>
     </div>
 </section>
 
-<!-- Guide Body — term description rendered as HTML (set via Taxonomy editor or seed script) -->
+<!-- Guide Body — full term description as HTML -->
 <?php if ( $description ) : ?>
 <div class="cbi-container">
     <div class="guide-body">
         <?php echo wp_kses_post( $description ); ?>
     </div>
-</div>
-<?php else : ?>
-<div class="cbi-container">
-    <p style="color:var(--cbi-text-dim);font-style:italic;padding:var(--space-4) 0;">
-        [Guide content coming soon — add a description for this <?php echo esc_html( strtolower( $eyebrow ) ); ?> in the Taxonomy editor to populate this section.]
-    </p>
 </div>
 <?php endif; ?>
 

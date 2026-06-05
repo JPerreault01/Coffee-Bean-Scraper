@@ -39,8 +39,14 @@ Version: 2.0.0
 
   /* Semantic */
   --cbi-positive:     #2d6a2d;
-  --cbi-green:        #2d6a2d;
-  --cbi-red:          #9e2b0e;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 12px rgba(28, 20, 16, 0.08);
+  --shadow-md: 0 4px 16px rgba(28, 20, 16, 0.08);
+  --shadow-lg: 0 8px 24px rgba(28, 20, 16, 0.10);
+
+  /* Sub-xs type for badge denominators */
+  --text-2xs: 0.65rem;
 
   /* Typography */
   --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
@@ -327,7 +333,7 @@ h1, h2, h3 {
   background: var(--cbi-bg) !important;
   border: 1px solid var(--cbi-border);
   border-radius: var(--radius);
-  box-shadow: 0 8px 24px rgba(28, 20, 16, 0.10);
+  box-shadow: var(--shadow-lg);
 }
 
 .main-navigation ul ul li a,
@@ -581,7 +587,7 @@ h1, h2, h3 {
 }
 
 .cbi-rating-badge__label {
-  font-size: 0.6rem;
+  font-size: var(--text-2xs);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: rgba(255,255,255,0.7);
@@ -802,7 +808,7 @@ h1, h2, h3 {
 }
 
 .buy-box__disclosure {
-  font-size: 0.68rem;
+  font-size: var(--text-2xs);
   color: var(--cbi-text-dim);
   margin-top: var(--space-3);
   line-height: 1.5;
@@ -1036,7 +1042,7 @@ details[open] .cbi-faq__question::after {
 }
 
 .bean-rating__label {
-  font-size: 0.6rem;
+  font-size: var(--text-2xs);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: rgba(255,255,255,0.7);
@@ -1095,7 +1101,7 @@ details[open] .cbi-faq__question::after {
 
 .bean-card:hover {
   border-color: var(--cbi-accent);
-  box-shadow: 0 2px 12px rgba(28, 20, 16, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 .bean-card__image {
@@ -1659,7 +1665,7 @@ details[open] .cbi-faq__question::after {
 
 .home-review-card:hover {
   border-color: var(--cbi-accent);
-  box-shadow: 0 4px 16px rgba(28, 20, 16, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
 .home-review-card__media {
@@ -2865,7 +2871,7 @@ details[open] .cbi-faq__question::after {
 
 .explore-card:hover {
   border-color: var(--cbi-accent);
-  box-shadow: 0 2px 12px rgba(28, 20, 16, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Head: roaster label + bean name + rating badge */

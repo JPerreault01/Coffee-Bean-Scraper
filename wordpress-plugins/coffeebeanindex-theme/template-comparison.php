@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Template Name: Bean Comparison (X vs Y)

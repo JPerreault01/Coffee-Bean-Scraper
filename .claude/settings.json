@@ -1,4 +1,16 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(scp -o StrictHostKeyChecking=no \"c:/Users/Jacks/OneDrive/Desktop/Projects/Coffee-Bean-Scraper/wordpress-plugins/coffeebeanindex-theme/style.css\" root@142.93.127.178:/var/www/coffeebeans/wp-content/themes/coffeebeanindex/style.css)",
+      "Bash(scp -o StrictHostKeyChecking=no \"c:/Users/Jacks/OneDrive/Desktop/Projects/Coffee-Bean-Scraper/wordpress-plugins/coffeebeanindex-theme/functions.php\" root@142.93.127.178:/var/www/coffeebeans/wp-content/themes/coffeebeanindex/functions.php)",
+      "Bash(scp -o StrictHostKeyChecking=no \"c:/Users/Jacks/OneDrive/Desktop/Projects/Coffee-Bean-Scraper/wordpress-plugins/coffeebeanindex-theme/taxonomy-bean-archive.php\" root@142.93.127.178:/var/www/coffeebeans/wp-content/themes/coffeebeanindex/taxonomy-bean-archive.php)",
+      "Bash(ssh -o StrictHostKeyChecking=no root@142.93.127.178 \"wp cache flush --path=/var/www/coffeebeans --allow-root 2>&1 | grep -v 'PHP Warning'\")",
+      "Bash(curl -sL 'https://coffeebeanindex.com/beans/lavazza-super-crema/')",
+      "Bash(python3 -c ' *)",
+      "Bash(ssh -o StrictHostKeyChecking=no root@142.93.127.178 \"curl -sL 'https://coffeebeanindex.com/beans/lavazza-super-crema/' | grep -c 'property=\\\\\"og:' && curl -sL 'https://coffeebeanindex.com/beans/lavazza-super-crema/' | grep -c 'name=\\\\\"twitter:' && curl -sL 'https://coffeebeanindex.com/beans/lavazza-super-crema/' | grep 'alt=.*Lavazza' | head -2\")",
+      "Bash(ssh -o StrictHostKeyChecking=no root@142.93.127.178 \"grep -n '0 2px 12px rgba\\\\|0 4px 16px rgba\\\\|0 8px 24px rgba' /var/www/coffeebeans/wp-content/themes/coffeebeanindex/style.css\")"
+    ]
+  },
   "enabledPlugins": {
     "claude-seo@agricidaniel-claude-seo": true,
     "rampstack-skills@rampstack": true
