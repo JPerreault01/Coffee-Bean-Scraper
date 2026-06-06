@@ -37,6 +37,10 @@ import sys
 SSH_HOST = "root@142.93.127.178"
 WP_PATH = "/var/www/coffeebeans"
 REMOTE_TMP = "/tmp/origin_desc.html"
+# Term descriptions are run through restrictive kses (no <p>/<h2>/<ul>) unless
+# the acting user has unfiltered_html. Run updates as the admin (ID 1) so the
+# block-level HTML survives the write.
+WP_USER = "1"
 
 # --- Claude -----------------------------------------------------------------
 MODEL = "claude-haiku-4-5-20251001"
@@ -176,7 +180,7 @@ def update_term(term_id: int, html: str) -> None:
     # 2. Update the term, reading the description from the staged file.
     remote = (
         f'wp --path={WP_PATH} term update origin {term_id} '
-        f'--description="$(cat {REMOTE_TMP})" --allow-root'
+        f'--description="$(cat {REMOTE_TMP})" --user={WP_USER} --allow-root'
     )
     update = run_remote(remote)
     if update.returncode != 0:
