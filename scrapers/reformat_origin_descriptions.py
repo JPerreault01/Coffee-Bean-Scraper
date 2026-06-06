@@ -143,7 +143,18 @@ def reformat(description: str, env: dict) -> str:
     if html.startswith("```"):
         html = re.sub(r"^```[a-zA-Z]*\n?", "", html)
         html = re.sub(r"\n?```$", "", html).strip()
-    return html
+    return strip_dashes(html)
+
+
+def strip_dashes(text: str) -> str:
+    """Site-wide ban on em/en-dashes in AI output. Mirrors generate_review.py."""
+    return (
+        text
+        .replace(" — ", ". ")
+        .replace(" – ", ", ")
+        .replace("—", ", ")
+        .replace("–", "-")
+    )
 
 
 def update_term(term_id: int, html: str) -> None:
