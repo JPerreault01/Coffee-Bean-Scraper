@@ -14,20 +14,30 @@ Run:
 import json
 import logging
 import os
+import sqlite3
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+# BASE_DIR is /opt on the VPS (this file lives at /opt/alerts/send_alerts.py) and
+# the repo root locally — so the same relative paths resolve correctly in both.
+BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(BASE_DIR))
 from scrapers.db import get_connection  # noqa: E402
 
-ENV_FILE = Path("/opt/.env")
-LOG_PATH = Path("/opt/data/alerts.log")
-PRODUCTS_FILE = Path("/opt/scrapers/products.json")
+ENV_FILE = Path("/opt/.env") if Path("/opt/.env").exists() else (BASE_DIR / ".env")
+LOG_PATH = BASE_DIR / "data" / "alerts.log"
+PRODUCTS_FILE = (
+    Path("/opt/scrapers/products.json")
+    if Path("/opt/scrapers/products.json").exists()
+    else (BASE_DIR / "scrapers" / "products.json")
+)
 
 DROP_THRESHOLD = 0.10  # 10% drop triggers alert
+
+LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
