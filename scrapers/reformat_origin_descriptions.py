@@ -37,10 +37,7 @@ import sys
 SSH_HOST = "root@142.93.127.178"
 WP_PATH = "/var/www/coffeebeans"
 REMOTE_TMP = "/tmp/origin_desc.html"
-# Term descriptions are run through restrictive kses (no <p>/<h2>/<ul>) unless
-# the acting user has unfiltered_html. Run updates as the admin (ID 1) so the
-# block-level HTML survives the write.
-WP_USER = "1"
+REMOTE_PHP = "/tmp/origin_desc_update.php"
 
 # --- Claude -----------------------------------------------------------------
 MODEL = "claude-haiku-4-5-20251001"
@@ -161,30 +158,44 @@ def strip_dashes(text: str) -> str:
     )
 
 
-def update_term(term_id: int, html: str) -> None:
-    """Write reformatted HTML back to the term description via WP-CLI.
-
-    Shell escaping is avoided entirely: the HTML is staged in a temp file, then
-    read back into --description via command substitution inside double quotes
-    (cat output is inserted verbatim, never re-parsed for quotes or $).
-    """
-    # 1. Stage the HTML in a temp file (local write on server, stdin->cat over SSH).
+def stage_file(remote_path: str, content: str) -> None:
+    """Place `content` at `remote_path` (local write on server, stdin->cat over SSH)."""
     if ON_SERVER:
-        with open(REMOTE_TMP, "w") as f:
-            f.write(html)
+        with open(remote_path, "w") as f:
+            f.write(content)
     else:
-        write = run_remote(f"cat > {REMOTE_TMP}", stdin=html)
+        write = run_remote(f"cat > {remote_path}", stdin=content)
         if write.returncode != 0:
-            raise RuntimeError(f"failed to stage description: {write.stderr.strip()}")
+            raise RuntimeError(f"failed to stage {remote_path}: {write.stderr.strip()}")
 
-    # 2. Update the term, reading the description from the staged file.
-    remote = (
-        f'wp --path={WP_PATH} term update origin {term_id} '
-        f'--description="$(cat {REMOTE_TMP})" --user={WP_USER} --allow-root'
+
+def update_term(term_id: int, html: str) -> None:
+    """Write reformatted HTML back to the term description.
+
+    `wp term update --description` runs the value through restrictive kses
+    (strips <p>/<h2>/<ul>) because term descriptions are filtered by
+    pre_term_description regardless of the --user flag's timing. Instead we
+    call wp_update_term() directly via eval-file after kses_remove_filters(),
+    which preserves the block-level HTML. The HTML is read from a staged file
+    inside PHP, so no shell escaping of quotes or $ is needed.
+    """
+    php = (
+        "<?php\n"
+        f"$html = file_get_contents('{REMOTE_TMP}');\n"
+        "kses_remove_filters();\n"
+        f"$r = wp_update_term({int(term_id)}, 'origin', array('description' => $html));\n"
+        "if (is_wp_error($r)) { fwrite(STDERR, $r->get_error_message()); exit(1); }\n"
+        "echo 'ok';\n"
     )
+    stage_file(REMOTE_TMP, html)
+    stage_file(REMOTE_PHP, php)
+
+    remote = f"wp --path={WP_PATH} eval-file {REMOTE_PHP} --allow-root"
     update = run_remote(remote)
-    if update.returncode != 0:
-        raise RuntimeError(f"wp term update failed: {update.stderr.strip()}")
+    if update.returncode != 0 or "ok" not in update.stdout:
+        raise RuntimeError(
+            f"wp_update_term failed: {(update.stderr or update.stdout).strip()}"
+        )
 
 
 def main() -> None:
