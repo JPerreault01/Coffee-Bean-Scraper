@@ -19,11 +19,16 @@ Designed to run on the server via the venv python:
 
   --dry-run  Reformat and print, but do not write back to WordPress.
 
+When WordPress is present locally (i.e. running on the server) WP-CLI is invoked
+directly; otherwise commands are wrapped in SSH so the script also works when run
+from a workstation.
+
 Dependencies: anthropic (already installed in /opt/venv).
 """
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -59,6 +64,24 @@ Hard rules:
 # Tags whose presence means a description has already been reformatted.
 HTML_TAG_RE = re.compile(r"<(h[1-6]|p|ul|ol|li|div|section|article)\b", re.IGNORECASE)
 
+# Running on the server? Then WordPress lives locally and we skip SSH-to-self
+# (the server has no key to SSH back into its own public IP).
+ON_SERVER = os.path.isdir(WP_PATH)
+
+
+def run_remote(remote_cmd: str, stdin: str | None = None) -> subprocess.CompletedProcess:
+    """Run a shell command against the WordPress host.
+
+    On the server this is a local `bash -c`; from a workstation it is wrapped in
+    SSH. Either way the command is parsed by a remote/local shell, so command
+    substitution like $(cat ...) works identically.
+    """
+    if ON_SERVER:
+        argv = ["bash", "-c", remote_cmd]
+    else:
+        argv = ["ssh", SSH_HOST, remote_cmd]
+    return subprocess.run(argv, input=stdin, text=True, capture_output=True)
+
 
 def load_env() -> dict:
     """Parse the first existing .env file into a dict; overlay real env vars."""
@@ -86,11 +109,7 @@ def fetch_terms() -> list[dict]:
         f"wp --path={WP_PATH} term list origin "
         f"--fields=term_id,slug,name,description --format=json --allow-root"
     )
-    result = subprocess.run(
-        ["ssh", SSH_HOST, remote],
-        capture_output=True,
-        text=True,
-    )
+    result = run_remote(remote)
     if result.returncode != 0:
         print("ERROR: failed to fetch origin terms via WP-CLI:", file=sys.stderr)
         print(result.stderr.strip(), file=sys.stderr)
@@ -130,30 +149,25 @@ def reformat(description: str, env: dict) -> str:
 def update_term(term_id: int, html: str) -> None:
     """Write reformatted HTML back to the term description via WP-CLI.
 
-    Shell escaping is avoided entirely: the HTML is streamed to a remote temp
-    file over stdin, then read back into --description via command substitution
-    inside double quotes (cat output is inserted verbatim, never re-parsed).
+    Shell escaping is avoided entirely: the HTML is staged in a temp file, then
+    read back into --description via command substitution inside double quotes
+    (cat output is inserted verbatim, never re-parsed for quotes or $).
     """
-    # 1. Stream the HTML to a remote temp file (stdin -> cat).
-    write = subprocess.run(
-        ["ssh", SSH_HOST, f"cat > {REMOTE_TMP}"],
-        input=html,
-        text=True,
-        capture_output=True,
-    )
-    if write.returncode != 0:
-        raise RuntimeError(f"failed to stage description: {write.stderr.strip()}")
+    # 1. Stage the HTML in a temp file (local write on server, stdin->cat over SSH).
+    if ON_SERVER:
+        with open(REMOTE_TMP, "w") as f:
+            f.write(html)
+    else:
+        write = run_remote(f"cat > {REMOTE_TMP}", stdin=html)
+        if write.returncode != 0:
+            raise RuntimeError(f"failed to stage description: {write.stderr.strip()}")
 
     # 2. Update the term, reading the description from the staged file.
     remote = (
         f'wp --path={WP_PATH} term update origin {term_id} '
         f'--description="$(cat {REMOTE_TMP})" --allow-root'
     )
-    update = subprocess.run(
-        ["ssh", SSH_HOST, remote],
-        capture_output=True,
-        text=True,
-    )
+    update = run_remote(remote)
     if update.returncode != 0:
         raise RuntimeError(f"wp term update failed: {update.stderr.strip()}")
 
