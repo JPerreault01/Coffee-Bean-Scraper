@@ -174,15 +174,17 @@ def update_term(term_id: int, html: str) -> None:
 
     `wp term update --description` runs the value through restrictive kses
     (strips <p>/<h2>/<ul>) because term descriptions are filtered by
-    pre_term_description regardless of the --user flag's timing. Instead we
-    call wp_update_term() directly via eval-file after kses_remove_filters(),
-    which preserves the block-level HTML. The HTML is read from a staged file
-    inside PHP, so no shell escaping of quotes or $ is needed.
+    pre_term_description for users without the unfiltered_html capability.
+    Instead we authenticate as the site administrator (ID 1, who legitimately
+    holds unfiltered_html) via wp_set_current_user(): WordPress's own capability
+    check then permits the block-level HTML, exactly as it would if the admin
+    pasted it into the term editor. The HTML is read from a staged file inside
+    PHP, so no shell escaping of quotes or $ is needed.
     """
     php = (
         "<?php\n"
         f"$html = file_get_contents('{REMOTE_TMP}');\n"
-        "kses_remove_filters();\n"
+        "wp_set_current_user(1);\n"  # cbiadmin: holds unfiltered_html
         f"$r = wp_update_term({int(term_id)}, 'origin', array('description' => $html));\n"
         "if (is_wp_error($r)) { fwrite(STDERR, $r->get_error_message()); exit(1); }\n"
         "echo 'ok';\n"
