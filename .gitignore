@@ -21,6 +21,9 @@ voice_materials/*
 skill_data/
 data/*.json
 
+# Bean image pipeline cache (downloaded product images + manifest)
+scrapers/.image-cache/
+
 # Local design-QA screenshots (Stage 2 visual verification)
 .tmp-shots/
 # Stray empty artifact (literal bracket file from a shell mishap)
