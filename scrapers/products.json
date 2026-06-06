@@ -1109,7 +1109,7 @@
     "roast_intensity": null,
     "review_framing": null,
     "comparison_anchors": [],
-    "reference_slug": null
+    "reference_slug": "_skip"
   },
   {
     "id": "volcanica-ethiopian-yirgacheffe",
@@ -1599,7 +1599,7 @@
     "roast_intensity": null,
     "review_framing": null,
     "comparison_anchors": [],
-    "reference_slug": null
+    "reference_slug": "_skip"
   },
   {
     "id": "groundwork-french-roast",
@@ -1686,7 +1686,7 @@
     "roast_intensity": null,
     "review_framing": null,
     "comparison_anchors": [],
-    "reference_slug": null
+    "reference_slug": "_skip"
   },
   {
     "id": "sey-ethiopia-hambela",
@@ -1828,7 +1828,7 @@
     "roast_intensity": null,
     "review_framing": null,
     "comparison_anchors": [],
-    "reference_slug": null
+    "reference_slug": "_skip"
   },
   {
     "id": "metropolis-spice-island",
@@ -2119,7 +2119,7 @@
     "roast_intensity": null,
     "review_framing": null,
     "comparison_anchors": [],
-    "reference_slug": null
+    "reference_slug": "_skip"
   },
   {
     "id": "caribou-coffee-blend",
