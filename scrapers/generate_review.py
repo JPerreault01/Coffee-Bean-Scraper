@@ -8,7 +8,13 @@ Usage:
   /opt/venv/bin/python3 /opt/scrapers/generate_review.py lavazza-super-crema
   /opt/venv/bin/python3 /opt/scrapers/generate_review.py lavazza-super-crema --api minimax
   /opt/venv/bin/python3 /opt/scrapers/generate_review.py lavazza-super-crema --api claude
+  python scrapers/generate_review.py lavazza-super-crema --api claude-code
   /opt/venv/bin/python3 /opt/scrapers/generate_review.py lavazza-super-crema --personal
+
+  --api claude-code: LOCAL ONLY. Shells out to the locally authenticated Claude Code
+                     CLI (Pro subscription tokens) instead of the pay-per-token
+                     Anthropic API. Must be passed explicitly — never auto-detected.
+                     Refuses to run on the VPS (/opt) cron path.
 
   --personal flag: unlocks first-person "I" language for products you have personally tried.
                    Default (no flag): analytical voice — same confidence, no personal
@@ -556,6 +562,42 @@ def stream_minimax(prompt: str, env: dict) -> str:
     return "".join(full_text)
 
 
+def stream_claude_code(prompt: str) -> str:
+    """Generate a review by shelling out to the locally authenticated Claude Code
+    CLI (`claude -p`). Uses Pro subscription tokens instead of pay-per-token API
+    credits. LOCAL ONLY — the caller must keep this off the VPS cron path."""
+    import shutil
+    import subprocess
+
+    if shutil.which("claude") is None:
+        print(
+            "ERROR: claude CLI not found. Install Claude Code and sign in, "
+            "or use --api claude or --api minimax instead.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    result = subprocess.run(
+        ["claude", "-p", prompt],
+        capture_output=True,
+        text=True,
+    )
+    draft = result.stdout
+
+    if result.returncode != 0 or not draft.strip():
+        print(
+            "ERROR: claude CLI returned no output "
+            f"(exit code {result.returncode}).",
+            file=sys.stderr,
+        )
+        if result.stderr:
+            print(result.stderr.strip(), file=sys.stderr)
+        sys.exit(1)
+
+    print(draft)
+    return draft
+
+
 def generate_mock(product: dict, price_summary: str, personal: bool) -> str:
     """Generate a mock review draft without an API call — for local testing."""
     mode = "PERSONAL" if personal else "ANALYTICAL"
@@ -643,9 +685,13 @@ def main() -> None:
     parser.add_argument("product_id", help="Product ID from products.json")
     parser.add_argument(
         "--api",
-        choices=["claude", "minimax"],
+        choices=["claude", "minimax", "claude-code"],
         default=None,
-        help="Which API to use (default: use whichever key is available)",
+        help=(
+            "Which backend to use (default: use whichever API key is available). "
+            "'claude-code' shells out to the local Claude Code CLI (Pro tokens); "
+            "it must be passed explicitly, is never auto-detected, and is local-only."
+        ),
     )
     parser.add_argument(
         "--personal",
@@ -701,6 +747,8 @@ def main() -> None:
 
     api = args.api
     if api is None:
+        # Auto-detection: CLAUDE_API_KEY first, then MINIMAX_API_KEY.
+        # claude-code is intentionally never auto-detected — it must be passed explicitly.
         if env.get("CLAUDE_API_KEY") or env.get("ANTHROPIC_API_KEY"):
             api = "claude"
         elif env.get("MINIMAX_API_KEY"):
@@ -709,11 +757,22 @@ def main() -> None:
             print("ERROR: No API key found. Set CLAUDE_API_KEY or MINIMAX_API_KEY in /opt/.env", file=sys.stderr)
             sys.exit(1)
 
+    # claude-code is local-only. Refuse to run it on the VPS (/opt) cron path.
+    if api == "claude-code" and Path("/opt").exists():
+        print(
+            "ERROR: --api claude-code is local-only and cannot run on the VPS. "
+            "Use --api claude or --api minimax on the server.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     print(f"API: {api}", file=sys.stderr)
     print("=" * 60, file=sys.stderr)
 
     if api == "claude":
         draft = stream_claude(prompt, env)
+    elif api == "claude-code":
+        draft = stream_claude_code(prompt)
     else:
         draft = stream_minimax(prompt, env)
 
