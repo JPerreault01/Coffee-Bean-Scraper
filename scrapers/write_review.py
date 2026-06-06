@@ -41,13 +41,13 @@ REVIEW_FORMAT = """\
 
 ### Tasting notes
 - [Specific note]
-- [3–5 bullets total]
+- [3-5 bullets total]
 
 ### Who it's for
-[1–2 sentences. Specific.]
+[1-2 sentences. Specific.]
 
 ### Who should skip it
-[1–2 sentences. Honest.]
+[1-2 sentences. Honest.]
 
 ### Price analysis
 [Current price vs 30-day average, value judgment]
@@ -67,9 +67,9 @@ You are an expert content writer specializing in structured, well-researched pro
 
 Your workflow:
 1. RESEARCH: Analyze all provided product information and specifications thoroughly.
-2. STRUCTURE: Follow the exact review format provided — every section must be present.
+2. STRUCTURE: Follow the exact review format provided. Every section must be present.
 3. DRAFT: Write with authority and specificity. Ground every claim in the product data.
-4. REFINE: Ensure the review serves the reader — direct, actionable, no filler.
+4. REFINE: Ensure the review serves the reader: direct, actionable, no filler.
 
 Core principles:
 - Lead with the most valuable insight (the one-line verdict).
@@ -128,16 +128,17 @@ def build_system_prompt(skill_content: str) -> str:
 
 ---
 
-SITE REVIEW FORMAT — follow this exactly, every section is required:
+SITE REVIEW FORMAT: follow this exactly, every section is required:
 
 {REVIEW_FORMAT}
 
 ---
 
-WRITING RULES — hard requirements:
+WRITING RULES: hard requirements:
 {WRITING_RULES}
+- PUNCTUATION RULE: ABSOLUTE: Never use em-dashes (—) or en-dashes (–) anywhere in the output. Use a period, comma, colon, or parentheses instead. This applies to prose, the spec table, tasting notes, and every section. An em-dash in the output is a failure.
 
-VOICE RULES — non-negotiable:
+VOICE RULES: non-negotiable:
 - The coffee is the subject. State what it IS and DOES.
 - Second person ("you get", "you'll find") is preferred.
 - Never claim to have personally tried the product.
@@ -162,11 +163,11 @@ def build_user_prompt(product: dict[str, Any], context: str) -> str:
         f"Weight: {product['weight_oz']} oz",
         f"Best brew methods: {brew_methods}",
         f"Flavor notes: {flavor_notes}",
-        f"Acidity (1–5): {product.get('acidity', 'N/A')}",
-        f"Body (1–5): {product.get('body', 'N/A')}",
-        f"Sweetness (1–5): {product.get('sweetness', 'N/A')}",
-        f"Bitterness (1–5): {product.get('bitterness', 'N/A')}",
-        f"Roast intensity (1–5): {product.get('roast_intensity', 'N/A')}",
+        f"Acidity (1-5): {product.get('acidity', 'N/A')}",
+        f"Body (1-5): {product.get('body', 'N/A')}",
+        f"Sweetness (1-5): {product.get('sweetness', 'N/A')}",
+        f"Bitterness (1-5): {product.get('bitterness', 'N/A')}",
+        f"Roast intensity (1-5): {product.get('roast_intensity', 'N/A')}",
         f"Review framing: {product.get('review_framing', 'sensory')}",
     ]
 

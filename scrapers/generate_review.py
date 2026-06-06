@@ -49,7 +49,7 @@ def reference_block(product: dict) -> str:
             f"  Origin: {', '.join(s.title() for s in specs['origins']) or 'unknown'}\n"
             f"  Process: {', '.join(s.title() for s in specs['processing']) or 'unknown'}\n"
             f"  Varietals: {', '.join(s.title() for s in specs['varietals']) or 'unknown'}\n"
-            "  Community flavor notes (candidates only — do not copy verbatim into tasting notes):\n"
+            "  Community flavor notes (candidates only, do not copy verbatim into tasting notes):\n"
             f"    {', '.join(specs['flavor_notes'])}\n"
         )
     except Exception:
@@ -96,10 +96,10 @@ Standing preferences (apply to all reviews regardless of personal flag):
 - Espresso that works without a $2,000 machine is worth more than espresso that doesn't
 
 These preferences are the reviewer's known voice. Applying them to a product's
-documented characteristics is legitimate critical judgment — not a consumption claim.
+documented characteristics is legitimate critical judgment. Not a consumption claim.
 
 
-ANALYTICAL VOICE (default — no --personal flag)
+ANALYTICAL VOICE (default, no --personal flag)
 ================================================
 
 The coffee is the grammatical subject. State product truth declaratively.
@@ -113,19 +113,19 @@ Rules:
 - State what the coffee IS and DOES, not what someone experienced
 - Use second person ("you get", "you'll find") to put the reader in the cup without
   claiming the writer was there
-- Use the site's standing preferences as the critical lens — they are established voice,
+- Use the site's standing preferences as the critical lens. They are established voice,
   not personal consumption claims
 - Confidence level: absolute. No hedging. No "may", "might", "could", "tends to".
 
 Good analytical voice:
   "The finish is clean. No linger."
   "This roast turns acrid past 205°F."
-  "Too aggressive for an early cup — this is an afternoon or post-meal coffee."
+  "Too aggressive for an early cup. This is an afternoon or post-meal coffee."
   "Pull this short. Long extractions go muddy."
   "The crema holds. Dense, not thin."
   "At this price per oz, there are better options in the same roast profile."
   "This blend was built for milk drinks. Black, it's one-dimensional."
-  "The grind clumps at fine settings — worth noting for single-dose grinders."
+  "The grind clumps at fine settings (worth noting for single-dose grinders)."
   "You get dark chocolate up front, then a clean caramel fade."
   "Brew it long and it gets muddy. Keep it short."
 
@@ -143,7 +143,7 @@ Identical confidence level to analytical. The only difference: first-person lang
 is available for specific consumption claims about THIS product.
 
 What the personal flag unlocks:
-  "I've pushed this past 205°F — it turns acrid every time."
+  "I've pushed this past 205°F. It turns acrid every time."
   "Too aggressive for my first cup."
   "I've pulled this short and long. Short wins."
   "My go-to for moka pot mornings."
@@ -167,7 +167,7 @@ UNIVERSAL RULES (both voices)
 - Specific over vague: "turns acrid past 205°F" beats "can be harsh if over-extracted"
 - No producer puffery: never repeat marketing language uncritically
 - Price analysis must be specific: reference the actual 30-day data
-- The rating must be justified in one sentence — no vague praise
+- The rating must be justified in one sentence. No vague praise.
 - British or American spelling, consistent within a piece
 """
 
@@ -349,7 +349,7 @@ def build_prompt(product: dict, price_summary: str, style_guide: str, personal: 
     )
     comparison_section = (
         f"\n## Comparison anchors\n"
-        f"COMPARISON ANCHORS — use these specific comparisons, not generic alternatives:\n"
+        f"COMPARISON ANCHORS: use these specific comparisons, not generic alternatives:\n"
         f"{anchors_lines}\n\n"
         f"The review must reference both comparison products at least once, using the specified logic type as the lens."
         if comparison_anchors else ""
@@ -359,7 +359,7 @@ def build_prompt(product: dict, price_summary: str, style_guide: str, personal: 
     framing_section = (
         f"\n## Review framing\n"
         f"REVIEW FRAMING: {review_framing}\n"
-        f"Open the review from this angle. The framing must be evident in the first two sections — not just the intro sentence."
+        f"Open the review from this angle. The framing must be evident in the first two sections (not just the intro sentence)."
         if review_framing else ""
     )
 
@@ -367,7 +367,7 @@ def build_prompt(product: dict, price_summary: str, style_guide: str, personal: 
         voice_instruction = """VOICE MODE: PERSONAL
 You have personally tried this specific coffee. First-person language ("I", "my", "I've")
 is available for direct consumption claims about this product. Use it where it adds
-specificity — not for every sentence. The confidence level is absolute either way.
+specificity. Not for every sentence. The confidence level is absolute either way.
 Do not claim to have tried it more than the content warrants. Short, declarative sentences.
 No hedging. No filler."""
     else:
@@ -379,22 +379,24 @@ to any group.
 
 State product truth declaratively. The coffee is the subject. Use the site's established
 preferences as the critical lens. Use second person ("you get", "you'll find") to put
-the reader in the experience. Confidence level is absolute — identical to personal voice.
+the reader in the experience. Confidence level is absolute. Identical to personal voice.
 Specificity is the only citation you need. "This roast turns acrid past 205°F" needs
-no source — the specificity is the credibility."""
+no source. The specificity is the credibility."""
 
     # Shared safeguard appended to both voice modes — addresses PREPUBLISH_CHECKLIST §A.4.
     voice_instruction += """
 
 HALLUCINATION SAFEGUARD (applies in both voice modes):
 - Spec table fields (Roast, Origin, Process, Weight) must exactly match the product data
-  provided below — do not alter, combine, or invent these values.
-- Price analysis must reference the actual 30-day figures supplied — do not invent prices.
+  provided below. Do not alter, combine, or invent these values.
+- Price analysis must reference the actual 30-day figures supplied. Do not invent prices.
 - Technical specifics in prose (temperatures, times, ratios) are only acceptable when
   they are industry-standard for the given roast level and brew method combination.
   If the product data does not support a specific number, use directional language:
   "pull short" not "pull to 25 seconds"; "keep water off the boil" not "brew at 94°C".
-- Leave any spec table cell blank (write only the label) rather than guessing."""
+- Leave any spec table cell blank (write only the label) rather than guessing.
+
+PUNCTUATION RULE: ABSOLUTE: Never use em-dashes (—) or en-dashes (–) anywhere in the output. Use a period, comma, colon, or parentheses instead. This applies to prose, the spec table, tasting notes, and every section. An em-dash in the output is a failure."""
 
     # Deterministic SEO scaffolding — the model must reproduce these verbatim,
     # not invent slugs or a different title.
@@ -411,14 +413,14 @@ The review will be edited by a human before publication.
 {voice_instruction}
 
 ## Content diversity requirements
-CONTENT DIVERSITY RULES — HARD REQUIREMENTS
+CONTENT DIVERSITY RULES: HARD REQUIREMENTS
 Every review must include all three of the following:
 
-1. CONSENSUS claim: One observation that is broadly agreed upon across sources — the baseline expectation for this product. State it plainly without hedging.
+1. CONSENSUS claim: One observation that is broadly agreed upon across sources. The baseline expectation for this product. State it plainly without hedging.
 
-2. VARIANCE claim: One observation that is contested, context-dependent, or represents a minority but valid signal. This must reflect a genuine edge case or conflicting data point — not just a caveat. Do not soften it.
+2. VARIANCE claim: One observation that is contested, context-dependent, or represents a minority but valid signal. This must reflect a genuine edge case or conflicting data point (not just a caveat). Do not soften it.
 
-3. INFERRED claim: One conclusion that is not explicitly stated in the source data but is logically derivable from the specs, price history, or known roast/origin behaviour. Label nothing — weave all three in naturally. The reader should not be able to tell which is which.
+3. INFERRED claim: One conclusion that is not explicitly stated in the source data but is logically derivable from the specs, price history, or known roast/origin behaviour. Label nothing. Weave all three in naturally. The reader should not be able to tell which is which.
 {comparison_section}
 {framing_section}
 
@@ -440,12 +442,12 @@ Every review must include all three of the following:
 
 Write the review exactly in this structure. No preamble. No additional sections.
 Reproduce the META block, the disclosure line, and the "Explore further" block
-EXACTLY as given — do not change the title, the URLs, or the link text. Replace
+EXACTLY as given. Do not change the title, the URLs, or the link text. Replace
 only the bracketed placeholders (including the meta_description) with your copy.
 
 <!--META
 meta_title: {mtitle}
-meta_description: [One sentence, 120–155 characters. Plain, specific, no hedging. Describe what this coffee is and who it's for. No quotation marks.]
+meta_description: [One sentence, 120-155 characters. Plain, specific, no hedging. Describe what this coffee is and who it's for. No quotation marks.]
 -->
 
 ## {product['name']} Review
@@ -463,14 +465,14 @@ meta_description: [One sentence, 120–155 characters. Plain, specific, no hedgi
 | Price/oz | $X.XX |
 
 ### Tasting notes
-- [Specific, declarative. What the coffee does — not what someone experienced.]
-- [3–5 bullets. No vague descriptors without context. No "hints of" or "notes of" without specificity.]
+- [Specific, declarative. What the coffee does. Not what someone experienced.]
+- [3-5 bullets. No vague descriptors without context. No "hints of" or "notes of" without specificity.]
 
 ### Who it's for
-[1–2 sentences. Name the specific drinker and use case — not "coffee lovers".]
+[1-2 sentences. Name the specific drinker and use case. Not "coffee lovers".]
 
 ### Who should skip it
-[1–2 sentences. Honest. Use the site's standing preferences where relevant.]
+[1-2 sentences. Honest. Use the site's standing preferences where relevant.]
 
 ### Price analysis
 [Is it good value right now? Reference the actual 30-day data. State a clear buy/wait judgment.]
@@ -561,21 +563,21 @@ def generate_mock(product: dict, price_summary: str, personal: bool) -> str:
     flavor_notes = ", ".join(product.get("flavor_notes", []))
 
     if personal:
-        verdict = f"The real deal — {product['name']} does exactly what it promises and I keep coming back to it."
+        verdict = f"The real deal. {product['name']} does exactly what it promises and I keep coming back to it."
         tasting = (
             f"- {flavor_notes.split(',')[0].strip().capitalize()} up front, clean through the finish.\n"
-            f"- I've pushed this past ideal temp — it turns harsh. Stay in range.\n"
-            f"- Works best on {best_brew.split(',')[0].strip()} — that's where it lands right."
+            f"- I've pushed this past ideal temp. It turns harsh. Stay in range.\n"
+            f"- Works best on {best_brew.split(',')[0].strip()}. That's where it lands right."
         )
         skip = "Skip it if you want something adventurous. This is a workhorse, not a showpiece. I reach for it when I want consistency, not complexity."
     else:
         verdict = f"{product['name']} is a straightforward {product.get('roast_level', '').lower()} roast that delivers on its profile without complications."
         tasting = (
-            f"- {flavor_notes.split(',')[0].strip().capitalize()} dominates — clean, not muddled.\n"
+            f"- {flavor_notes.split(',')[0].strip().capitalize()} dominates. Clean, not muddled.\n"
             f"- This roast has a ceiling on extraction temp. Push past it and the profile collapses.\n"
             f"- Built for {best_brew.split(',')[0].strip()}. Other methods get less out of it."
         )
-        skip = "Skip it if the profile sounds one-dimensional — it is. That's not a flaw, it's the design."
+        skip = "Skip it if the profile sounds one-dimensional. It is. That's not a flaw, it's the design."
 
     meta_desc = meta_description_mock(product)
     links_md = internal_links_section(product)
@@ -592,7 +594,7 @@ def generate_mock(product: dict, price_summary: str, personal: bool) -> str:
 | Origin | {product.get('origin', 'N/A')} |
 | Process | {product.get('process_method', 'N/A')} |
 | Best for | {best_brew} |
-| Price/oz | $X.XX (mock — run scraper for real data) |
+| Price/oz | $X.XX (mock, run scraper for real data) |
 
 ### Tasting notes
 {tasting}
@@ -607,15 +609,25 @@ Drip and french press drinkers who want a reliable daily driver. Not a special o
 {price_summary}
 
 ### Rating: X/10
-[Mock draft — edit rating and justification before publishing.]
+[Mock draft. Edit rating and justification before publishing.]
 
 {links_md}
 ---
 *[Affiliate disclosure: links in this review are affiliate links. Prices accurate at time of writing.]*
 
 ---
-[MOCK DRAFT — voice mode: {mode} — replace with real API output before publishing]
+[MOCK DRAFT, voice mode: {mode}. Replace with real API output before publishing.]
 """
+
+
+def strip_dashes(text: str) -> str:
+    return (
+        text
+        .replace(" — ", ". ")
+        .replace(" – ", ", ")
+        .replace("—", ", ")
+        .replace("–", "-")
+    )
 
 
 def save_draft(product_id: str, content: str) -> Path:
@@ -678,7 +690,7 @@ def main() -> None:
         print("\n=== CONSTRUCTED PROMPT ===", file=sys.stderr)
         print(prompt, file=sys.stderr)
         print("=== END PROMPT ===\n", file=sys.stderr)
-        draft = generate_mock(product, price_summary, args.personal)
+        draft = strip_dashes(generate_mock(product, price_summary, args.personal))
         print(draft)
         path = save_draft(args.product_id, draft)
         print(f"\n{'=' * 60}", file=sys.stderr)
@@ -705,6 +717,7 @@ def main() -> None:
     else:
         draft = stream_minimax(prompt, env)
 
+    draft = strip_dashes(draft)
     path = save_draft(args.product_id, draft)
     print(f"\n{'=' * 60}", file=sys.stderr)
     print(f"Draft saved to: {path}", file=sys.stderr)
