@@ -2,6 +2,25 @@
 /**
  * Coffee Bean Index — Child Theme Functions
  * Registers: bean CPT, all taxonomies, ACF field sync, enqueues, schema
+ *
+ * ============================================================================
+ * EDITOR SHORTCODES (see section 20 below) — drop these into any guide/page
+ * from the WordPress block editor (use a "Shortcode" block) without writing HTML:
+ *
+ *   [cbi_callout type="tip" title="Pro tip"]Body text…[/cbi_callout]
+ *       type = tip | note | warning   (default: tip). Renders a .guide-callout box.
+ *
+ *   [cbi_pullquote cite="Editor"]A short, punchy line worth emphasising.[/cbi_pullquote]
+ *       Renders a styled .guide-pullquote. cite is optional.
+ *
+ *   [cbi_bean id="123"]      OR   [cbi_bean slug="lavazza-super-crema"]
+ *       Inline "related bean" mention — a compact linked card (name, roaster,
+ *       rating) that pulls live data from the Bean CPT. Dofollow internal link.
+ *
+ * Matching block patterns are also registered (category "Coffee Bean Index"):
+ *   "Guide callout box" and "Inline bean mention" — insert via the block
+ *   inserter → Patterns tab for a visual starting point.
+ * ============================================================================
  */
 
 // ============================================================
@@ -53,6 +72,18 @@ function cbi_enqueue_styles() {
             true // footer
         );
     }
+
+    // Guide ToC + smooth-scroll JS — only on the guide page template.
+    // Builds the sticky table of contents from the article's H2/H3 headings.
+    if ( is_page_template( 'template-guide.php' ) ) {
+        wp_enqueue_script(
+            'cbi-guide-toc',
+            get_stylesheet_directory_uri() . '/js/guide-toc.js',
+            [],
+            '1.0.0',
+            true // footer
+        );
+    }
 }
 
 // Preconnect hints for Google Fonts (output before any render-blocking resources)
@@ -99,6 +130,12 @@ function cbi_template_body_classes( $classes ) {
         if ( ! in_array( 'full-width-content', $classes, true ) ) {
             $classes[] = 'full-width-content';
         }
+    }
+    // Scope guide-page CSS so its typographic + ToC styles can't bleed into
+    // bean reviews or other templates. All guide CSS in style.css is nested
+    // under .guide-page.
+    if ( is_page_template( 'template-guide.php' ) ) {
+        $classes[] = 'guide-page';
     }
     return $classes;
 }
@@ -305,11 +342,12 @@ function cbi_sensory_bar( $label, $value, $max = 5 ) {
 // ============================================================
 
 function cbi_bean_card( $post_id ) {
-    $title   = get_the_title( $post_id );
-    $link    = get_permalink( $post_id );
-    $verdict = function_exists( 'get_field' ) ? get_field( 'verdict', $post_id ) : '';
+    $title    = get_the_title( $post_id );
+    $link     = get_permalink( $post_id );
+    $verdict  = function_exists( 'get_field' ) ? get_field( 'verdict', $post_id ) : '';
     if ( ! $verdict ) $verdict = get_the_excerpt( $post_id );
-    $rating  = function_exists( 'get_field' ) ? get_field( 'rating', $post_id ) : '';
+    $rating   = function_exists( 'get_field' ) ? get_field( 'rating', $post_id ) : '';
+    $price_oz = function_exists( 'get_field' ) ? get_field( 'price_per_oz', $post_id ) : '';
 
     $roasters = get_the_terms( $post_id, 'roaster' );
     $roaster  = ( $roasters && ! is_wp_error( $roasters ) ) ? $roasters[0]->name : '';
@@ -358,10 +396,12 @@ function cbi_bean_card( $post_id ) {
             </div>
         </div>
         <div class="bean-card__footer">
-            <div>
+            <div class="bean-card__metrics">
                 <?php if ( $rating !== '' && $rating !== null ) : ?>
-                    <div class="bean-card__rating tabular-nums"><?php echo esc_html( $rating ); ?></div>
-                    <div class="bean-card__rating-label">/ 10</div>
+                    <div class="bean-card__rating tabular-nums"><?php echo esc_html( $rating ); ?><span class="bean-card__rating-label">/ 10</span></div>
+                <?php endif; ?>
+                <?php if ( $price_oz !== '' && $price_oz !== null ) : ?>
+                    <div class="bean-card__price tabular-nums">$<?php echo esc_html( number_format( (float) $price_oz, 2 ) ); ?><span class="bean-card__price-label">/oz</span></div>
                 <?php endif; ?>
             </div>
             <a href="<?php echo esc_url( $link ); ?>" class="bean-card__link">Full Review &rarr;</a>
@@ -790,4 +830,244 @@ function cbi_force_full_content_width( $width ) {
         return 100;
     }
     return $width;
+}
+
+// ============================================================
+// 20. GUIDE-PAGE HELPERS — hub-and-spoke queries
+//
+//     Guides are HUB pages. These helpers wire the spokes:
+//     related bean reviews (sharing a taxonomy term) and sibling
+//     guides. Used by template-guide.php and the homepage guides grid.
+// ============================================================
+
+/**
+ * Resolve which bean-taxonomy terms a guide relates to.
+ *
+ * Resolution order:
+ *   1. ACF text field "related_taxonomy_slug" on the page (comma-separated
+ *      term slugs — explicit editor override, highest priority).
+ *   2. Auto-match: tokenise the page slug and title and look those tokens up
+ *      against term slugs/names across the bean taxonomies. An origin guide at
+ *      /ethiopia-coffee/ auto-resolves the origin term "ethiopia".
+ *
+ * @return WP_Term[]  Matched terms (may be empty).
+ */
+function cbi_guide_taxonomy_terms( $post_id ) {
+    $taxes = [ 'origin', 'brew-method', 'flavor-note', 'roast-level', 'process-method' ];
+    $found = [];
+    $seen  = [];
+
+    $add_term = function ( $term ) use ( &$found, &$seen ) {
+        if ( $term && ! is_wp_error( $term ) && empty( $seen[ $term->taxonomy . ':' . $term->term_id ] ) ) {
+            $found[] = $term;
+            $seen[ $term->taxonomy . ':' . $term->term_id ] = true;
+        }
+    };
+
+    // 1. Explicit ACF override.
+    if ( function_exists( 'get_field' ) ) {
+        $slugs = get_field( 'related_taxonomy_slug', $post_id );
+        if ( $slugs ) {
+            foreach ( array_filter( array_map( 'trim', explode( ',', $slugs ) ) ) as $slug ) {
+                foreach ( $taxes as $tax ) {
+                    $term = get_term_by( 'slug', $slug, $tax );
+                    if ( $term && ! is_wp_error( $term ) ) { $add_term( $term ); break; }
+                }
+            }
+        }
+    }
+
+    // 2. Auto-match from slug + title tokens.
+    if ( empty( $found ) ) {
+        $haystack = get_post_field( 'post_name', $post_id ) . '-' . sanitize_title( get_the_title( $post_id ) );
+        $tokens   = array_unique( array_filter( explode( '-', $haystack ) ) );
+        foreach ( $taxes as $tax ) {
+            foreach ( $tokens as $token ) {
+                if ( strlen( $token ) < 3 ) continue; // skip "of", "to", noise
+                $term = get_term_by( 'slug', $token, $tax );
+                if ( $term && ! is_wp_error( $term ) ) { $add_term( $term ); }
+            }
+        }
+    }
+
+    return $found;
+}
+
+/**
+ * WP_Query of bean reviews related to a guide, ordered by rating desc.
+ * Falls back to top-rated beans when no shared term resolves.
+ *
+ * @param int $post_id  Guide page ID.
+ * @param int $limit    Max cards (default 6, per spec).
+ */
+function cbi_guide_related_beans( $post_id, $limit = 6 ) {
+    $args = [
+        'post_type'      => 'bean',
+        'posts_per_page' => $limit,
+        'post_status'    => 'publish',
+        'orderby'        => 'meta_value_num',
+        'meta_key'       => 'rating',
+        'order'          => 'DESC',
+        'no_found_rows'  => true,
+    ];
+
+    $terms = cbi_guide_taxonomy_terms( $post_id );
+    if ( ! empty( $terms ) ) {
+        $tax_query = [ 'relation' => 'OR' ];
+        foreach ( $terms as $term ) {
+            $tax_query[] = [
+                'taxonomy' => $term->taxonomy,
+                'field'    => 'term_id',
+                'terms'    => $term->term_id,
+            ];
+        }
+        $args['tax_query'] = $tax_query;
+    }
+
+    return new WP_Query( $args );
+}
+
+/**
+ * Pages that use template-guide.php, excluding $exclude_id.
+ * "Sibling guides" for the related-guides block + homepage guides grid.
+ */
+function cbi_get_guides( $limit = 3, $exclude_id = 0 ) {
+    return new WP_Query( [
+        'post_type'      => 'page',
+        'posts_per_page' => $limit,
+        'post_status'    => 'publish',
+        'post__not_in'   => $exclude_id ? [ $exclude_id ] : [],
+        'orderby'        => 'modified',
+        'order'          => 'DESC',
+        'no_found_rows'  => true,
+        'meta_query'     => [
+            [
+                'key'   => '_wp_page_template',
+                'value' => 'template-guide.php',
+            ],
+        ],
+    ] );
+}
+
+/**
+ * Beans currently priced below their 30-day average.
+ *
+ * The price-history database lives on the VPS (/opt/data/prices.db) and is NOT
+ * exposed to WordPress yet, so this returns [] by default and the homepage
+ * renders a labelled placeholder. To light it up, hook this filter and return
+ * an array of rows in EXACTLY this shape:
+ *
+ *   add_filter( 'cbi_price_drop_beans', function () {
+ *       return [
+ *           [ 'post_id' => 42, 'current' => 11.49, 'avg30' => 13.20, 'pct' => 13 ],
+ *           // …ordered by pct desc, best deals first
+ *       ];
+ *   } );
+ *
+ * The scraper (price_scraper.py) is the natural producer: write a daily JSON
+ * snapshot or a wp_options transient the filter can read.
+ *
+ * @return array<int,array{post_id:int,current:float,avg30:float,pct:int}>
+ */
+function cbi_price_drop_beans( $limit = 4 ) {
+    $rows = apply_filters( 'cbi_price_drop_beans', [] );
+    return is_array( $rows ) ? array_slice( $rows, 0, $limit ) : [];
+}
+
+// ============================================================
+// 21. EDITOR SHORTCODES — callout, pull quote, inline bean mention
+//     (Documented in the comment block at the top of this file.)
+// ============================================================
+
+add_shortcode( 'cbi_callout', 'cbi_shortcode_callout' );
+function cbi_shortcode_callout( $atts, $content = '' ) {
+    $a = shortcode_atts( [ 'type' => 'tip', 'title' => '' ], $atts, 'cbi_callout' );
+    $type  = in_array( $a['type'], [ 'tip', 'note', 'warning' ], true ) ? $a['type'] : 'tip';
+    $label = $a['title'] !== '' ? $a['title'] : ucfirst( $type );
+
+    $body = wpautop( do_shortcode( $content ) );
+
+    ob_start(); ?>
+    <aside class="guide-callout guide-callout--<?php echo esc_attr( $type ); ?>" role="note">
+        <p class="guide-callout__label"><?php echo esc_html( $label ); ?></p>
+        <div class="guide-callout__body"><?php echo wp_kses_post( $body ); ?></div>
+    </aside>
+    <?php
+    return ob_get_clean();
+}
+
+add_shortcode( 'cbi_pullquote', 'cbi_shortcode_pullquote' );
+function cbi_shortcode_pullquote( $atts, $content = '' ) {
+    $a = shortcode_atts( [ 'cite' => '' ], $atts, 'cbi_pullquote' );
+    ob_start(); ?>
+    <blockquote class="guide-pullquote">
+        <p><?php echo wp_kses_post( do_shortcode( $content ) ); ?></p>
+        <?php if ( $a['cite'] !== '' ) : ?>
+            <cite class="guide-pullquote__cite"><?php echo esc_html( $a['cite'] ); ?></cite>
+        <?php endif; ?>
+    </blockquote>
+    <?php
+    return ob_get_clean();
+}
+
+add_shortcode( 'cbi_bean', 'cbi_shortcode_bean' );
+function cbi_shortcode_bean( $atts ) {
+    $a = shortcode_atts( [ 'id' => '', 'slug' => '' ], $atts, 'cbi_bean' );
+
+    $bean = null;
+    if ( $a['id'] ) {
+        $post = get_post( (int) $a['id'] );
+        if ( $post && $post->post_type === 'bean' && $post->post_status === 'publish' ) $bean = $post;
+    } elseif ( $a['slug'] ) {
+        $post = get_page_by_path( sanitize_title( $a['slug'] ), OBJECT, 'bean' );
+        if ( $post && $post->post_status === 'publish' ) $bean = $post;
+    }
+
+    if ( ! $bean ) {
+        return '<span class="cbi-bean-inline cbi-bean-inline--missing">[bean not found]</span>';
+    }
+
+    $bid      = $bean->ID;
+    $rating   = function_exists( 'get_field' ) ? get_field( 'rating', $bid ) : '';
+    $roasters = get_the_terms( $bid, 'roaster' );
+    $roaster  = ( $roasters && ! is_wp_error( $roasters ) ) ? $roasters[0]->name : '';
+
+    ob_start(); ?>
+    <a class="cbi-bean-inline" href="<?php echo esc_url( get_permalink( $bid ) ); ?>" rel="dofollow">
+        <span class="cbi-bean-inline__label">Reviewed</span>
+        <span class="cbi-bean-inline__name"><?php echo esc_html( get_the_title( $bid ) ); ?></span>
+        <?php if ( $roaster ) : ?>
+            <span class="cbi-bean-inline__roaster"><?php echo esc_html( $roaster ); ?></span>
+        <?php endif; ?>
+        <?php if ( $rating !== '' && $rating !== null ) : ?>
+            <span class="cbi-bean-inline__rating tabular-nums"><?php echo esc_html( $rating ); ?>/10</span>
+        <?php endif; ?>
+    </a>
+    <?php
+    return ob_get_clean();
+}
+
+// ============================================================
+// 22. BLOCK PATTERNS — visual starting points for the shortcodes
+// ============================================================
+
+add_action( 'init', 'cbi_register_block_patterns' );
+function cbi_register_block_patterns() {
+    if ( ! function_exists( 'register_block_pattern_category' ) ) return;
+
+    register_block_pattern_category( 'cbi', [ 'label' => 'Coffee Bean Index' ] );
+
+    register_block_pattern( 'cbi/guide-callout', [
+        'title'       => 'Guide callout box',
+        'description' => 'A tip / note / warning box for guide pages.',
+        'categories'  => [ 'cbi' ],
+        'content'     => "<!-- wp:shortcode -->\n[cbi_callout type=\"tip\" title=\"Pro tip\"]Swap in your tip here. Keep it to a sentence or two.[/cbi_callout]\n<!-- /wp:shortcode -->",
+    ] );
+
+    register_block_pattern( 'cbi/inline-bean', [
+        'title'       => 'Inline bean mention',
+        'description' => 'A compact linked card pulling live data from a bean review.',
+        'categories'  => [ 'cbi' ],
+        'content'     => "<!-- wp:shortcode -->\n[cbi_bean slug=\"lavazza-super-crema\"]\n<!-- /wp:shortcode -->",
+    ] );
 }

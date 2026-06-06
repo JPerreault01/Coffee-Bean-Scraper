@@ -2,10 +2,21 @@
 /**
  * Front Page — Coffee Bean Index homepage
  *
- * Template hierarchy: front-page.php loads automatically for the site front page
- * whether Settings > Reading is "latest posts" or a static page.
+ * Loads automatically for the site front page (Settings > Reading either mode).
+ * Editorial review-publication layout, top to bottom:
+ *   1. Hero        full-bleed warm placeholder + value prop + search + 2 CTAs
+ *   2. Featured    6 latest bean reviews (reuses cbi_bean_card / .cbi-card-grid)
+ *   3. Browse      category tiles → Roast, Origin, Brew (authority distribution)
+ *   4. Deals strip beans below 30-day average (cbi_price_drop_beans())
+ *   5. Guides      latest informational guide pages (cbi_get_guides())
+ *   6. Email       price-drop alert signup band (WPForms via filter)
+ *   Footer: generate_footer (FTC disclosure) — unchanged.
  *
- * All sections are self-wrapping so they are immune to GP container width.
+ * All sections self-wrap in .cbi-container so they're immune to GP width.
+ *
+ * IMAGES: the hero uses a CSS-driven placeholder. To drop in a real photo, see
+ * .home-hero--full in style.css — supply a 2400×1200px (2:1) optimised JPG/WebP.
+ * Never hotlink copyrighted photos.
  */
 
 get_header();
@@ -15,7 +26,8 @@ $origin_terms  = get_terms( [ 'taxonomy' => 'origin',  'hide_empty' => false ] )
 $roaster_terms = get_terms( [ 'taxonomy' => 'roaster', 'hide_empty' => false ] );
 $origin_count  = is_wp_error( $origin_terms )  ? 0 : count( $origin_terms );
 $roaster_count = is_wp_error( $roaster_terms ) ? 0 : count( $roaster_terms );
-$has_acf       = function_exists( 'get_field' );
+
+$beans_url = get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' );
 ?>
 
 <main id="primary" class="cbi-home">
@@ -30,96 +42,42 @@ $has_acf       = function_exists( 'get_field' );
     </div>
 
     <!-- ============================================================
-         HERO — two-column layout (content left, stats right)
+         1. HERO — full-bleed warm placeholder + overlay
+         IMAGE DROP-IN: replace the .home-hero__bg background in style.css
+         (search ".home-hero--full") with a 2400×1200px (2:1) photo or a
+         subtle looping MP4/GIF. Keep the dark overlay for text contrast.
          ============================================================ -->
-    <section class="home-hero">
+    <section class="home-hero home-hero--full">
+        <div class="home-hero__bg" aria-hidden="true"><!-- placeholder: drop hero image/video here (2400×1200) --></div>
+        <div class="home-hero__overlay" aria-hidden="true"></div>
         <div class="home-hero__inner cbi-container">
-            <div class="home-hero__content">
-                <span class="home-hero__eyebrow">Independent &middot; Data-driven &middot; Daily price tracking</span>
-                <h1 class="home-hero__title">Every bean, <em>ranked</em>.</h1>
-                <p class="home-hero__lede">
-                    Honest reviews, flavor breakdowns, and live price tracking for the
-                    coffee worth buying&mdash;and the coffee worth skipping.
-                </p>
-                <div class="home-hero__cta">
-                    <a class="cbi-btn cbi-btn--primary" href="<?php echo esc_url( get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' ) ); ?>">Browse all beans</a>
-                    <a class="cbi-btn cbi-btn--secondary" href="<?php echo esc_url( home_url( '/explore/' ) ); ?>">Explore by flavor &amp; origin &rarr;</a>
-                </div>
+            <span class="home-hero__eyebrow">Independent &middot; Data-driven &middot; Daily price tracking</span>
+            <h1 class="home-hero__title"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></h1>
+            <p class="home-hero__lede">Honest, data-backed coffee reviews and live price tracking &mdash; for the beans worth buying and the ones worth skipping.</p>
+
+            <form role="search" method="get" class="home-search" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+                <label class="screen-reader-text" for="home-search-input">Search bean reviews</label>
+                <input type="search" id="home-search-input" class="home-search__input" name="s" placeholder="Search a bean, roaster, or origin&hellip;" />
+                <input type="hidden" name="post_type" value="bean" />
+                <button type="submit" class="home-search__btn">Search</button>
+            </form>
+
+            <div class="home-hero__cta">
+                <a class="cbi-btn cbi-btn--primary" href="<?php echo esc_url( $beans_url ); ?>">Browse reviews</a>
+                <a class="cbi-btn cbi-btn--secondary cbi-btn--on-dark" href="<?php echo esc_url( home_url( '/explore/' ) ); ?>">Find your coffee &rarr;</a>
             </div>
+
             <ul class="home-hero__stats">
-                <li class="home-hero__stat">
-                    <strong><?php echo esc_html( $bean_count ?: '&mdash;' ); ?></strong>
-                    <span>beans reviewed</span>
-                </li>
-                <li class="home-hero__stat">
-                    <strong><?php echo esc_html( $origin_count ?: '&mdash;' ); ?></strong>
-                    <span>origins tracked</span>
-                </li>
-                <li class="home-hero__stat">
-                    <strong><?php echo esc_html( $roaster_count ?: '&mdash;' ); ?></strong>
-                    <span>roasters indexed</span>
-                </li>
-                <li class="home-hero__stat">
-                    <strong>Daily</strong>
-                    <span>price checks</span>
-                </li>
+                <li class="home-hero__stat"><strong><?php echo esc_html( $bean_count ?: '—' ); ?></strong><span>beans reviewed</span></li>
+                <li class="home-hero__stat"><strong><?php echo esc_html( $origin_count ?: '—' ); ?></strong><span>origins tracked</span></li>
+                <li class="home-hero__stat"><strong><?php echo esc_html( $roaster_count ?: '—' ); ?></strong><span>roasters indexed</span></li>
+                <li class="home-hero__stat"><strong>Daily</strong><span>price checks</span></li>
             </ul>
         </div>
     </section>
 
     <!-- ============================================================
-         BROWSE BY — Fragrantica-style taxonomy entry points
-         ============================================================ -->
-    <section class="home-section cbi-container">
-        <div class="home-section__head">
-            <h2>Start exploring</h2>
-            <p class="text-muted">Five ways into the index &mdash; pick a thread and pull.</p>
-        </div>
-
-        <div class="browse-grid">
-            <?php
-            $entry_points = [
-                [ 'label' => 'By flavor',      'tax' => 'flavor-note',  'blurb' => 'Dark chocolate, stone fruit, jasmine.' ],
-                [ 'label' => 'By origin',      'tax' => 'origin',       'blurb' => 'Ethiopia, Colombia, Sumatra.' ],
-                [ 'label' => 'By roast',       'tax' => 'roast-level',  'blurb' => 'Light through dark and French.' ],
-                [ 'label' => 'By brew method', 'tax' => 'brew-method',  'blurb' => 'Espresso, pour-over, French press.' ],
-                [ 'label' => 'By roaster',     'tax' => 'roaster',      'blurb' => 'Lavazza, Stumptown, Death Wish.' ],
-            ];
-
-            foreach ( $entry_points as $ep ) :
-                $terms = get_terms( [
-                    'taxonomy'   => $ep['tax'],
-                    'hide_empty' => false,
-                    'number'     => 6,
-                    'orderby'    => 'count',
-                    'order'      => 'DESC',
-                ] );
-            ?>
-                <div class="browse-card">
-                    <h3 class="browse-card__title"><?php echo esc_html( $ep['label'] ); ?></h3>
-                    <p class="browse-card__blurb"><?php echo esc_html( $ep['blurb'] ); ?></p>
-                    <div class="browse-card__chips">
-                        <?php
-                        if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
-                            foreach ( $terms as $term ) {
-                                printf(
-                                    '<a class="chip" href="%s">%s</a>',
-                                    esc_url( get_term_link( $term ) ),
-                                    esc_html( $term->name )
-                                );
-                            }
-                        } else {
-                            echo '<span class="chip chip--empty">Coming soon</span>';
-                        }
-                        ?>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         LATEST REVIEWS
+         2. FEATURED / LATEST REVIEWS — 6 most recent beans
          ============================================================ -->
     <?php
     $latest = new WP_Query( [
@@ -128,63 +86,153 @@ $has_acf       = function_exists( 'get_field' );
         'post_status'    => 'publish',
         'no_found_rows'  => true,
     ] );
-
     if ( $latest->have_posts() ) : ?>
         <section class="home-section cbi-container">
             <div class="home-section__head home-section__head--row">
                 <div>
                     <h2>Latest reviews</h2>
-                    <p class="text-muted">Freshly scored.</p>
+                    <p class="text-muted">Freshly scored, with live price/oz.</p>
                 </div>
-                <a class="home-section__more" href="<?php echo esc_url( get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' ) ); ?>">All beans &rarr;</a>
+                <a class="home-section__more" href="<?php echo esc_url( $beans_url ); ?>">All beans &rarr;</a>
             </div>
-
-            <div class="home-review-grid">
-                <?php while ( $latest->have_posts() ) : $latest->the_post();
-                    $rating     = $has_acf ? get_field( 'rating' ) : '';
-                    $verdict    = $has_acf ? get_field( 'verdict' ) : '';
-                    $price_oz   = $has_acf ? get_field( 'price_per_oz' ) : '';
-                    $roaster    = get_the_terms( get_the_ID(), 'roaster' );
-                    $roaster_nm = ( $roaster && ! is_wp_error( $roaster ) ) ? $roaster[0]->name : '';
-                    if ( empty( $verdict ) ) $verdict = get_the_excerpt();
+            <div class="cbi-card-grid">
+                <?php
+                while ( $latest->have_posts() ) : $latest->the_post();
+                    echo cbi_bean_card( get_the_ID() );
+                endwhile;
+                wp_reset_postdata();
                 ?>
-                    <a class="home-review-card" href="<?php the_permalink(); ?>">
-                        <div class="home-review-card__media">
-                            <?php if ( has_post_thumbnail() ) :
-                                the_post_thumbnail( 'medium', [
-                                    'class'   => 'home-review-card__img',
-                                    'loading' => 'lazy',
-                                    'width'   => '400',
-                                    'height'  => '300',
-                                ] );
-                            else :
-                                // SVG coffee cup — no emoji
-                                echo '<div class="home-review-card__img home-review-card__img--placeholder">';
-                                echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">';
-                                echo '<path d="M17 8h1a4 4 0 0 1 0 8h-1"/>';
-                                echo '<path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>';
-                                echo '<line x1="6" x2="6" y1="2" y2="4"/>';
-                                echo '<line x1="10" x2="10" y1="2" y2="4"/>';
-                                echo '<line x1="14" x2="14" y1="2" y2="4"/>';
-                                echo '</svg>';
-                                echo '</div>';
-                            endif; ?>
-                            <?php if ( $rating !== '' && $rating !== null ) : ?>
-                                <span class="home-review-card__rating"><?php echo esc_html( $rating ); ?><small>/10</small></span>
+            </div>
+        </section>
+    <?php endif; ?>
+
+    <!-- ============================================================
+         3. BROWSE BY CATEGORY — primary authority-distribution tiles
+            Routes link equity into the Roast / Origin / Brew hubs.
+         ============================================================ -->
+    <section class="home-section home-section--tint">
+        <div class="cbi-container">
+            <div class="home-section__head">
+                <h2>Browse by category</h2>
+                <p class="text-muted">Three ways into the index &mdash; pick a thread and pull.</p>
+            </div>
+            <div class="home-cat-tiles">
+                <?php
+                // ICON DROP-IN: each tile uses a CSS gradient placeholder. To use
+                // images, set a background on .home-cat-tile--{slug} in style.css
+                // (recommended 800×600px). Tiles link to taxonomy term archives.
+                $categories = [
+                    [
+                        'label' => 'By Roast Level',
+                        'blurb' => 'Light, medium, dark, French.',
+                        'tax'   => 'roast-level',
+                        'url'   => home_url( '/roast/' ),
+                    ],
+                    [
+                        'label' => 'By Origin',
+                        'blurb' => 'Ethiopia, Colombia, Sumatra and more.',
+                        'tax'   => 'origin',
+                        'url'   => home_url( '/origin/' ),
+                    ],
+                    [
+                        'label' => 'By Brew Method',
+                        'blurb' => 'Espresso, pour-over, French press.',
+                        'tax'   => 'brew-method',
+                        'url'   => home_url( '/brew/' ),
+                    ],
+                ];
+                foreach ( $categories as $cat ) :
+                    $terms = get_terms( [
+                        'taxonomy'   => $cat['tax'],
+                        'hide_empty' => false,
+                        'number'     => 5,
+                        'orderby'    => 'count',
+                        'order'      => 'DESC',
+                    ] );
+                ?>
+                    <a class="home-cat-tile home-cat-tile--<?php echo esc_attr( $cat['tax'] ); ?>" href="<?php echo esc_url( $cat['url'] ); ?>">
+                        <span class="home-cat-tile__media" aria-hidden="true"></span>
+                        <span class="home-cat-tile__body">
+                            <span class="home-cat-tile__label"><?php echo esc_html( $cat['label'] ); ?></span>
+                            <span class="home-cat-tile__blurb"><?php echo esc_html( $cat['blurb'] ); ?></span>
+                            <?php if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) : ?>
+                                <span class="home-cat-tile__terms">
+                                    <?php echo esc_html( implode( ' · ', wp_list_pluck( array_slice( $terms, 0, 4 ), 'name' ) ) ); ?>
+                                </span>
                             <?php endif; ?>
-                        </div>
-                        <div class="home-review-card__body">
-                            <?php if ( $roaster_nm ) : ?>
-                                <span class="home-review-card__roaster"><?php echo esc_html( $roaster_nm ); ?></span>
-                            <?php endif; ?>
-                            <h3 class="home-review-card__title"><?php the_title(); ?></h3>
-                            <?php if ( $verdict ) : ?>
-                                <p class="home-review-card__verdict"><?php echo esc_html( wp_trim_words( $verdict, 18 ) ); ?></p>
-                            <?php endif; ?>
-                            <?php if ( $price_oz !== '' && $price_oz !== null ) : ?>
-                                <span class="home-review-card__price">$<?php echo esc_html( number_format( (float) $price_oz, 2 ) ); ?>/oz</span>
-                            <?php endif; ?>
-                        </div>
+                        </span>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         4. PRICE-DROP / DEALS STRIP — beans below 30-day average
+            Data source: cbi_price_drop_beans() (functions.php). Returns []
+            until the scraper feeds it — renders a labelled placeholder then.
+         ============================================================ -->
+    <section class="home-deals">
+        <div class="cbi-container">
+            <div class="home-section__head home-section__head--row">
+                <div>
+                    <h2>Price drops</h2>
+                    <p class="text-muted">Beans we rate, currently below their 30-day average.</p>
+                </div>
+                <a class="home-section__more" href="<?php echo esc_url( home_url( '/explore/' ) ); ?>">Explore all &rarr;</a>
+            </div>
+            <?php
+            $deals = cbi_price_drop_beans( 4 );
+            if ( ! empty( $deals ) ) : ?>
+                <div class="home-deals__strip">
+                    <?php foreach ( $deals as $deal ) :
+                        $did = (int) ( $deal['post_id'] ?? 0 );
+                        if ( ! $did ) continue;
+                    ?>
+                        <a class="home-deal" href="<?php echo esc_url( get_permalink( $did ) ); ?>">
+                            <span class="home-deal__name"><?php echo esc_html( get_the_title( $did ) ); ?></span>
+                            <span class="home-deal__prices tabular-nums">
+                                <span class="home-deal__now">$<?php echo esc_html( number_format( (float) $deal['current'], 2 ) ); ?></span>
+                                <span class="home-deal__was">$<?php echo esc_html( number_format( (float) $deal['avg30'], 2 ) ); ?></span>
+                            </span>
+                            <span class="home-deal__badge tabular-nums">&minus;<?php echo esc_html( (int) $deal['pct'] ); ?>%</span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            <?php else : ?>
+                <?php /* TODO: wire the 'cbi_price_drop_beans' filter from the scraper.
+                         Expected row shape: [ 'post_id'=>int, 'current'=>float,
+                         'avg30'=>float, 'pct'=>int ] ordered by pct desc. */ ?>
+                <div class="home-deals__placeholder">
+                    <p>Price-drop tracking switches on once the daily scraper feeds 30-day averages into the site. <a href="<?php echo esc_url( $beans_url ); ?>">Browse all reviews &rarr;</a></p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         5. GUIDES — latest informational guide pages
+            Reinforces the 40% informational ratio + links the hubs.
+         ============================================================ -->
+    <?php
+    $guides = cbi_get_guides( 3 );
+    if ( $guides->have_posts() ) : ?>
+        <section class="home-section cbi-container">
+            <div class="home-section__head">
+                <h2>Coffee guides</h2>
+                <p class="text-muted">Origins, brew methods, and the why behind the beans.</p>
+            </div>
+            <div class="home-guides">
+                <?php while ( $guides->have_posts() ) : $guides->the_post();
+                    $g_excerpt = get_the_excerpt();
+                ?>
+                    <a class="home-guide-card" href="<?php the_permalink(); ?>">
+                        <span class="home-guide-card__kicker">Guide</span>
+                        <span class="home-guide-card__title"><?php the_title(); ?></span>
+                        <?php if ( $g_excerpt ) : ?>
+                            <span class="home-guide-card__desc"><?php echo esc_html( wp_trim_words( $g_excerpt, 22 ) ); ?></span>
+                        <?php endif; ?>
+                        <span class="home-guide-card__more">Read guide &rarr;</span>
                     </a>
                 <?php endwhile;
                 wp_reset_postdata(); ?>
@@ -193,50 +241,18 @@ $has_acf       = function_exists( 'get_field' );
     <?php endif; ?>
 
     <!-- ============================================================
-         WHY TRUST THE INDEX — E-E-A-T block
-         ============================================================ -->
-    <section class="home-trust">
-        <div class="cbi-container">
-            <h2>Why trust the index</h2>
-            <div class="home-trust__grid">
-                <div class="home-trust__item">
-                    <span class="home-trust__num">01</span>
-                    <h3>We track data, then taste</h3>
-                    <p>Price history, sensory profiles, and tasting notes are assembled from structured product data and direct evaluation criteria&mdash;not marketing copy.</p>
-                </div>
-                <div class="home-trust__item">
-                    <span class="home-trust__num">02</span>
-                    <h3>We check the price daily</h3>
-                    <p>Prices move. We log them every morning so you know whether today is a good day to buy or whether to wait.</p>
-                </div>
-                <div class="home-trust__item">
-                    <span class="home-trust__num">03</span>
-                    <h3>We tell you what to skip</h3>
-                    <p>Not every bean earns its price. When something underdelivers for the money, we say so&mdash;specifically, not vaguely.</p>
-                </div>
-                <div class="home-trust__item">
-                    <span class="home-trust__num">04</span>
-                    <h3>Transparent methodology</h3>
-                    <p>Reviews are built from structured product data, public tasting notes, and editorial criteria. <a href="<?php echo esc_url( home_url( '/editorial-standards/' ) ); ?>">Read our methodology &rarr;</a></p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         NEWSLETTER / PRICE-DROP ALERTS
+         6. EMAIL CAPTURE — price-drop alert signup
          ============================================================ -->
     <section class="home-cta-band">
         <div class="cbi-container">
             <div class="home-cta-band__inner">
                 <div class="home-cta-band__copy">
-                    <h2>Never overpay for good coffee</h2>
-                    <p>Get an alert the moment a bean we rate drops in price. No spam&mdash;just price drops.</p>
+                    <h2>Get price-drop alerts</h2>
+                    <p>An email the moment a bean we rate drops in price. No spam &mdash; just price drops.</p>
                 </div>
                 <div class="home-cta-band__form">
                     <?php
-                    // Replace XXX with your WPForms form ID in the WordPress admin.
-                    // Until then the copy above still shows cleanly.
+                    // Set your WPForms form ID via the cbi_newsletter_form_id filter.
                     $form_id = apply_filters( 'cbi_newsletter_form_id', '' );
                     if ( $form_id ) {
                         echo do_shortcode( '[wpforms id="' . esc_attr( $form_id ) . '" title="false" description="false"]' );

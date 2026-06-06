@@ -5,20 +5,28 @@
  *
  * File: template-guide.php
  *
- * Long-form editorial template for origin guides, brew method explainers,
- * and other informational content. Protects the 40%+ informational ratio
- * required by Google's affiliate content guidelines.
+ * HOW TO USE (non-dev): create a normal Page, write the body with H2 (main
+ * sections) and H3 (subsections) headings, then in the editor's right-hand
+ * "Page" panel set Template → "Origin / Brew Guide". That's it — the ToC,
+ * reading time, related beans, and related guides all build themselves.
  *
- * Layout: full-width hero → two-column (article + sidebar)
- * Sidebar: auto-generated table of contents + related beans from the DB.
+ * WHY a page template (template-guide.php) and not page-guide.php:
+ * page-guide.php would force EVERY page to use this layout. A selectable
+ * Template lets the editor opt specific pages in from the Page Attributes
+ * dropdown while leaving About/Privacy/etc. on the plain page.php — the
+ * cleaner choice for a non-developer picking it in the editor.
  *
- * AUTHORING GUIDE:
- * Use the standard WordPress editor. Structure headings (H2 for main sections,
- * H3 for subsections) — the JS TOC builder picks up H2s automatically.
- * For "related beans" in the sidebar, the template auto-queries beans tagged
- * with a matching origin or brew-method term whose slug matches a custom field
- * you set on the page: "related_taxonomy_slug" (text field, free ACF).
- * If no ACF field is set, it falls back to the most-recently reviewed beans.
+ * Layout (desktop ≥1100px):  [ sticky ToC rail | article ~68ch ]
+ *                            → Related beans (cards)  → Related guides
+ * Mobile: ToC collapses to a tap-to-expand block above the article.
+ *
+ * The body class .guide-page (added in functions.php) scopes all CSS so guide
+ * typography can't bleed into bean reviews. ToC JS: js/guide-toc.js.
+ *
+ * RELATED BEANS resolution: shares a taxonomy term with the guide. Auto-matched
+ * from the page slug/title (e.g. /ethiopia-coffee/ → origin "ethiopia"), or set
+ * an ACF text field "related_taxonomy_slug" (comma-separated term slugs) to
+ * override. See cbi_guide_related_beans() in functions.php.
  */
 
 get_header();
@@ -31,26 +39,29 @@ while ( have_posts() ) : the_post();
     $categories = get_the_category();
     $category   = $categories ? $categories[0]->name : 'Guide';
 
+    // Reading time — words / 200 wpm, floored at 1 min.
+    $word_count   = str_word_count( wp_strip_all_tags( get_the_content() ) );
+    $reading_time = max( 1, (int) ceil( $word_count / 200 ) );
+
     // Schema — Article
     $schema = [
-        '@context'         => 'https://schema.org',
-        '@type'            => 'Article',
-        'headline'         => $title,
-        'url'              => $url,
-        'datePublished'    => get_the_date( 'c' ),
-        'dateModified'     => get_the_modified_date( 'c' ),
-        'description'      => $excerpt ?: '',
-        'publisher'        => [
+        '@context'      => 'https://schema.org',
+        '@type'         => 'Article',
+        'headline'      => $title,
+        'url'           => $url,
+        'datePublished' => get_the_date( 'c' ),
+        'dateModified'  => get_the_modified_date( 'c' ),
+        'description'   => $excerpt ?: '',
+        'publisher'     => [
             '@type' => 'Organization',
             'name'  => 'Coffee Bean Index',
             'url'   => home_url(),
         ],
-        'author'           => [
+        'author'        => [
             '@type' => 'Organization',
             'name'  => 'Coffee Bean Index',
         ],
     ];
-
     if ( has_post_thumbnail() ) {
         $schema['image'] = get_the_post_thumbnail_url( $post_id, 'large' );
     }
@@ -58,164 +69,137 @@ while ( have_posts() ) : the_post();
 
 <script type="application/ld+json"><?php echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ); ?></script>
 
-<!-- Guide Hero -->
-<section class="guide-hero">
-    <div class="cbi-container">
-        <?php
-        cbi_breadcrumb( [
-            [ 'label' => 'Home',  'url' => home_url() ],
-            [ 'label' => $title,  'url' => $url ],
-        ] );
-        ?>
-        <p class="guide-hero__category"><?php echo esc_html( $category ); ?></p>
-        <h1 class="guide-hero__title"><?php the_title(); ?></h1>
-        <?php if ( $excerpt ) : ?>
-            <p class="guide-hero__intro"><?php echo esc_html( $excerpt ); ?></p>
-        <?php endif; ?>
-        <div class="guide-meta">
-            <span>Updated <?php echo get_the_modified_date( 'F j, Y' ); ?></span>
-            <span>&middot;</span>
-            <span><?php echo esc_html( ceil( str_word_count( strip_tags( get_the_content() ) ) / 200 ) ); ?> min read</span>
+<main id="primary" class="guide-main">
+
+    <!-- ============================================================
+         AFFILIATE DISCLOSURE (FTC requirement, near top of content)
+         ============================================================ -->
+    <div class="cbi-disclosure-inline" style="border-radius:0;border-left:none;border-right:none;border-top:none;">
+        <div class="cbi-container">
+            This page contains affiliate links. We may earn commissions from qualifying purchases at no extra cost to you.
         </div>
     </div>
-</section>
 
-<!-- Body: article + sidebar -->
-<div class="cbi-container">
-    <div class="guide-layout">
+    <!-- ============================================================
+         HERO BAND — H1, dek, reading time
+         ============================================================ -->
+    <section class="guide-hero">
+        <div class="cbi-container guide-hero__inner">
+            <?php
+            cbi_breadcrumb( [
+                [ 'label' => 'Home',  'url' => home_url() ],
+                [ 'label' => $title,  'url' => $url ],
+            ] );
+            ?>
+            <p class="guide-hero__category"><?php echo esc_html( $category ); ?></p>
+            <h1 class="guide-hero__title"><?php the_title(); ?></h1>
+            <?php if ( $excerpt ) : ?>
+                <p class="guide-hero__intro"><?php echo esc_html( $excerpt ); ?></p>
+            <?php endif; ?>
+            <div class="guide-meta">
+                <span>Updated <?php echo esc_html( get_the_modified_date( 'F j, Y' ) ); ?></span>
+                <span aria-hidden="true">&middot;</span>
+                <span><?php echo esc_html( $reading_time ); ?> min read</span>
+            </div>
+        </div>
+    </section>
 
-        <!-- Main article -->
-        <article class="guide-body">
-            <!-- TOC placeholder — filled by JS below based on H2s -->
-            <nav class="guide-toc" id="guide-toc" aria-label="Table of contents" style="display:none;">
-                <div class="guide-toc__title">In this guide</div>
+    <!-- ============================================================
+         BODY — sticky ToC rail (desktop) + article
+         ============================================================ -->
+    <div class="cbi-container">
+        <div class="guide-layout">
+
+            <!-- ToC: desktop left rail (≥1100px). Populated by guide-toc.js. -->
+            <nav class="guide-toc" id="guide-toc" aria-label="Table of contents" hidden>
+                <p class="guide-toc__title">In this guide</p>
                 <ol class="guide-toc__list" id="guide-toc-list"></ol>
             </nav>
 
-            <?php the_content(); ?>
+            <!-- Main article -->
+            <article class="guide-body entry-content">
 
-            <!-- Post nav -->
-            <div style="margin-top:var(--space-12);padding-top:var(--space-8);border-top:1px solid var(--cbi-border);">
-                <?php the_post_navigation( [
-                    'prev_text' => '&larr; %title',
-                    'next_text' => '%title &rarr;',
-                ] ); ?>
-            </div>
-        </article>
+                <!-- ToC: mobile tap-to-expand (<1100px). Populated by guide-toc.js. -->
+                <div class="guide-toc-mobile" id="guide-toc-mobile" hidden>
+                    <button type="button" class="guide-toc-mobile__toggle" id="guide-toc-mobile-toggle" aria-expanded="false" aria-controls="guide-toc-mobile-list">
+                        <span>In this guide</span>
+                        <span class="guide-toc-mobile__chevron" aria-hidden="true">&#9662;</span>
+                    </button>
+                    <ol class="guide-toc__list" id="guide-toc-mobile-list" hidden></ol>
+                </div>
 
-        <!-- Sidebar -->
-        <aside class="guide-sidebar">
+                <?php the_content(); ?>
+            </article>
+        </div>
+    </div>
 
-            <!-- Related Beans -->
-            <?php
-            $related_tax_slug = '';
-            if ( function_exists( 'get_field' ) ) {
-                $related_tax_slug = get_field( 'related_taxonomy_slug', $post_id );
-            }
-
-            // Try to find beans from a matching taxonomy term
-            $related_query_args = [
-                'post_type'      => 'bean',
-                'posts_per_page' => 4,
-                'post_status'    => 'publish',
-                'orderby'        => 'meta_value_num',
-                'meta_key'       => 'rating',
-                'order'          => 'DESC',
-                'no_found_rows'  => true,
-            ];
-
-            if ( $related_tax_slug ) {
-                // Try origin first, then brew-method
-                foreach ( [ 'origin', 'brew-method', 'flavor-note' ] as $try_tax ) {
-                    $related_term = get_term_by( 'slug', $related_tax_slug, $try_tax );
-                    if ( $related_term && ! is_wp_error( $related_term ) ) {
-                        $related_query_args['tax_query'] = [
-                            [
-                                'taxonomy' => $try_tax,
-                                'field'    => 'slug',
-                                'terms'    => $related_tax_slug,
-                            ]
-                        ];
-                        break;
-                    }
-                }
-            }
-
-            $related = new WP_Query( $related_query_args );
-            if ( $related->have_posts() ) : ?>
-                <div class="guide-sidebar__section">
-                    <div class="guide-sidebar__heading">Related Beans</div>
-                    <?php while ( $related->have_posts() ) : $related->the_post();
-                        $sid      = get_the_ID();
-                        $srating  = function_exists( 'get_field' ) ? get_field( 'rating', $sid ) : '';
-                        $sroaster = get_the_terms( $sid, 'roaster' );
-                        $sroaster = ( $sroaster && ! is_wp_error( $sroaster ) ) ? $sroaster[0]->name : '';
+    <!-- ============================================================
+         RELATED BEANS — cards sharing a taxonomy term (rating desc, max 6)
+         ============================================================ -->
+    <?php
+    $related = cbi_guide_related_beans( $post_id, 6 );
+    if ( $related->have_posts() ) : ?>
+        <section class="guide-related">
+            <div class="cbi-container">
+                <div class="home-section__head home-section__head--row">
+                    <div>
+                        <h2>Beans worth tasting next</h2>
+                        <p class="text-muted">Reviews connected to this guide.</p>
+                    </div>
+                    <a class="home-section__more" href="<?php echo esc_url( get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' ) ); ?>">All beans &rarr;</a>
+                </div>
+                <div class="cbi-card-grid">
+                    <?php
+                    while ( $related->have_posts() ) : $related->the_post();
+                        echo cbi_bean_card( get_the_ID() ); // dofollow review permalink inside
+                    endwhile;
+                    wp_reset_postdata();
                     ?>
-                        <a href="<?php the_permalink(); ?>" class="similar-bean-card" style="display:flex;">
-                            <div>
-                                <span class="similar-bean-card__name"><?php the_title(); ?></span>
-                                <?php if ( $sroaster ) : ?>
-                                    <span class="similar-bean-card__meta"><?php echo esc_html( $sroaster ); ?></span>
-                                <?php endif; ?>
-                            </div>
-                            <?php if ( $srating !== '' && $srating !== null ) : ?>
-                                <span class="similar-bean-card__score"><?php echo esc_html( $srating ); ?>/10</span>
+                </div>
+            </div>
+        </section>
+    <?php endif; ?>
+
+    <!-- ============================================================
+         RELATED GUIDES — 3 sibling guides (text links + descriptions)
+         ============================================================ -->
+    <?php
+    $sibling_guides = cbi_get_guides( 3, $post_id );
+    if ( $sibling_guides->have_posts() ) : ?>
+        <section class="guide-siblings">
+            <div class="cbi-container">
+                <div class="home-section__head">
+                    <h2>Keep reading</h2>
+                    <p class="text-muted">More from the guide library.</p>
+                </div>
+                <ul class="guide-siblings__list">
+                    <?php while ( $sibling_guides->have_posts() ) : $sibling_guides->the_post();
+                        $g_excerpt = get_the_excerpt();
+                    ?>
+                        <li class="guide-siblings__item">
+                            <a class="guide-siblings__link" href="<?php the_permalink(); ?>" rel="dofollow"><?php the_title(); ?></a>
+                            <?php if ( $g_excerpt ) : ?>
+                                <p class="guide-siblings__desc"><?php echo esc_html( wp_trim_words( $g_excerpt, 22 ) ); ?></p>
                             <?php endif; ?>
-                        </a>
+                        </li>
                     <?php endwhile;
                     wp_reset_postdata(); ?>
-                    <a href="<?php echo esc_url( get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' ) ); ?>" style="font-size:var(--text-xs);font-family:var(--font-mono);color:var(--cbi-accent);text-transform:uppercase;letter-spacing:0.08em;display:block;margin-top:var(--space-3);">All beans &rarr;</a>
-                </div>
-            <?php endif; ?>
-
-            <!-- Quick navigation within guide -->
-            <div class="guide-sidebar__section" id="guide-sidebar-toc" style="display:none;">
-                <div class="guide-sidebar__heading">Jump to</div>
-                <ol id="guide-sidebar-toc-list" style="list-style:none;padding:0;margin:0;font-size:var(--text-sm);"></ol>
+                </ul>
             </div>
+        </section>
+    <?php endif; ?>
 
-        </aside>
+    <!-- Prev / next guide navigation -->
+    <div class="cbi-container">
+        <div class="guide-postnav">
+            <?php the_post_navigation( [
+                'prev_text' => '&larr; %title',
+                'next_text' => '%title &rarr;',
+            ] ); ?>
+        </div>
     </div>
-</div>
 
-<!-- Build TOC from H2s -->
-<script>
-(function() {
-    var headings = document.querySelectorAll('.guide-body h2');
-    if ( headings.length < 2 ) return;
-
-    var tocEl        = document.getElementById('guide-toc');
-    var tocList      = document.getElementById('guide-toc-list');
-    var sidebarToc   = document.getElementById('guide-sidebar-toc');
-    var sidebarList  = document.getElementById('guide-sidebar-toc-list');
-
-    headings.forEach( function( h, i ) {
-        var id = 'guide-section-' + i;
-        h.setAttribute('id', id);
-
-        var text = h.textContent;
-
-        var li = document.createElement('li');
-        var a  = document.createElement('a');
-        a.href        = '#' + id;
-        a.textContent = text;
-        li.appendChild(a);
-        tocList.appendChild(li);
-
-        var li2 = document.createElement('li');
-        li2.style.cssText = 'padding:0.25rem 0;border-bottom:1px solid var(--cbi-border);font-size:var(--text-sm);';
-        var a2  = document.createElement('a');
-        a2.href        = '#' + id;
-        a2.textContent = text;
-        a2.style.color = 'var(--cbi-text)';
-        li2.appendChild(a2);
-        sidebarList.appendChild(li2);
-    });
-
-    if ( tocEl )     tocEl.style.display     = '';
-    if ( sidebarToc ) sidebarToc.style.display = '';
-})();
-</script>
+</main>
 
 <?php endwhile; ?>
 

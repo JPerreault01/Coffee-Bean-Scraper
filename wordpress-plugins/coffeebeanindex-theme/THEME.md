@@ -1,3 +1,5 @@
+
+
 # Coffee Bean Index — Theme Design System
 
 ## Art Direction: Print-Inspired Editorial
@@ -129,8 +131,32 @@ Based on 0.25rem units: `--space-1` through `--space-24` (0.25rem → 6rem).
 | FAQ accordion | `.cbi-faq`, `.cbi-faq__item` | `<details>/<summary>`, no JS |
 | Comparison table | `.comparison-table`, `.vs-table` | |
 | Roundup pick | `.roundup-pick` | |
-| TOC | Built via JS in template-guide.php | Targets H2s |
+| Card grid | `.cbi-card-grid` | Reusable 3/2/1 grid; wraps `cbi_bean_card()`. Used by homepage "Latest reviews" + guide "Related beans" |
+| Bean card | `cbi_bean_card()` | Now renders rating **and** price/oz in the footer |
+| Guide ToC | `js/guide-toc.js` | Scans `.guide-body h2,h3`; sticky left rail ≥1100px, tap-to-expand on mobile; active-section highlight + smooth scroll |
+| Guide callout | `.guide-callout` (`--tip/--note/--warning`) | Via `[cbi_callout]` shortcode |
+| Pull quote | `.guide-pullquote` | Via `[cbi_pullquote]` shortcode |
+| Inline bean | `.cbi-bean-inline` | Via `[cbi_bean]` shortcode — works in guides and reviews |
 | Pagination | `.cbi-pagination` | |
+
+### Editor shortcodes (defined in functions.php §21, documented in its top comment)
+
+| Shortcode | Purpose |
+|---|---|
+| `[cbi_callout type="tip\|note\|warning" title="…"]…[/cbi_callout]` | Styled tip/callout box |
+| `[cbi_pullquote cite="…"]…[/cbi_pullquote]` | Emphasis pull quote |
+| `[cbi_bean id="123"]` / `[cbi_bean slug="…"]` | Inline linked bean mention (live data) |
+
+Matching **block patterns** ("Guide callout box", "Inline bean mention") are
+registered under the "Coffee Bean Index" pattern category for visual insertion.
+
+### Image drop-in points (placeholders — supply optimised JPG/WebP, never hotlink)
+
+| Location | CSS hook | Recommended size |
+|---|---|---|
+| Homepage hero background | `.home-hero__bg` (style.css "HOMEPAGE v2") | 2400×1200px (2:1) |
+| Browse-category tiles | `.home-cat-tile--{roast-level\|origin\|brew-method} .home-cat-tile__media` | 800×600px |
+| Bean / guide thumbnails | WordPress featured image | 1200×675px (16:9) |
 
 ---
 
@@ -223,3 +249,27 @@ Key fix: `tasting_notes` changed from `repeater` (PRO-only) to `textarea` (one n
 **Updating colors**: Change the `--cbi-*` custom properties in `:root`. All components reference the tokens — one edit updates everywhere.
 
 **New page templates**: Create `template-[name].php` with the WordPress `Template Name:` comment. Assign via Page Attributes in the editor. Add the template filename to `cbi_hide_title_on_custom_templates()` in functions.php.
+
+---
+
+## v2.1 — Guide system + homepage redesign
+
+**Guide pages** (`template-guide.php`, selectable Page template):
+- Assign via editor → Page panel → Template → "Origin / Brew Guide".
+- Body class `.guide-page` (added in functions.php `cbi_template_body_classes`)
+  scopes all guide CSS so it can't leak into reviews.
+- ToC auto-builds from `.guide-body h2,h3` via `js/guide-toc.js` (enqueued only
+  on the guide template). Sticky left rail ≥1100px; tap-to-expand on mobile;
+  IntersectionObserver active-section highlight; smooth scroll (reduced-motion aware).
+- **Related beans**: `cbi_guide_related_beans()` queries the Bean CPT for beans
+  sharing a taxonomy term with the guide (auto-matched from the page slug/title,
+  e.g. `/ethiopia-coffee/` → origin "ethiopia"; override with ACF text field
+  `related_taxonomy_slug`, comma-separated term slugs). Cards, rating desc, max 6.
+- **Related guides**: `cbi_get_guides()` lists sibling guide-template pages.
+
+**Homepage** (`front-page.php`): 6 sections — full-bleed hero (search + 2 CTAs),
+latest reviews (`.cbi-card-grid`), browse-by-category tiles (Roast/Origin/Brew —
+the authority-distribution section), price-drop strip, guides grid, email band.
+- **Price drops**: `cbi_price_drop_beans()` returns `[]` until the scraper feeds
+  it; renders a placeholder meanwhile. Wire via the `cbi_price_drop_beans` filter
+  returning rows `[ 'post_id'=>int, 'current'=>float, 'avg30'=>float, 'pct'=>int ]`.
