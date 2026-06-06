@@ -45,6 +45,11 @@ $origin_map = [
     'Sumatra'                                       => [ 'sumatra',           'Sumatra'          ],
     'Nicaragua (single origin)'                     => [ 'nicaragua',         'Nicaragua'        ],
     'Limu, Ethiopia'                                => [ 'ethiopia',          'Ethiopia'         ],
+    'Yirgacheffe, Ethiopia'                         => [ 'ethiopia',          'Ethiopia'         ],
+    'Guji, Ethiopia'                                => [ 'ethiopia',          'Ethiopia'         ],
+    'Chiapas, Mexico'                               => [ 'mexico',            'Mexico'           ],
+    'Kona, Hawaii'                                  => [ 'hawaii',            'Hawaii'           ],
+    'Tarrazu, Costa Rica'                           => [ 'costa-rica',        'Costa Rica'       ],
 
     // Latin America blends (all countries are within Latin America)
     'Latin America blend'                           => [ 'latin-america',     'Latin America'    ],
@@ -60,6 +65,8 @@ $origin_map = [
     'India, Peru blend'                             => [ 'multi-origin-blend', 'Multi-Origin Blend' ],
     'Indonesia, Central America, South America blend' => [ 'multi-origin-blend', 'Multi-Origin Blend' ],
     'Ethiopia, Colombia blend'                      => [ 'multi-origin-blend', 'Multi-Origin Blend' ],
+    'Ethiopia, Latin America blend'                 => [ 'multi-origin-blend', 'Multi-Origin Blend' ],
+    'Indonesia, South America blend'                => [ 'multi-origin-blend', 'Multi-Origin Blend' ],
 ];
 
 // ---------------------------------------------------------------------------
@@ -132,6 +139,31 @@ $flavor_canonical_map = [
 
     // Genuine flavors with no curated term — warn + skip
     'cream soda'           => null,
+
+    // Additional flavor strings from bulk import (2026-06)
+    'spice'          => 'spice',
+    'raisin'         => 'dried-fruit',
+    'sweet citrus'   => 'citrus-floral',
+    'graham cracker' => 'caramel',
+    'cocoa'          => 'chocolate',
+    'toasted nut'    => 'nutty',
+    'toasted almond' => 'nutty',
+    'red fruit'      => 'red-fruit',
+    'berry'          => 'red-fruit',
+    'honey'          => 'caramel',
+    'blueberry'      => 'blueberry',
+    'floral'         => 'floral',
+    'charred'        => 'smoky',
+    'toasted malt'   => 'nutty',
+    'soft cocoa'     => 'chocolate',
+    'chicory'        => 'earthy',
+    'marshmallow'    => 'caramel',
+    'raspberry'      => 'red-fruit',
+    'cherry'         => 'red-fruit',
+    'plum'           => 'dried-fruit',
+    'sweet'          => 'caramel',
+    'bright'         => false,
+    'light body'     => false,
 ];
 
 // ---------------------------------------------------------------------------

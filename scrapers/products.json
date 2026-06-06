@@ -10,8 +10,16 @@
     "amazon_asin": "B001HTG4TW",
     "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
-    "best_brew_methods": ["espresso", "moka pot"],
-    "flavor_notes": ["hazelnut", "brown sugar", "mild cocoa", "creamy body"],
+    "best_brew_methods": [
+      "espresso",
+      "moka pot"
+    ],
+    "flavor_notes": [
+      "hazelnut",
+      "brown sugar",
+      "mild cocoa",
+      "creamy body"
+    ],
     "acidity": 2,
     "body": 4,
     "sweetness": 3,
@@ -19,8 +27,14 @@
     "roast_intensity": 3,
     "review_framing": "sensory",
     "comparison_anchors": [
-      {"product": "Café Don Pablo Gourmet Coffee Signature Blend", "logic": "flavor_profile"},
-      {"product": "Illy Classico Ground Coffee Medium Roast", "logic": "performance"}
+      {
+        "product": "CafÃ© Don Pablo Gourmet Coffee Signature Blend",
+        "logic": "flavor_profile"
+      },
+      {
+        "product": "Illy Classico Ground Coffee Medium Roast",
+        "logic": "performance"
+      }
     ],
     "reference_slug": null
   },
@@ -35,8 +49,17 @@
     "amazon_asin": "B000YDOIOS",
     "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
-    "best_brew_methods": ["espresso", "drip", "french press"],
-    "flavor_notes": ["caramel", "orange blossom", "jasmine", "chocolate"],
+    "best_brew_methods": [
+      "espresso",
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "caramel",
+      "orange blossom",
+      "jasmine",
+      "chocolate"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -44,8 +67,14 @@
     "roast_intensity": 3,
     "review_framing": "roast_mechanism",
     "comparison_anchors": [
-      {"product": "Stumptown Hair Bender", "logic": "flavor_profile"},
-      {"product": "Lavazza Super Crema", "logic": "performance"}
+      {
+        "product": "Stumptown Hair Bender",
+        "logic": "flavor_profile"
+      },
+      {
+        "product": "Lavazza Super Crema",
+        "logic": "performance"
+      }
     ],
     "reference_slug": null
   },
@@ -60,8 +89,17 @@
     "amazon_asin": "B000P4D5HG",
     "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
-    "best_brew_methods": ["drip", "french press", "pour over"],
-    "flavor_notes": ["dark chocolate", "earthy", "full body", "low acidity"],
+    "best_brew_methods": [
+      "drip",
+      "french press",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "earthy",
+      "full body",
+      "low acidity"
+    ],
     "acidity": 1,
     "body": 5,
     "sweetness": 2,
@@ -69,8 +107,14 @@
     "roast_intensity": 5,
     "review_framing": "sensory",
     "comparison_anchors": [
-      {"product": "Camano Island Coffee Roasters Sumatra", "logic": "origin"},
-      {"product": "Kicking Horse Coffee 454 Horse Power Dark Roast", "logic": "performance"}
+      {
+        "product": "Camano Island Coffee Roasters Sumatra",
+        "logic": "origin"
+      },
+      {
+        "product": "Kicking Horse Coffee 454 Horse Power Dark Roast",
+        "logic": "performance"
+      }
     ],
     "reference_slug": null
   },
@@ -85,8 +129,16 @@
     "amazon_asin": null,
     "roaster_url": "https://www.stumptowncoffee.com/products/hair-bender",
     "affiliate_tag": null,
-    "best_brew_methods": ["espresso", "pour over", "drip"],
-    "flavor_notes": ["bittersweet chocolate", "caramel", "citrus"],
+    "best_brew_methods": [
+      "espresso",
+      "pour over",
+      "drip"
+    ],
+    "flavor_notes": [
+      "bittersweet chocolate",
+      "caramel",
+      "citrus"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 3,
@@ -94,8 +146,14 @@
     "roast_intensity": 3,
     "review_framing": "comparative",
     "comparison_anchors": [
-      {"product": "Atlas Coffee Club Ethiopia Limu", "logic": "origin"},
-      {"product": "Intelligentsia Black Cat Espresso", "logic": "performance"}
+      {
+        "product": "Atlas Coffee Club Ethiopia Limu",
+        "logic": "origin"
+      },
+      {
+        "product": "Intelligentsia Black Cat Espresso",
+        "logic": "performance"
+      }
     ],
     "reference_slug": null
   },
@@ -110,8 +168,17 @@
     "amazon_asin": "B006BSXQTQ",
     "roaster_url": "https://www.deathwishcoffee.com/products/death-wish-coffee-whole-bean",
     "affiliate_tag": "coffeebeanind-20",
-    "best_brew_methods": ["french press", "drip", "cold brew"],
-    "flavor_notes": ["dark cherry", "chocolate", "bold", "low bitterness"],
+    "best_brew_methods": [
+      "french press",
+      "drip",
+      "cold brew"
+    ],
+    "flavor_notes": [
+      "dark cherry",
+      "chocolate",
+      "bold",
+      "low bitterness"
+    ],
     "acidity": 1,
     "body": 5,
     "sweetness": 2,
@@ -119,8 +186,14 @@
     "roast_intensity": 5,
     "review_framing": "functional",
     "comparison_anchors": [
-      {"product": "Community Coffee Signature Blend Medium-Dark Roast", "logic": "flavor_profile"},
-      {"product": "Café Bustelo Espresso Style Dark Roast", "logic": "performance"}
+      {
+        "product": "Community Coffee Signature Blend Medium-Dark Roast",
+        "logic": "flavor_profile"
+      },
+      {
+        "product": "CafÃ© Bustelo Espresso Style Dark Roast",
+        "logic": "performance"
+      }
     ],
     "reference_slug": null
   },
@@ -135,8 +208,16 @@
     "amazon_asin": "B00FF7TQNE",
     "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
-    "best_brew_methods": ["french press", "drip", "espresso"],
-    "flavor_notes": ["dark chocolate", "molasses", "smoky"],
+    "best_brew_methods": [
+      "french press",
+      "drip",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "molasses",
+      "smoky"
+    ],
     "acidity": 1,
     "body": 5,
     "sweetness": 2,
@@ -144,8 +225,14 @@
     "roast_intensity": 5,
     "review_framing": "functional",
     "comparison_anchors": [
-      {"product": "Café Bustelo Espresso Style Dark Roast", "logic": "performance"},
-      {"product": "Peet's Coffee Major Dickason's Blend", "logic": "flavor_profile"}
+      {
+        "product": "CafÃ© Bustelo Espresso Style Dark Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Peet's Coffee Major Dickason's Blend",
+        "logic": "flavor_profile"
+      }
     ],
     "reference_slug": null
   },
@@ -160,8 +247,17 @@
     "amazon_asin": "B07PJKKLRN",
     "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
-    "best_brew_methods": ["drip", "pour over", "french press"],
-    "flavor_notes": ["milk chocolate", "mild citrus", "smooth", "low acid"],
+    "best_brew_methods": [
+      "drip",
+      "pour over",
+      "french press"
+    ],
+    "flavor_notes": [
+      "milk chocolate",
+      "mild citrus",
+      "smooth",
+      "low acid"
+    ],
     "acidity": 2,
     "body": 3,
     "sweetness": 3,
@@ -169,15 +265,21 @@
     "roast_intensity": 3,
     "review_framing": "comparative",
     "comparison_anchors": [
-      {"product": "Eight O'Clock Original Whole Bean Coffee", "logic": "flavor_profile"},
-      {"product": "Don Francisco's Colombia Supremo Medium Roast", "logic": "origin"}
+      {
+        "product": "Eight O'Clock Original Whole Bean Coffee",
+        "logic": "flavor_profile"
+      },
+      {
+        "product": "Don Francisco's Colombia Supremo Medium Roast",
+        "logic": "origin"
+      }
     ],
     "reference_slug": null
   },
   {
     "id": "cafe-don-pablo-gourmet",
-    "name": "Café Don Pablo Gourmet Coffee Signature Blend",
-    "brand": "Café Don Pablo",
+    "name": "CafÃ© Don Pablo Gourmet Coffee Signature Blend",
+    "brand": "CafÃ© Don Pablo",
     "roast_level": "Medium-Dark",
     "origin": "Colombia, Brazil, Honduras blend",
     "process_method": "Washed",
@@ -185,8 +287,17 @@
     "amazon_asin": "B00J2TUWBO",
     "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
-    "best_brew_methods": ["drip", "french press", "espresso"],
-    "flavor_notes": ["chocolate", "caramel", "balanced", "medium body"],
+    "best_brew_methods": [
+      "drip",
+      "french press",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "caramel",
+      "balanced",
+      "medium body"
+    ],
     "acidity": 2,
     "body": 4,
     "sweetness": 3,
@@ -194,8 +305,14 @@
     "roast_intensity": 4,
     "review_framing": "sensory",
     "comparison_anchors": [
-      {"product": "Caribou Coffee Caribou Blend", "logic": "flavor_profile"},
-      {"product": "Community Coffee Signature Blend Medium-Dark Roast", "logic": "performance"}
+      {
+        "product": "Caribou Coffee Caribou Blend",
+        "logic": "flavor_profile"
+      },
+      {
+        "product": "Community Coffee Signature Blend Medium-Dark Roast",
+        "logic": "performance"
+      }
     ],
     "reference_slug": null
   },
@@ -210,8 +327,17 @@
     "amazon_asin": "B00JGEKRZ4",
     "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
-    "best_brew_methods": ["french press", "drip", "cold brew"],
-    "flavor_notes": ["earthy", "cedar", "dark chocolate", "full body"],
+    "best_brew_methods": [
+      "french press",
+      "drip",
+      "cold brew"
+    ],
+    "flavor_notes": [
+      "earthy",
+      "cedar",
+      "dark chocolate",
+      "full body"
+    ],
     "acidity": 1,
     "body": 5,
     "sweetness": 2,
@@ -219,8 +345,14 @@
     "roast_intensity": 5,
     "review_framing": "roast_mechanism",
     "comparison_anchors": [
-      {"product": "Onyx Coffee Lab Southern Weather Blend", "logic": "origin"},
-      {"product": "Peet's Coffee Major Dickason's Blend", "logic": "flavor_profile"}
+      {
+        "product": "Onyx Coffee Lab Southern Weather Blend",
+        "logic": "origin"
+      },
+      {
+        "product": "Peet's Coffee Major Dickason's Blend",
+        "logic": "flavor_profile"
+      }
     ],
     "reference_slug": null
   },
@@ -235,8 +367,17 @@
     "amazon_asin": "B00CB0GM70",
     "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
-    "best_brew_methods": ["drip", "pour over", "french press"],
-    "flavor_notes": ["caramel", "nuts", "light cocoa", "smooth"],
+    "best_brew_methods": [
+      "drip",
+      "pour over",
+      "french press"
+    ],
+    "flavor_notes": [
+      "caramel",
+      "nuts",
+      "light cocoa",
+      "smooth"
+    ],
     "acidity": 2,
     "body": 3,
     "sweetness": 4,
@@ -244,8 +385,14 @@
     "roast_intensity": 3,
     "review_framing": "functional",
     "comparison_anchors": [
-      {"product": "Kirkland Signature Colombian Supremo", "logic": "performance"},
-      {"product": "Café Don Pablo Gourmet Coffee Signature Blend", "logic": "flavor_profile"}
+      {
+        "product": "Kirkland Signature Colombian Supremo",
+        "logic": "performance"
+      },
+      {
+        "product": "CafÃ© Don Pablo Gourmet Coffee Signature Blend",
+        "logic": "flavor_profile"
+      }
     ],
     "reference_slug": null
   },
@@ -260,8 +407,16 @@
     "amazon_asin": null,
     "roaster_url": "https://bluebottlecoffee.com/store/hayes-valley-espresso",
     "affiliate_tag": null,
-    "best_brew_methods": ["espresso", "moka pot"],
-    "flavor_notes": ["bittersweet chocolate", "dried fruit", "caramel", "lingering finish"],
+    "best_brew_methods": [
+      "espresso",
+      "moka pot"
+    ],
+    "flavor_notes": [
+      "bittersweet chocolate",
+      "dried fruit",
+      "caramel",
+      "lingering finish"
+    ],
     "acidity": 2,
     "body": 4,
     "sweetness": 3,
@@ -269,8 +424,14 @@
     "roast_intensity": 4,
     "review_framing": "roast_mechanism",
     "comparison_anchors": [
-      {"product": "Counter Culture Big Trouble", "logic": "origin"},
-      {"product": "Intelligentsia Black Cat Espresso", "logic": "performance"}
+      {
+        "product": "Counter Culture Big Trouble",
+        "logic": "origin"
+      },
+      {
+        "product": "Intelligentsia Black Cat Espresso",
+        "logic": "performance"
+      }
     ],
     "reference_slug": null
   },
@@ -285,8 +446,16 @@
     "amazon_asin": null,
     "roaster_url": "https://www.intelligentsia.com/products/black-cat-classic-espresso",
     "affiliate_tag": null,
-    "best_brew_methods": ["espresso", "moka pot"],
-    "flavor_notes": ["dark chocolate", "brown sugar", "walnut", "thick crema"],
+    "best_brew_methods": [
+      "espresso",
+      "moka pot"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "brown sugar",
+      "walnut",
+      "thick crema"
+    ],
     "acidity": 2,
     "body": 4,
     "sweetness": 3,
@@ -294,8 +463,14 @@
     "roast_intensity": 4,
     "review_framing": "comparative",
     "comparison_anchors": [
-      {"product": "Lavazza Super Crema", "logic": "performance"},
-      {"product": "Blue Bottle Hayes Valley Espresso", "logic": "flavor_profile"}
+      {
+        "product": "Lavazza Super Crema",
+        "logic": "performance"
+      },
+      {
+        "product": "Blue Bottle Hayes Valley Espresso",
+        "logic": "flavor_profile"
+      }
     ],
     "reference_slug": null
   },
@@ -310,8 +485,17 @@
     "amazon_asin": null,
     "roaster_url": "https://counterculturecoffee.com/products/big-trouble",
     "affiliate_tag": null,
-    "best_brew_methods": ["drip", "pour over", "espresso"],
-    "flavor_notes": ["caramel", "toffee", "mild fruit", "balanced"],
+    "best_brew_methods": [
+      "drip",
+      "pour over",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "caramel",
+      "toffee",
+      "mild fruit",
+      "balanced"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -319,8 +503,14 @@
     "roast_intensity": 3,
     "review_framing": "sensory",
     "comparison_anchors": [
-      {"product": "Eight O'Clock Original Whole Bean Coffee", "logic": "performance"},
-      {"product": "Stumptown Hair Bender", "logic": "flavor_profile"}
+      {
+        "product": "Eight O'Clock Original Whole Bean Coffee",
+        "logic": "performance"
+      },
+      {
+        "product": "Stumptown Hair Bender",
+        "logic": "flavor_profile"
+      }
     ],
     "reference_slug": null
   },
@@ -335,8 +525,17 @@
     "amazon_asin": null,
     "roaster_url": "https://atlascoffeeclub.com/products/ethiopia",
     "affiliate_tag": null,
-    "best_brew_methods": ["pour over", "aeropress", "drip"],
-    "flavor_notes": ["bergamot", "stone fruit", "jasmine", "clean finish"],
+    "best_brew_methods": [
+      "pour over",
+      "aeropress",
+      "drip"
+    ],
+    "flavor_notes": [
+      "bergamot",
+      "stone fruit",
+      "jasmine",
+      "clean finish"
+    ],
     "acidity": 4,
     "body": 2,
     "sweetness": 4,
@@ -344,8 +543,14 @@
     "roast_intensity": 2,
     "review_framing": "roast_mechanism",
     "comparison_anchors": [
-      {"product": "Lifeboost Medium Roast Coffee", "logic": "performance"},
-      {"product": "Onyx Coffee Lab Southern Weather Blend", "logic": "origin"}
+      {
+        "product": "Lifeboost Medium Roast Coffee",
+        "logic": "performance"
+      },
+      {
+        "product": "Onyx Coffee Lab Southern Weather Blend",
+        "logic": "origin"
+      }
     ],
     "reference_slug": null
   },
@@ -360,8 +565,17 @@
     "amazon_asin": null,
     "roaster_url": "https://onyxcoffeelab.com/products/southern-weather",
     "affiliate_tag": null,
-    "best_brew_methods": ["pour over", "aeropress", "chemex"],
-    "flavor_notes": ["strawberry", "cream soda", "milk chocolate", "bright acidity"],
+    "best_brew_methods": [
+      "pour over",
+      "aeropress",
+      "chemex"
+    ],
+    "flavor_notes": [
+      "strawberry",
+      "cream soda",
+      "milk chocolate",
+      "bright acidity"
+    ],
     "acidity": 5,
     "body": 2,
     "sweetness": 4,
@@ -369,8 +583,14 @@
     "roast_intensity": 1,
     "review_framing": "functional",
     "comparison_anchors": [
-      {"product": "Counter Culture Big Trouble", "logic": "performance"},
-      {"product": "Atlas Coffee Club Ethiopia Limu", "logic": "origin"}
+      {
+        "product": "Counter Culture Big Trouble",
+        "logic": "performance"
+      },
+      {
+        "product": "Atlas Coffee Club Ethiopia Limu",
+        "logic": "origin"
+      }
     ],
     "reference_slug": null
   },
@@ -385,8 +605,16 @@
     "amazon_asin": "B0774H8V2P",
     "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
-    "best_brew_methods": ["drip", "french press"],
-    "flavor_notes": ["mild chocolate", "caramel", "clean", "smooth"],
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "mild chocolate",
+      "caramel",
+      "clean",
+      "smooth"
+    ],
     "acidity": 2,
     "body": 3,
     "sweetness": 3,
@@ -394,8 +622,14 @@
     "roast_intensity": 3,
     "review_framing": "comparative",
     "comparison_anchors": [
-      {"product": "Don Francisco's Colombia Supremo Medium Roast", "logic": "origin"},
-      {"product": "Caribou Coffee Caribou Blend", "logic": "performance"}
+      {
+        "product": "Don Francisco's Colombia Supremo Medium Roast",
+        "logic": "origin"
+      },
+      {
+        "product": "Caribou Coffee Caribou Blend",
+        "logic": "performance"
+      }
     ],
     "reference_slug": null
   },
@@ -410,8 +644,17 @@
     "amazon_asin": "B00AAEGPVM",
     "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
-    "best_brew_methods": ["drip", "french press", "pour over"],
-    "flavor_notes": ["mild", "balanced", "light chocolate", "nutty"],
+    "best_brew_methods": [
+      "drip",
+      "french press",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "mild",
+      "balanced",
+      "light chocolate",
+      "nutty"
+    ],
     "acidity": 2,
     "body": 2,
     "sweetness": 3,
@@ -419,8 +662,14 @@
     "roast_intensity": 3,
     "review_framing": "sensory",
     "comparison_anchors": [
-      {"product": "Kirkland Signature Colombian Supremo", "logic": "performance"},
-      {"product": "Caribou Coffee Caribou Blend", "logic": "flavor_profile"}
+      {
+        "product": "Kirkland Signature Colombian Supremo",
+        "logic": "performance"
+      },
+      {
+        "product": "Caribou Coffee Caribou Blend",
+        "logic": "flavor_profile"
+      }
     ],
     "reference_slug": null
   },
@@ -435,8 +684,16 @@
     "amazon_asin": "B00EJH4GDU",
     "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
-    "best_brew_methods": ["drip", "pour over"],
-    "flavor_notes": ["light caramel", "mild citrus", "clean", "smooth body"],
+    "best_brew_methods": [
+      "drip",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "light caramel",
+      "mild citrus",
+      "clean",
+      "smooth body"
+    ],
     "acidity": 3,
     "body": 2,
     "sweetness": 3,
@@ -444,8 +701,14 @@
     "roast_intensity": 3,
     "review_framing": "roast_mechanism",
     "comparison_anchors": [
-      {"product": "Camano Island Coffee Roasters Sumatra", "logic": "origin"},
-      {"product": "Lifeboost Medium Roast Coffee", "logic": "flavor_profile"}
+      {
+        "product": "Camano Island Coffee Roasters Sumatra",
+        "logic": "origin"
+      },
+      {
+        "product": "Lifeboost Medium Roast Coffee",
+        "logic": "flavor_profile"
+      }
     ],
     "reference_slug": null
   },
@@ -460,8 +723,17 @@
     "amazon_asin": "B00KNQ9YXU",
     "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
-    "best_brew_methods": ["drip", "french press", "cold brew"],
-    "flavor_notes": ["bold", "chocolate", "mild smokiness", "full body"],
+    "best_brew_methods": [
+      "drip",
+      "french press",
+      "cold brew"
+    ],
+    "flavor_notes": [
+      "bold",
+      "chocolate",
+      "mild smokiness",
+      "full body"
+    ],
     "acidity": 1,
     "body": 4,
     "sweetness": 2,
@@ -469,15 +741,21 @@
     "roast_intensity": 4,
     "review_framing": "functional",
     "comparison_anchors": [
-      {"product": "Kicking Horse Coffee 454 Horse Power Dark Roast", "logic": "flavor_profile"},
-      {"product": "Peet's Coffee Major Dickason's Blend", "logic": "performance"}
+      {
+        "product": "Kicking Horse Coffee 454 Horse Power Dark Roast",
+        "logic": "flavor_profile"
+      },
+      {
+        "product": "Peet's Coffee Major Dickason's Blend",
+        "logic": "performance"
+      }
     ],
     "reference_slug": null
   },
   {
     "id": "cafe-bustelo-espresso",
-    "name": "Café Bustelo Espresso Style Dark Roast",
-    "brand": "Café Bustelo",
+    "name": "CafÃ© Bustelo Espresso Style Dark Roast",
+    "brand": "CafÃ© Bustelo",
     "roast_level": "Dark",
     "origin": "Latin America blend",
     "process_method": "Washed",
@@ -485,8 +763,17 @@
     "amazon_asin": "B00475D9BS",
     "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
-    "best_brew_methods": ["espresso", "moka pot", "drip"],
-    "flavor_notes": ["intense", "dark chocolate", "tobacco", "thick body"],
+    "best_brew_methods": [
+      "espresso",
+      "moka pot",
+      "drip"
+    ],
+    "flavor_notes": [
+      "intense",
+      "dark chocolate",
+      "tobacco",
+      "thick body"
+    ],
     "acidity": 1,
     "body": 5,
     "sweetness": 1,
@@ -494,9 +781,1487 @@
     "roast_intensity": 5,
     "review_framing": "comparative",
     "comparison_anchors": [
-      {"product": "Blue Bottle Hayes Valley Espresso", "logic": "performance"},
-      {"product": "Intelligentsia Black Cat Espresso", "logic": "flavor_profile"}
+      {
+        "product": "Blue Bottle Hayes Valley Espresso",
+        "logic": "performance"
+      },
+      {
+        "product": "Intelligentsia Black Cat Espresso",
+        "logic": "flavor_profile"
+      }
     ],
+    "reference_slug": null
+  },
+  {
+    "id": "blue-bottle-bella-donovan",
+    "name": "Blue Bottle Bella Donovan",
+    "brand": "Blue Bottle Coffee",
+    "roast_level": "Medium-Dark",
+    "origin": "Ethiopia, Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://bluebottlecoffee.com/us/eng/product/bella-donovan",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "dried fruit",
+      "molasses"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "counter-culture-hologram",
+    "name": "Counter Culture Hologram",
+    "brand": "Counter Culture Coffee",
+    "roast_level": "Medium",
+    "origin": "Latin America, East Africa blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://counterculturecoffee.com/products/hologram",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over",
+      "drip",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "citrus",
+      "caramel",
+      "cocoa"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "intelligentsia-house-blend",
+    "name": "Intelligentsia House Blend",
+    "brand": "Intelligentsia Coffee",
+    "roast_level": "Medium",
+    "origin": "Latin America, East Africa blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.intelligentsia.com/products/house-blend",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "citrus",
+      "chocolate",
+      "brown sugar"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "onyx-monarch",
+    "name": "Onyx Coffee Lab Monarch",
+    "brand": "Onyx Coffee Lab",
+    "roast_level": "Medium-Dark",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 10,
+    "amazon_asin": null,
+    "roaster_url": "https://onyxcoffeelab.com/products/monarch",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "molasses",
+      "toasted almond"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "verve-streetlevel",
+    "name": "Verve Coffee Streetlevel",
+    "brand": "Verve Coffee Roasters",
+    "roast_level": "Medium",
+    "origin": "Latin America, East Africa blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.vervecoffee.com/products/streetlevel",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "espresso",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "milk chocolate",
+      "red fruit",
+      "brown sugar"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "verve-sermon",
+    "name": "Verve Coffee The Sermon",
+    "brand": "Verve Coffee Roasters",
+    "roast_level": "Medium-Dark",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.vervecoffee.com/products/the-sermon",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "caramel",
+      "cherry"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "ruta-maya-organic-medium",
+    "name": "Ruta Maya Organic Medium Roast",
+    "brand": "Ruta Maya Coffee",
+    "roast_level": "Medium",
+    "origin": "Chiapas, Mexico",
+    "process_method": "Washed",
+    "weight_oz": 80,
+    "amazon_asin": null,
+    "roaster_url": "https://rutamaya.net/products/organic-medium-roast",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "nutty",
+      "milk chocolate",
+      "smooth"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "kicking-horse-three-sisters",
+    "name": "Kicking Horse Three Sisters Medium Roast",
+    "brand": "Kicking Horse Coffee",
+    "roast_level": "Medium",
+    "origin": "Latin America, Indonesia blend",
+    "process_method": "Washed",
+    "weight_oz": 35,
+    "amazon_asin": null,
+    "roaster_url": "https://kickinghorsecoffee.com/products/three-sisters",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "milk chocolate",
+      "toffee",
+      "berry"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "kicking-horse-kick-ass",
+    "name": "Kicking Horse Kick Ass Dark Roast",
+    "brand": "Kicking Horse Coffee",
+    "roast_level": "Dark",
+    "origin": "Indonesia, South America blend",
+    "process_method": "Washed",
+    "weight_oz": 35,
+    "amazon_asin": null,
+    "roaster_url": "https://kickinghorsecoffee.com/products/kick-ass",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "french press",
+      "drip"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "smoky",
+      "earthy"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "stone-street-cold-brew",
+    "name": "Stone Street Cold Brew Reserve Dark Roast",
+    "brand": "Stone Street Coffee",
+    "roast_level": "Dark",
+    "origin": "Colombia",
+    "process_method": "Washed",
+    "weight_oz": 16,
+    "amazon_asin": null,
+    "roaster_url": "https://stonestreetcoffee.com/products/cold-brew-reserve",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "cold brew",
+      "french press"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "bold",
+      "smooth"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "koa-coffee-estate-medium",
+    "name": "Koa Coffee Estate Kona Medium Roast",
+    "brand": "Koa Coffee",
+    "roast_level": "Medium",
+    "origin": "Kona, Hawaii",
+    "process_method": "Washed",
+    "weight_oz": 8,
+    "amazon_asin": null,
+    "roaster_url": "https://koacoffee.com/products/estate-medium-roast",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "honey",
+      "nutty",
+      "bright"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "volcanica-ethiopian-yirgacheffe",
+    "name": "Volcanica Ethiopian Yirgacheffe",
+    "brand": "Volcanica Coffee",
+    "roast_level": "Medium",
+    "origin": "Yirgacheffe, Ethiopia",
+    "process_method": "Washed",
+    "weight_oz": 16,
+    "amazon_asin": null,
+    "roaster_url": "https://volcanicacoffee.com/products/ethiopian-yirgacheffe-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over",
+      "drip"
+    ],
+    "flavor_notes": [
+      "blueberry",
+      "floral",
+      "citrus"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "volcanica-sumatra-mandheling",
+    "name": "Volcanica Sumatra Mandheling",
+    "brand": "Volcanica Coffee",
+    "roast_level": "Dark",
+    "origin": "Sumatra",
+    "process_method": "Wet-Hulled",
+    "weight_oz": 16,
+    "amazon_asin": null,
+    "roaster_url": "https://volcanicacoffee.com/products/sumatra-mandheling-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "french press",
+      "drip"
+    ],
+    "flavor_notes": [
+      "earthy",
+      "dark chocolate",
+      "cedar"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "volcanica-costa-rica-tarrazu",
+    "name": "Volcanica Costa Rica Tarrazu",
+    "brand": "Volcanica Coffee",
+    "roast_level": "Medium",
+    "origin": "Tarrazu, Costa Rica",
+    "process_method": "Washed",
+    "weight_oz": 16,
+    "amazon_asin": null,
+    "roaster_url": "https://volcanicacoffee.com/products/costa-rica-coffee-tarrazu",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over",
+      "drip"
+    ],
+    "flavor_notes": [
+      "citrus",
+      "brown sugar",
+      "clean"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "tattle-tale-french-roast",
+    "name": "Peet's Coffee French Roast",
+    "brand": "Peet's Coffee",
+    "roast_level": "Dark",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.peets.com/products/french-roast",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "smoky",
+      "charred",
+      "bold"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "peets-big-bang",
+    "name": "Peet's Coffee Big Bang Medium Roast",
+    "brand": "Peet's Coffee",
+    "roast_level": "Medium",
+    "origin": "Latin America, East Africa blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.peets.com/products/big-bang",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "caramel",
+      "citrus",
+      "toasted nut"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "death-wish-medium-roast",
+    "name": "Death Wish Coffee Medium Roast",
+    "brand": "Death Wish Coffee",
+    "roast_level": "Medium",
+    "origin": "India, Peru blend",
+    "process_method": "Washed",
+    "weight_oz": 16,
+    "amazon_asin": null,
+    "roaster_url": "https://www.deathwishcoffee.com/products/medium-roast-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "caramel",
+      "bold"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "starbucks-pike-place",
+    "name": "Starbucks Pike Place Roast",
+    "brand": "Starbucks",
+    "roast_level": "Medium",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://athome.starbucks.com/products/pike-place-roast",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "cocoa",
+      "toasted nut",
+      "smooth"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "starbucks-french-roast",
+    "name": "Starbucks French Roast",
+    "brand": "Starbucks",
+    "roast_level": "Dark",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://athome.starbucks.com/products/french-roast",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "smoky",
+      "charred",
+      "intense"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "starbucks-veranda-blonde",
+    "name": "Starbucks Veranda Blend Blonde Roast",
+    "brand": "Starbucks",
+    "roast_level": "Light",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://athome.starbucks.com/products/veranda-blend",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "toasted malt",
+      "light body",
+      "soft cocoa"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "dunkin-original-blend",
+    "name": "Dunkin' Original Blend Medium Roast",
+    "brand": "Dunkin'",
+    "roast_level": "Medium",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.dunkinathome.com/products/original-blend",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip"
+    ],
+    "flavor_notes": [
+      "smooth",
+      "nutty",
+      "mild"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "community-coffee-cafe-special",
+    "name": "Community Coffee Cafe Special Medium-Dark Roast",
+    "brand": "Community Coffee",
+    "roast_level": "Medium-Dark",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://shop.communitycoffee.com/products/cafe-special",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "caramel",
+      "smooth"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "new-england-blue-mountain-blend",
+    "name": "New England Coffee Blue Mountain Blend",
+    "brand": "New England Coffee",
+    "roast_level": "Medium",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 11,
+    "amazon_asin": null,
+    "roaster_url": "https://www.newenglandcoffee.com/products/blue-mountain-blend",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip"
+    ],
+    "flavor_notes": [
+      "mild",
+      "smooth",
+      "nutty"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "tim-hortons-original",
+    "name": "Tim Hortons Original Blend Medium Roast",
+    "brand": "Tim Hortons",
+    "roast_level": "Medium",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://timhortons.com/products/original-blend",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip"
+    ],
+    "flavor_notes": [
+      "smooth",
+      "balanced",
+      "mild"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "cafe-du-monde-chicory",
+    "name": "Cafe Du Monde Coffee and Chicory",
+    "brand": "Cafe Du Monde",
+    "roast_level": "Dark",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 15,
+    "amazon_asin": null,
+    "roaster_url": "https://shop.cafedumonde.com/products/coffee-and-chicory",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "moka pot"
+    ],
+    "flavor_notes": [
+      "chicory",
+      "earthy",
+      "bold"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "la-colombe-corsica",
+    "name": "La Colombe Corsica Blend",
+    "brand": "La Colombe",
+    "roast_level": "Dark",
+    "origin": "Latin America, East Africa blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.lacolombe.com/products/corsica",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso",
+      "drip"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "spice",
+      "full body"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "la-colombe-nizza",
+    "name": "La Colombe Nizza Blend",
+    "brand": "La Colombe",
+    "roast_level": "Medium",
+    "origin": "Latin America, East Africa blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.lacolombe.com/products/nizza",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "milk chocolate",
+      "hazelnut",
+      "caramel"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "philz-tesora",
+    "name": "Philz Coffee Tesora",
+    "brand": "Philz Coffee",
+    "roast_level": "Medium",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.philzcoffee.com/products/tesora",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over",
+      "drip"
+    ],
+    "flavor_notes": [
+      "caramel",
+      "milk chocolate",
+      "nutty"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "groundwork-french-roast",
+    "name": "Groundwork Organic French Roast",
+    "brand": "Groundwork Coffee",
+    "roast_level": "Dark",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://groundworkcoffee.com/products/french-roast",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "french press",
+      "drip"
+    ],
+    "flavor_notes": [
+      "smoky",
+      "dark chocolate",
+      "bold"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "tandem-time-and-temperature",
+    "name": "Tandem Coffee Time and Temperature",
+    "brand": "Tandem Coffee Roasters",
+    "roast_level": "Medium",
+    "origin": "Latin America, East Africa blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.tandemcoffee.com/products/time-and-temperature",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "cherry",
+      "brown sugar"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "ruby-witches-brew",
+    "name": "Ruby Coffee Witch's Brew",
+    "brand": "Ruby Coffee Roasters",
+    "roast_level": "Medium",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.rubycoffeeroasters.com/products/witches-brew",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "red fruit",
+      "caramel"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "sey-ethiopia-hambela",
+    "name": "Sey Coffee Hambela Ethiopia",
+    "brand": "Sey Coffee",
+    "roast_level": "Light",
+    "origin": "Guji, Ethiopia",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.seycoffee.com/products/hambela-ethiopia",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over"
+    ],
+    "flavor_notes": [
+      "jasmine",
+      "bergamot",
+      "stone fruit"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "george-howell-alchemy",
+    "name": "George Howell Coffee Alchemy",
+    "brand": "George Howell Coffee",
+    "roast_level": "Medium",
+    "origin": "Latin America, East Africa blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://georgehowellcoffee.com/products/alchemy",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over",
+      "drip"
+    ],
+    "flavor_notes": [
+      "citrus",
+      "milk chocolate",
+      "caramel"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "equator-tigerwalk",
+    "name": "Equator Coffees Tigerwalk Espresso",
+    "brand": "Equator Coffees",
+    "roast_level": "Medium-Dark",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.equatorcoffees.com/products/tigerwalk-espresso",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "caramel",
+      "cherry"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "ritual-sweet-tooth",
+    "name": "Ritual Coffee Sweet Tooth Blend",
+    "brand": "Ritual Coffee Roasters",
+    "roast_level": "Medium",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.ritualcoffee.com/products/sweet-tooth",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "caramel",
+      "milk chocolate",
+      "toffee"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "klatch-belle-espresso",
+    "name": "Klatch Coffee WBC Belle Espresso",
+    "brand": "Klatch Coffee",
+    "roast_level": "Medium",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.klatchroasting.com/products/wbc-belle-espresso",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso"
+    ],
+    "flavor_notes": [
+      "milk chocolate",
+      "caramel",
+      "berry"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "metropolis-spice-island",
+    "name": "Metropolis Coffee Spice Island Blend",
+    "brand": "Metropolis Coffee Company",
+    "roast_level": "Medium-Dark",
+    "origin": "Latin America, Indonesia blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.metropoliscoffee.com/products/spice-island",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "spice",
+      "dark chocolate",
+      "earthy"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "bird-rock-stagecoach-espresso",
+    "name": "Bird Rock Coffee Stagecoach Espresso",
+    "brand": "Bird Rock Coffee Roasters",
+    "roast_level": "Medium-Dark",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.birdrockcoffee.com/products/stagecoach-espresso",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "caramel",
+      "plum"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "joe-coffee-daily-blend",
+    "name": "Joe Coffee The Daily Blend",
+    "brand": "Joe Coffee",
+    "roast_level": "Medium",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://joecoffeecompany.com/products/the-daily",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "milk chocolate",
+      "caramel",
+      "toasted nut"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "wonderstate-house-blend",
+    "name": "Wonderstate Coffee House Blend",
+    "brand": "Wonderstate Coffee",
+    "roast_level": "Medium",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://wonderstate.com/products/house-blend",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "brown sugar",
+      "nutty"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "passenger-coffee-blueprint",
+    "name": "Passenger Coffee Blueprint Blend",
+    "brand": "Passenger Coffee",
+    "roast_level": "Medium",
+    "origin": "Latin America, East Africa blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.passengercoffee.com/products/blueprint-blend",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over",
+      "espresso",
+      "drip"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "caramel",
+      "red fruit"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "black-rifle-ak-47",
+    "name": "Black Rifle Coffee AK-47 Espresso Blend",
+    "brand": "Black Rifle Coffee Company",
+    "roast_level": "Medium",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.blackriflecoffee.com/products/ak-47-blend-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso",
+      "drip"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "caramel",
+      "nutty"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "black-rifle-just-black",
+    "name": "Black Rifle Coffee Just Black Medium Roast",
+    "brand": "Black Rifle Coffee Company",
+    "roast_level": "Medium",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.blackriflecoffee.com/products/just-black-coffee-rounds",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "toasted nut",
+      "smooth"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "chamberlain-night-owl",
+    "name": "Chamberlain Coffee Night Owl Dark Roast",
+    "brand": "Chamberlain Coffee",
+    "roast_level": "Dark",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://chamberlaincoffee.com/products/night-owl",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "bold",
+      "smoky"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "san-francisco-bay-fog-chaser",
+    "name": "San Francisco Bay Coffee Fog Chaser",
+    "brand": "San Francisco Bay Coffee",
+    "roast_level": "Medium-Dark",
+    "origin": "Central and South America blend",
+    "process_method": "Washed",
+    "weight_oz": 28,
+    "amazon_asin": null,
+    "roaster_url": "https://www.sfbaycoffee.com/products/fog-chaser",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "caramel",
+      "bold"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "allegro-organic-french-roast",
+    "name": "Allegro Coffee Organic French Roast",
+    "brand": "Allegro Coffee",
+    "roast_level": "Dark",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.allegrocoffee.com/products/organic-french-roast",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "smoky",
+      "dark chocolate",
+      "bold"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "caribou-coffee-blend",
+    "name": "Caribou Coffee Caribou Blend Medium Roast",
+    "brand": "Caribou Coffee",
+    "roast_level": "Medium",
+    "origin": "Latin America, Indonesia blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.cariboucoffee.com/products/caribou-blend",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip"
+    ],
+    "flavor_notes": [
+      "sweet",
+      "berry",
+      "milk chocolate"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "gevalia-house-blend",
+    "name": "Gevalia House Blend Medium Roast",
+    "brand": "Gevalia",
+    "roast_level": "Medium",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://www.gevalia.com/products/house-blend",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip"
+    ],
+    "flavor_notes": [
+      "smooth",
+      "mild",
+      "nutty"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "mr-espresso-neapolitan",
+    "name": "Mr. Espresso Neapolitan Espresso",
+    "brand": "Mr. Espresso",
+    "roast_level": "Dark",
+    "origin": "Latin America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": null,
+    "roaster_url": "https://mrespresso.com/products/neapolitan-espresso",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso",
+      "moka pot"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "caramel",
+      "full body"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "illy-classico-whole-bean",
+    "name": "Illy Classico Whole Bean Medium Roast",
+    "brand": "Illy",
+    "roast_level": "Medium",
+    "origin": "9-country Arabica blend",
+    "process_method": "Washed",
+    "weight_oz": 8.8,
+    "amazon_asin": null,
+    "roaster_url": "https://www.illy.com/en-us/shop/coffee/whole-bean-coffee/classico-whole-beans",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso",
+      "drip"
+    ],
+    "flavor_notes": [
+      "caramel",
+      "milk chocolate",
+      "floral"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
+    "reference_slug": null
+  },
+  {
+    "id": "lavazza-crema-e-gusto",
+    "name": "Lavazza Crema e Gusto Ground Espresso",
+    "brand": "Lavazza",
+    "roast_level": "Dark",
+    "origin": "Brazil, Colombia, Indonesia blend",
+    "process_method": "Washed",
+    "weight_oz": 8.8,
+    "amazon_asin": null,
+    "roaster_url": "https://www.lavazzausa.com/en/ground-coffee/crema-e-gusto",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso",
+      "moka pot"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "spice",
+      "full body"
+    ],
+    "acidity": null,
+    "body": null,
+    "sweetness": null,
+    "bitterness": null,
+    "roast_intensity": null,
+    "review_framing": null,
+    "comparison_anchors": [],
     "reference_slug": null
   }
 ]
