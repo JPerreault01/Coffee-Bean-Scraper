@@ -1,153 +1,129 @@
-# Coffee Beans Price Tracker & Review Site
+# Coffee Bean Index — Reviews, Price Tracking & Reference Data
 
-A niche affiliate website combining price tracking, AI-assisted reviews, and email price-drop alerts for coffee beans.
+The code behind **coffeebeanindex.com**: a custom WordPress publication for coffee
+bean reviews, backed by Python scrapers, a ~14k-coffee reference corpus, AI-assisted
+review drafting, and a daily price tracker.
 
-## What this repo contains
+> **New to this repo? Read [ARCHITECTURE.md](ARCHITECTURE.md) first.** It documents how
+> the system actually works today, component by component. [PROJECT_STATUS.md](PROJECT_STATUS.md)
+> tracks what is live, in-flight, and broken.
+
+---
+
+## What this repo actually contains
+
+This is larger than a single scraper. There are five subsystems:
+
+| Subsystem | Where | What it does |
+|---|---|---|
+| **Price tracker** | `scrapers/price_scraper.py`, `alerts/send_alerts.py`, `scrapers/db.py` | Daily price scrape (Playwright) → SQLite (`data/prices.db`) → Beehiiv price-drop alerts |
+| **Reference corpus** | `scrapers/waytocoffee_scraper.py`, `scrapers/reference_db.py` | ~14k coffees scraped from thewaytocoffee.com into a normalized SQLite entity graph (`data/coffee_reference.db`) used for verified-spec enrichment |
+| **Review generation** | `scrapers/generate_review.py` + `skills/coffee-review-writer/` | Builds a draft review from product specs + price history + reference specs, via the Claude/MiniMax API or the portable Agent Skill |
+| **WordPress site** | `wordpress-plugins/coffeebeanindex-theme/` (+ plugins) | GeneratePress child theme: `bean` CPT, six taxonomies, ACF fields, schema, custom templates |
+| **Training-data pipeline** | `data_pipeline/` | Collects Reddit/web/YouTube coffee content and distils it into the voice + knowledge that back the review skill |
+
+The publish path from draft → live page runs through WP-CLI scripts in `scrapers/`
+(`create_beans.php`, `push_drafts.php`, `set_featured_images.php`).
+
+---
+
+## Repo layout
 
 ```
 Coffee-Bean-Scraper/
-├── scrapers/
-│   ├── price_scraper.py      — Fetches prices from Amazon PA-API + roaster sites
-│   ├── generate_review.py    — Generates AI review drafts via Claude or MiniMax
-│   └── products.json         — 20-product starter catalog
+├── scrapers/                       Price scraper, reference DB, review generator, WP-CLI importers
+│   ├── price_scraper.py            Daily price scrape → prices.db
+│   ├── db.py                       Shared SQLite schema + connection (prices.db)
+│   ├── products.json               Tracked-product catalog (source of truth, 20 products)
+│   ├── sync_products.py            products.json → prices.db `products` table
+│   ├── generate_review.py          AI review draft generator (Claude / MiniMax / --mock)
+│   ├── reference_db.py             Normalized reference corpus (coffee_reference.db)
+│   ├── waytocoffee_scraper.py      Reference-corpus scraper (~14k coffees)
+│   ├── select_products.py          Pick reference beans worth promoting to reviews
+│   ├── build_flavors_json.py       products.json → data/flavors.json (flavor-explorer plugin)
+│   ├── fetch_bean_images.py        Resolve a product image per bean (PA-API → roaster → manual)
+│   ├── create_beans.php            WP-CLI: create bean CPT posts from products.json (canonical)
+│   ├── push_drafts.php             WP-CLI: parse draft .md → ACF fields on bean posts
+│   ├── set_featured_images.php     WP-CLI: set featured images from the image manifest
+│   ├── reformat_origin_descriptions.py  Reformat origin term descriptions to HTML
+│   └── style_guide.txt             Review voice/style guide (loaded by generate_review.py)
 ├── alerts/
-│   └── send_alerts.py        — Detects price drops and sends Beehiiv email alerts
+│   └── send_alerts.py              Price-drop detector → Beehiiv broadcast
+├── data_pipeline/                  Training-data collection + voice/knowledge skill build
+├── skills/coffee-review-writer/    Assembled Agent Skill (voice + knowledge + format)
+├── seeds/                          WP-CLI seed scripts (taxonomy terms, nav, homepage, roundups)
 ├── wordpress-plugins/
-│   └── coffee-price-chart/
-│       ├── coffee-price-chart.php  — WP plugin: Chart.js price history widget
-│       └── README.md
-├── .env.example              — Environment variable template (copy to /opt/.env)
-├── .gitignore
-├── setup.sh                  — Full VPS setup script (Ubuntu 24)
-└── README.md
+│   ├── coffeebeanindex-theme/      GeneratePress child theme (the live front end)
+│   ├── coffee-price-chart/         Chart.js price-history shortcode (reads prices.db)
+│   ├── coffee-bean-profile/        Radar/profile shortcode (superseded by theme — see AUDIT_FINDINGS)
+│   └── coffee-flavor-explorer/     Filterable grid shortcode (superseded by theme — see AUDIT_FINDINGS)
+├── tests/                          Local scraper/DB smoke tests + seed data
+├── notebooks/                      Fine-tuning experiment (exploratory)
+├── ARCHITECTURE.md  PROJECT_STATUS.md  AUDIT_FINDINGS.md  CLAUDE.md
+├── SEO_PLAYBOOK.md  PREPUBLISH_CHECKLIST.md  CONTENT_REFRESH.md
+├── SETUP_LOCAL.md   SYNTHESIS_ARCHITECTURE.md
+├── requirements.txt  setup.sh  .env.example  .gitignore
 ```
 
-## Quick start
+## Live stack
 
-### 1. Server setup
+- **Host:** Ubuntu 24 VPS, Nginx + PHP 8.2. (The deploy IP is referenced in scripts — see
+  the security note in [AUDIT_FINDINGS.md](AUDIT_FINDINGS.md).)
+- **WordPress:** GeneratePress parent + `coffeebeanindex` child theme, ACF (free),
+  RankMath, WP Rocket, WPForms, `coffee-price-chart` plugin.
+- **Python:** scrapers in `/opt/scrapers/`, alerts in `/opt/alerts/`, venv at `/opt/venv`,
+  SQLite + drafts in `/opt/data/` and `/opt/drafts/`.
+- **Services:** Beehiiv (email), Claude + MiniMax (drafting), Cloudflare (DNS/CDN).
 
-```bash
-# On a fresh Ubuntu 24 Hetzner VPS, as root:
-bash setup.sh yourcoffeebeans.com
+## Local development
+
+See [SETUP_LOCAL.md](SETUP_LOCAL.md) for the Windows/PowerShell workflow. Quick version:
+
+```powershell
+python -m venv venv; venv\Scripts\activate
+pip install -r requirements.txt
+python -m playwright install chromium
+python tests/seed_test_data.py        # fake 30-day price history
+python scrapers/generate_review.py lavazza-super-crema --mock   # draft, no API key
 ```
 
-This installs Nginx, PHP 8.2, MariaDB, WordPress, Certbot, Python 3, and creates all required directories.
+Paths auto-detect: scripts use `/opt/...` when those paths exist (VPS) and fall back
+to the repo working tree locally, so the same code runs in both places.
 
-### 2. Configure environment variables
+## Server setup & cron
 
-```bash
-cp .env.example /opt/.env
-nano /opt/.env   # fill in your API keys
-```
-
-Required keys:
-- `AMAZON_ACCESS_KEY` + `AMAZON_SECRET_KEY` + `AMAZON_PARTNER_TAG` — Amazon PA-API
-- `BEEHIIV_API_KEY` + `BEEHIIV_PUBLICATION_ID` — Email alerts
-- `CLAUDE_API_KEY` or `MINIMAX_API_KEY` — Review generation
-
-### 3. Deploy scrapers
-
-```bash
-cp scrapers/price_scraper.py /opt/scrapers/
-cp scrapers/generate_review.py /opt/scrapers/
-cp scrapers/products.json /opt/scrapers/
-cp alerts/send_alerts.py /opt/alerts/
-```
-
-### 4. Install Python dependencies
-
-```bash
-/opt/venv/bin/pip install requests playwright anthropic
-/opt/venv/bin/python -m playwright install chromium
-```
-
-### 5. Install the WordPress plugin
-
-```bash
-cp -r wordpress-plugins/coffee-price-chart/ /var/www/coffeebeans/wp-content/plugins/
-```
-
-Then activate it in WordPress Admin → Plugins.
-
-## Cron schedule
+`setup.sh <domain>` provisions a fresh VPS (Nginx, PHP 8.2, MariaDB, WordPress,
+Python venv, Certbot, firewall). It installs the price-tracker cron:
 
 ```
-0 6 * * *  /opt/venv/bin/python3 /opt/scrapers/price_scraper.py >> /opt/data/scraper.log 2>&1
-15 6 * * * /opt/venv/bin/python3 /opt/alerts/send_alerts.py >> /opt/data/alerts.log 2>&1
+0 6 * * *  /opt/venv/bin/python3 /opt/scrapers/price_scraper.py  >> /opt/data/scraper.log 2>&1
+15 6 * * * /opt/venv/bin/python3 /opt/alerts/send_alerts.py      >> /opt/data/alerts.log 2>&1
 ```
 
-(The `setup.sh` script writes these to `/etc/cron.d/coffeebeans` automatically.)
+> `setup.sh` predates the custom theme and the reference/skill subsystems — it stands up
+> the price-tracker baseline only. The theme, plugins, ACF, and content are deployed
+> separately (scp + `wp eval-file`). See [ARCHITECTURE.md](ARCHITECTURE.md) for the full
+> deploy path.
 
-## Usage
+## The two databases
 
-### Run the price scraper manually
+Both are SQLite and both are gitignored. Rebuild from a scrape on a new machine.
 
-```bash
-/opt/venv/bin/python3 /opt/scrapers/price_scraper.py
-```
-
-### Generate a review draft
-
-```bash
-/opt/venv/bin/python3 /opt/scrapers/generate_review.py lavazza-super-crema
-# Saves draft to /opt/drafts/lavazza-super-crema-YYYY-MM-DD.md
-```
-
-### Embed a price chart in WordPress
-
-Add this shortcode to any post or page:
-
-```
-[coffee_price_chart product_id="lavazza-super-crema"]
-```
-
-## What is NOT in this repo
-
-- `/opt/data/` — SQLite database and logs (gitignored)
-- `/opt/drafts/` — AI-generated review drafts (gitignored)
-- `/opt/.env` — API keys (gitignored — use `.env.example` as template)
+- **`data/prices.db`** — price history, the `products` table, and the alert log.
+  Schema lives in `scrapers/db.py`. Read by the `coffee-price-chart` plugin via PDO.
+- **`data/coffee_reference.db`** — ~14k-coffee normalized reference corpus.
+  Build: `python scrapers/waytocoffee_scraper.py --all` then
+  `python scrapers/reference_db.py load data/waytocoffee.json`.
 
 ## Monetization
 
-| Source | Rate |
-|---|---|
-| Amazon Associates | 4% (grocery) |
-| Stumptown affiliate | ~10% (via ShareASale) |
-| Trade Coffee | 10% + $5/subscription |
-| Blue Bottle | 10% (via CJ Affiliate) |
-| Death Wish | 10% (via ShareASale) |
+| Source | Rate | Network |
+|---|---|---|
+| Amazon Associates | 4% (grocery) | Amazon |
+| Stumptown | ~10% | ShareASale |
+| Trade Coffee | 10% + $5/sub | Impact |
+| Blue Bottle | 10% | CJ Affiliate |
+| Death Wish | 10% | ShareASale |
 
-## Reference Database
-
-Normalized SQLite corpus of ~14,000 coffees from thewaytocoffee.com. Powers verified spec enrichment in review generation and backs the site's flavor/origin entity graph.
-
-### Build
-
-```bash
-# Small test run first (~75 coffees, ~3 min)
-python scrapers/waytocoffee_scraper.py --pages 3 --format json --output data/waytocoffee.json
-python scrapers/reference_db.py load data/waytocoffee.json
-
-# Full corpus (~14,000 coffees — run overnight)
-python scrapers/waytocoffee_scraper.py --all --format json --output data/waytocoffee.json
-python scrapers/reference_db.py load data/waytocoffee.json
-```
-
-### Map products to reference entries
-
-After a scrape, run `map` to see suggested reference slugs for each tracked product:
-
-```bash
-python scrapers/reference_db.py map scrapers/products.json
-```
-
-Copy confirmed slugs into each product's `reference_slug` field in `products.json`. The review generator uses these for verified spec lookup; it fuzzy-matches automatically when `reference_slug` is null.
-
-### Verify
-
-```bash
-python scrapers/reference_db.py specs <slug>
-python scrapers/reference_db.py find "super crema" --roaster lavazza
-```
-
-`data/coffee_reference.db` and `data/waytocoffee.json` are gitignored — rebuild from a scrape on a new machine.
+Every page with affiliate links must carry the FTC + AI disclosures — see
+[PREPUBLISH_CHECKLIST.md](PREPUBLISH_CHECKLIST.md).
