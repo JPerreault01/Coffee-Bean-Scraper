@@ -224,9 +224,9 @@ This is a chain of WP-CLI scripts run on the server with `wp eval-file`:
 6. (human) review + Publish
 ```
 
-> `create_beans_wpcli.sh` is an **older, parallel** importer that maps taxonomies
-> differently (raw split vs. canonical consolidation). Use `create_beans.php`. See
-> [AUDIT_FINDINGS.md](AUDIT_FINDINGS.md) §R2.
+> `create_beans.php` is the canonical importer. An older parallel importer
+> (`create_beans_wpcli.sh`) that mapped taxonomies differently (raw split vs. canonical
+> consolidation) was removed in the June 2026 audit. See [AUDIT_FINDINGS.md](AUDIT_FINDINGS.md) §R2.
 
 ### Deploy
 

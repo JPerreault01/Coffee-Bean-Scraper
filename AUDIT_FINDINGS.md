@@ -52,7 +52,7 @@ docs). All are grouped into logical commits — see [§6](#6-commit-plan).
 |---|---|---|
 | `alerts/send_alerts.py` | Added `import sqlite3` | The module used `sqlite3.Connection` in four function signatures. Python evaluates annotations at def-time, so the import raised `NameError: name 'sqlite3' is not defined` — the alert sender crashed before doing anything, on every 06:15 cron run. Verified the module now imports cleanly. |
 | `alerts/send_alerts.py` | Made `LOG_PATH` and `PRODUCTS_FILE` path-portable (and `mkdir` the log dir) | They were hardcoded to `/opt/...`, so the sender could never run locally (contradicting `SETUP_LOCAL.md`, which seeds data specifically to test alerts). Now mirrors the `/opt`-else-repo pattern used everywhere else. |
-| `scrapers/generate_review.py` | `claude-sonnet-4-20250514` → `claude-sonnet-4-6` | The default Claude model in the main review generator was a >1-year-old Sonnet id at risk of retirement. Updated to the current Sonnet in the same family. (Other scripts already use current ids: `claude-haiku-4-5-20251001`, `claude-sonnet-4-6`.) |
+| `scrapers/generate_review.py` | `claude-sonnet-4-20250514` → `claude-sonnet-4-6` | **Verified against the Anthropic docs and the installed SDK** (`anthropic/types/model.py` lists `claude-sonnet-4-6` as a valid model literal): the old id (Claude Sonnet 4) is **deprecated and retires June 15, 2026** — it would have started 404-ing within ~9 days of this audit. `claude-sonnet-4-6` is the current pinned API id; from the 4.6 generation Anthropic uses the dateless form *as* the snapshot (no separate `-YYYYMMDD`). Other repo scripts already call `claude-sonnet-4-6` successfully (the assembled skill is proof). |
 | `requirements.txt` | Added `tqdm`, `feedparser` | `tqdm` is imported by `waytocoffee_scraper.py` (a documented core workflow) and was missing — the reference scrape would `ImportError`. `feedparser` is imported by `podcast_scraper.py`, which `run_pipeline.py` runs by default. |
 | `main.py` | Removed | A literal `greet("World")` Hello-World stub at the repo root, referenced by nothing. |
 
@@ -73,21 +73,27 @@ Not changed — each needs a decision or carries risk. Grouped by theme with a r
 
 ### Security
 
-**§S1 — Production IP + root SSH committed to a public repo.**
-`scrapers/reformat_origin_descriptions.py:37` hardcodes `SSH_HOST = "root@142.93.127.178"`,
-and `.claude/settings.json` (tracked) contains several `scp`/`ssh` commands to the same
-`root@142.93.127.178` plus the live domain. This is a public repo. It is not a credential
-leak (no key/password is committed), but it hands an attacker the exact host, the fact that
-root SSH is the entry method, the WordPress path, and the domain — i.e. free reconnaissance.
-Two side notes: the IP is in DigitalOcean's range (142.93.0.0/16), which **contradicts
-`CLAUDE.md`'s "Hetzner CX23"** — confirm where the site actually runs. And `set -euo
-pipefail` / SSH semantics aside, root-over-SSH from scripts is fragile.
-*Recommended approach:* (1) move the host to an env var or an SSH config alias
-(`Host cbi-prod`) so the IP isn't in code; (2) confirm SSH is key-only, root login is
-restricted, and consider a non-root deploy user; (3) decide whether to scrub the IP from git
-history (it's already public, so rotating the host's exposure matters more than rewriting
-history). I did **not** edit `.claude/settings.json` because removing those entries would
-break your allow-listed deploy commands.
+**§S1 — Production IP + root SSH committed to a public repo. [PARTIALLY REMEDIATED]**
+`scrapers/reformat_origin_descriptions.py` hardcoded a `root@<production-ip>` SSH host, and
+`.claude/settings.json` (tracked) contained several `scp`/`ssh` commands to the same
+`root@<ip>` plus the live domain. This is a public repo. It was not a credential leak (no
+key/password committed), but it handed an attacker the exact host, the fact that root SSH is
+the entry method, the WordPress path, and the domain — free reconnaissance. Side note: the
+IP was in DigitalOcean's range (142.93.0.0/16), which **contradicts `CLAUDE.md`'s "Hetzner
+CX23"** — confirm where the site actually runs.
+
+*Done in this pass (code side — the IP/root no longer appear in the repo):*
+- `reformat_origin_descriptions.py` now reads the host from `CBI_SSH_HOST`, defaulting to the
+  SSH alias `cbi-prod`.
+- `.claude/settings.json` deploy commands now use the `cbi-prod` alias instead of `root@<ip>`.
+- Added [DEPLOY.md](DEPLOY.md): the server-hardening runbook + local `~/.ssh/config` alias
+  (the real IP now lives only in your local config, never the repo).
+
+*Still requires you to run on the server (see DEPLOY.md §0):* create a non-root `deploy`
+user, install your SSH key, set `PasswordAuthentication no` + `PermitRootLogin no`, and
+verify a new `deploy` session before closing root. Optional: scrub the IP from git history
+(cleanup only — it's already public; host hardening is the real fix) and/or firewall SSH to
+your own IP at the provider level.
 
 ### Price pipeline
 
@@ -117,14 +123,17 @@ function's docblock specifies the exact row shape. Low effort, lights up the hom
 
 ### Redundancy & potentially-orphaned code
 
-**§R2 — Two bean importers that build different taxonomies.** `create_beans.php` (canonical:
-consolidates origins via an `$origin_map`, maps flavor notes to curated slugs, drops
-structural descriptors) vs `create_beans_wpcli.sh` (raw: `--create-terms`, splits
-"Brazil, Colombia, Indonesia blend" into three origin terms). Running the wrong one — or
-both — produces inconsistent/duplicate taxonomy terms. Git history shows `create_beans.php`
-got the canonical mapping *after* the `.sh` was added, so the `.sh` is the older approach.
-*Recommended:* keep `create_beans.php`; delete or move `create_beans_wpcli.sh` to an
-`archive/` note so no one runs it by accident.
+**§R2 — Two bean importers that build different taxonomies. [RESOLVED]**
+`create_beans.php` (canonical: consolidates origins via an `$origin_map`, maps flavor notes
+to curated slugs, drops structural descriptors) vs `create_beans_wpcli.sh` (raw:
+`--create-terms`, splits "Brazil, Colombia, Indonesia blend" into three origin terms and
+creates flavor-note terms for structural descriptors like "bold"/"smooth"). Running the
+wrong one — or both — pollutes the taxonomy. Git history shows `create_beans.php` got the
+canonical mapping *after* the `.sh`, so the `.sh` was the older approach.
+**Verdict: `create_beans.php` is canonical; `create_beans_wpcli.sh` has been removed.**
+The canonical publish order is **seeds → `create_beans.php`** (it expects the curated
+flavor-note slugs that `seeds/data/flavor-note-terms.php` creates, and warns "run seeds
+first" if they're missing).
 
 **§R3 — Three scripts depend on an external third-party skill repo.** `write_review.py`,
 `market_research.py`, and `repurpose.py` fetch SKILL.md files from
@@ -136,13 +145,30 @@ vendor the ECC skills into the repo (or your own skill) instead of fetching at r
 no, remove them. `write_review.py` in particular duplicates `generate_review.py` with a
 weaker feature set (no price history, no reference enrichment, no voice modes).
 
-**§R4 — Two visualization plugins look superseded by the theme.** `coffee-bean-profile`
-(radar + sensory + similar beans) and `coffee-flavor-explorer` (filterable grid + radar)
-duplicate functionality the theme now renders natively (`single-bean.php` radar/sensory/
-similar; `page-explore.php` + `explore-filters.js` grid). The theme is newer (v2.1).
-*Recommended:* confirm which surfaces actually use the shortcodes on the live site; if none,
-deactivate and remove the two plugins. `coffee-price-chart` is still in use (the theme
-enqueues Chart.js on bean pages and it's the live DB→page bridge) — keep it.
+**§R4 — Two visualization plugins look superseded by the theme.**
+`coffee-bean-profile` (radar + sensory + similar beans) and `coffee-flavor-explorer`
+(filterable grid + radar) duplicate what the theme now renders natively (`single-bean.php`
+radar/sensory/similar; `page-explore.php` + `explore-filters.js` grid). The theme is newer
+(v2.1). **Verdict: the theme is canonical for radar/sensory/explore; `coffee-price-chart`
+stays (it's the live DB→page price widget the theme enqueues Chart.js for);
+`coffee-bean-profile` and `coffee-flavor-explorer` are the losers.**
+
+*Not removed yet — one gating check first.* Deactivating a plugin whose shortcode sits on a
+live page turns that shortcode into raw text. Before deleting, confirm nothing published
+uses them:
+
+```bash
+ssh cbi-prod "sudo -u www-data wp post list --post_type=any --post_status=publish \
+  --fields=ID,post_title --format=csv --path=/var/www/coffeebeans | head -1; \
+  sudo -u www-data wp db query \"SELECT ID,post_title FROM wp_posts \
+  WHERE post_status='publish' AND (post_content LIKE '%[coffee_bean_profile%' \
+  OR post_content LIKE '%[coffee_profile%' OR post_content LIKE '%[flavor_explorer%')\" \
+  --path=/var/www/coffeebeans"
+```
+
+If that returns no rows: deactivate both plugins in WP admin, confirm the pages still look
+right, then delete the two plugin folders from the repo and the server. If it returns rows,
+migrate those pages to the theme's native components first.
 
 **§R5 — Committed binary build artifacts.** `coffee-bean-profile.zip` and
 `coffee-price-chart.zip` sit at the repo root, duplicating the plugin source directories.
@@ -185,7 +211,7 @@ The specific mismatches found (the rewrites in §2 resolve the doc side of each)
 
 | # | Claim (where) | Reality |
 |---|---|---|
-| D1 | "Hetzner CX23 VPS" (`CLAUDE.md`, `README.md`, `setup.sh`) | Deploy IP `142.93.127.178` is a **DigitalOcean** range — confirm actual host (§S1) |
+| D1 | "Hetzner CX23 VPS" (`CLAUDE.md`, `README.md`, `setup.sh`) | The (now-removed) deploy IP was in a **DigitalOcean** range — confirm actual host (§S1) |
 | D2 | "MiniMax M2.7 or Claude API" (`CLAUDE.md`) | Code uses `MiniMax-Text-01` and (pre-fix) `claude-sonnet-4-20250514` |
 | D3 | Repo = scrapers + one `coffee-price-chart` plugin (`README.md`) | Five subsystems incl. a full custom theme, reference corpus, data pipeline |
 | D4 | WP plugins: RankMath, WP Rocket, coffee-price-chart, WPForms (`CLAUDE.md`) | Add GeneratePress + custom theme + ACF; two extra plugins likely superseded |
@@ -223,10 +249,11 @@ The specific mismatches found (the rewrites in §2 resolve the doc side of each)
 
 ## 6. Commit plan
 
-The fixes in §2 are grouped into three commits:
+The work is grouped into four commits:
 
 1. `fix(alerts): import sqlite3 + portable paths so the price-drop sender runs`
 2. `fix(deps,review): add missing tqdm/feedparser deps; refresh stale Claude model id; drop dead main.py`
 3. `docs: rewrite README/CLAUDE/data_pipeline README to match reality; add ARCHITECTURE/PROJECT_STATUS/AUDIT_FINDINGS`
+4. `security(§S1): remove hardcoded prod IP/root from repo; add DEPLOY.md hardening runbook; retire create_beans_wpcli.sh (§R2)`
 
 Exact PowerShell commands are at the end of the audit hand-off.

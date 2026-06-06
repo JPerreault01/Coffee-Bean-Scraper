@@ -34,8 +34,11 @@ import subprocess
 import sys
 
 # --- Server / WordPress connection -----------------------------------------
-SSH_HOST = "root@142.93.127.178"
-WP_PATH = "/var/www/coffeebeans"
+# The host is read from the CBI_SSH_HOST env var and defaults to the `cbi-prod`
+# SSH alias (define it in your local ~/.ssh/config — see DEPLOY.md). The real
+# hostname/IP and login user live in that local config, never in this repo.
+SSH_HOST = os.environ.get("CBI_SSH_HOST", "cbi-prod")
+WP_PATH = os.environ.get("CBI_WP_PATH", "/var/www/coffeebeans")
 REMOTE_TMP = "/tmp/origin_desc.html"
 REMOTE_PHP = "/tmp/origin_desc_update.php"
 

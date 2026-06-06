@@ -81,6 +81,11 @@ Legend: ✅ done / working · 🟡 partial or needs attention · 🔴 broken / n
   → `claude-sonnet-4-6`.
 - Removed `main.py` (a Hello-World stub, unreferenced).
 - Rewrote `README.md`, `CLAUDE.md`, and `data_pipeline/README.md` to match reality.
+- **Security (§S1):** removed the hardcoded production IP / `root@` SSH host from
+  `reformat_origin_descriptions.py` and `.claude/settings.json` (now the `cbi-prod` alias);
+  added `DEPLOY.md` with the server-hardening runbook. Server-side hardening (non-root user,
+  key-only SSH) is still for you to run — see DEPLOY.md §0.
+- **§R2:** removed the superseded `create_beans_wpcli.sh`; `create_beans.php` is canonical.
 
 ## Top priorities (next steps)
 
@@ -91,5 +96,7 @@ Legend: ✅ done / working · 🟡 partial or needs attention · 🔴 broken / n
 3. **Publish the first 10 pages** using the existing tooling.
 4. **Decide the security follow-up** for the committed production IP / root-SSH references
    (§S1).
-5. **Resolve the duplicate tooling** (`create_beans_wpcli.sh`, `coffee-bean-profile` /
-   `coffee-flavor-explorer` plugins, ECC-skill generators) — keep one path each (§R2–R4).
+5. **Resolve the remaining duplicate tooling** — the `coffee-bean-profile` /
+   `coffee-flavor-explorer` plugins (superseded by the theme; verify no live page uses their
+   shortcodes before removing) and the ECC-skill generators (§R3–R4). The duplicate bean
+   importer was already resolved in the audit (§R2: `create_beans_wpcli.sh` removed).

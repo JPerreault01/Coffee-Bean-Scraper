@@ -67,8 +67,9 @@ Coffee-Bean-Scraper/
 
 ## Live stack
 
-- **Host:** Ubuntu 24 VPS, Nginx + PHP 8.2. (The deploy IP is referenced in scripts — see
-  the security note in [AUDIT_FINDINGS.md](AUDIT_FINDINGS.md).)
+- **Host:** Ubuntu 24 VPS, Nginx + PHP 8.2. Connect via the `cbi-prod` SSH alias —
+  server access, the non-root deploy user, and SSH hardening are documented in
+  [DEPLOY.md](DEPLOY.md).
 - **WordPress:** GeneratePress parent + `coffeebeanindex` child theme, ACF (free),
   RankMath, WP Rocket, WPForms, `coffee-price-chart` plugin.
 - **Python:** scrapers in `/opt/scrapers/`, alerts in `/opt/alerts/`, venv at `/opt/venv`,
