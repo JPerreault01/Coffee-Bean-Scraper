@@ -65,6 +65,133 @@ foreach ( $facet_config as $tax_slug => $label ) {
     }
 }
 
+/* ── Flavor-note hierarchy (two-tier: families → notes) ────────────────────
+ * The flavor-note taxonomy is hierarchical: parent terms are FAMILIES
+ * (Chocolate, Fruit, Nutty …) and children are individual NOTES (Dark
+ * Chocolate, Hazelnut, Strawberry …). The Explore flavor facet renders a
+ * Simple view (family chips) and an Advanced view (families with nested
+ * notes). Counts below are distinct-bean tallies, not raw term counts. */
+
+// Full term set (including empty parents) so the family structure resolves.
+$all_flavor_terms = get_terms( [ 'taxonomy' => 'flavor-note', 'hide_empty' => false ] );
+$terms_by_id   = [];
+$terms_by_slug = [];
+if ( ! is_wp_error( $all_flavor_terms ) ) {
+    foreach ( $all_flavor_terms as $t ) {
+        $terms_by_id[ $t->term_id ] = $t;
+        $terms_by_slug[ $t->slug ]  = $t;
+    }
+} else {
+    $all_flavor_terms = [];
+}
+
+// Distinct-bean counts per note slug and per family slug.
+$flavor_note_counts   = [];
+$flavor_family_counts = [];
+foreach ( $beans->posts as $bp ) {
+    $bt = get_the_terms( $bp->ID, 'flavor-note' );
+    if ( ! $bt || is_wp_error( $bt ) ) {
+        continue;
+    }
+    $seen_fam = [];
+    foreach ( $bt as $t ) {
+        $flavor_note_counts[ $t->slug ] = ( $flavor_note_counts[ $t->slug ] ?? 0 ) + 1;
+        // A note's family is its parent; a directly-assigned family term is its own family.
+        $fam_slug = ( (int) $t->parent !== 0 && isset( $terms_by_id[ $t->parent ] ) )
+            ? $terms_by_id[ $t->parent ]->slug
+            : $t->slug;
+        if ( ! isset( $seen_fam[ $fam_slug ] ) ) {
+            $flavor_family_counts[ $fam_slug ] = ( $flavor_family_counts[ $fam_slug ] ?? 0 ) + 1;
+            $seen_fam[ $fam_slug ] = true;
+        }
+    }
+}
+
+// Known families in tasting order (not alphabetical). Add new families here.
+$flavor_family_order = [
+    'chocolate'     => 'Chocolate',
+    'caramel-sweet' => 'Caramel & Sweet',
+    'nutty'         => 'Nutty',
+    'fruit'         => 'Fruit',
+    'citrus-floral' => 'Citrus & Floral',
+    'earthy-smoky'  => 'Earthy & Smoky',
+];
+
+// Index children by parent id.
+$flavor_children = [];
+foreach ( $all_flavor_terms as $t ) {
+    if ( (int) $t->parent !== 0 ) {
+        $flavor_children[ $t->parent ][] = $t;
+    }
+}
+
+// Order families: known families first (tasting order), then any other
+// top-level term that has children. Orphans (top-level, unknown, childless)
+// fall through to the "Other" group. After the taxonomy cleanup there should
+// be none — this is defensive so a stray term never silently disappears.
+$flavor_families_ordered = [];
+$flavor_other_terms      = [];
+$used_family_ids         = [];
+
+foreach ( array_keys( $flavor_family_order ) as $fam_slug ) {
+    if ( isset( $terms_by_slug[ $fam_slug ] ) ) {
+        $fam = $terms_by_slug[ $fam_slug ];
+        $flavor_families_ordered[]            = $fam;
+        $used_family_ids[ $fam->term_id ]     = true;
+    }
+}
+foreach ( $all_flavor_terms as $t ) {
+    if ( (int) $t->parent !== 0 || isset( $used_family_ids[ $t->term_id ] ) ) {
+        continue;
+    }
+    if ( ! empty( $flavor_children[ $t->term_id ] ) ) {
+        $flavor_families_ordered[] = $t; // unknown family that has children
+    } else {
+        $flavor_other_terms[] = $t;      // orphan top-level term
+    }
+}
+
+// Assemble render-ready Simple + Advanced structures (assigned terms only).
+$flavor_simple   = []; // [ slug, name, count ]
+$flavor_advanced = []; // [ name, options[ slug, name, count ] ]
+
+foreach ( $flavor_families_ordered as $fam ) {
+    $fam_count = $flavor_family_counts[ $fam->slug ] ?? 0;
+    $options   = [];
+
+    // A directly-assigned family term is itself selectable in Advanced.
+    if ( ( $flavor_note_counts[ $fam->slug ] ?? 0 ) > 0 ) {
+        $options[] = [
+            'slug'  => $fam->slug,
+            'name'  => $fam->name . ' (general)',
+            'count' => $flavor_note_counts[ $fam->slug ],
+        ];
+    }
+
+    $kids = $flavor_children[ $fam->term_id ] ?? [];
+    usort( $kids, static function ( $a, $b ) { return strcmp( $a->name, $b->name ); } );
+    foreach ( $kids as $kid ) {
+        $kc = $flavor_note_counts[ $kid->slug ] ?? 0;
+        if ( $kc > 0 ) {
+            $options[] = [ 'slug' => $kid->slug, 'name' => $kid->name, 'count' => $kc ];
+        }
+    }
+
+    if ( $fam_count > 0 || ! empty( $options ) ) {
+        $flavor_simple[]   = [ 'slug' => $fam->slug, 'name' => $fam->name, 'count' => $fam_count ];
+        $flavor_advanced[] = [ 'name' => $fam->name, 'options' => $options ];
+    }
+}
+
+// Orphan "Other" options (assigned only).
+$flavor_other_options = [];
+foreach ( $flavor_other_terms as $t ) {
+    $c = $flavor_note_counts[ $t->slug ] ?? 0;
+    if ( $c > 0 ) {
+        $flavor_other_options[] = [ 'slug' => $t->slug, 'name' => $t->name, 'count' => $c ];
+    }
+}
+
 // ItemList schema — index all beans for SEO
 $schema_items = [];
 $pos = 1;
@@ -132,22 +259,97 @@ echo wp_json_encode( [
 
                 <!-- Taxonomy facet groups -->
                 <?php foreach ( $facet_terms as $tax_slug => $group ) : ?>
-                    <div class="explore-facet" data-facet="<?php echo esc_attr( $group['data_key'] ); ?>">
-                        <div class="explore-facet__heading"><?php echo esc_html( $group['label'] ); ?></div>
-                        <div class="explore-facet__options">
-                            <?php foreach ( $group['terms'] as $term ) : ?>
-                                <label class="explore-facet__option">
-                                    <input
-                                        type="checkbox"
-                                        class="explore-filter-cb"
-                                        data-filter-group="<?php echo esc_attr( $group['data_key'] ); ?>"
-                                        value="<?php echo esc_attr( $term->slug ); ?>">
-                                    <span class="explore-facet__option-label"><?php echo esc_html( $term->name ); ?></span>
-                                    <span class="explore-facet__option-count"><?php echo absint( $term->count ); ?></span>
-                                </label>
-                            <?php endforeach; ?>
+                    <?php if ( 'flavor-note' === $tax_slug ) : ?>
+
+                        <!-- Flavor Note: two-tier Simple/Advanced facet -->
+                        <div class="explore-facet explore-facet--flavor" data-facet="<?php echo esc_attr( $group['data_key'] ); ?>">
+                            <div class="explore-facet__heading"><?php echo esc_html( $group['label'] ); ?></div>
+
+                            <!-- Simple / Advanced toggle -->
+                            <div class="explore-flavor-toggle" role="group" aria-label="Flavor filter detail level">
+                                <button type="button" class="explore-flavor-toggle__btn is-active" data-flavor-view="simple" aria-pressed="true">Simple</button>
+                                <button type="button" class="explore-flavor-toggle__btn" data-flavor-view="advanced" aria-pressed="false">Advanced</button>
+                            </div>
+
+                            <!-- SIMPLE: family chips (default) -->
+                            <div class="explore-flavor-simple" data-flavor-view-panel="simple">
+                                <div class="explore-flavor-chips">
+                                    <?php foreach ( $flavor_simple as $fam ) : ?>
+                                        <label class="explore-chip">
+                                            <input
+                                                type="checkbox"
+                                                class="explore-filter-cb"
+                                                data-filter-group="<?php echo esc_attr( $group['data_key'] ); ?>"
+                                                value="<?php echo esc_attr( $fam['slug'] ); ?>">
+                                            <span class="explore-chip__label"><?php echo esc_html( $fam['name'] ); ?></span>
+                                            <span class="explore-chip__count"><?php echo absint( $fam['count'] ); ?></span>
+                                        </label>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+
+                            <!-- ADVANCED: families with nested notes -->
+                            <div class="explore-flavor-advanced" data-flavor-view-panel="advanced" hidden>
+                                <?php foreach ( $flavor_advanced as $fam ) : ?>
+                                    <div class="explore-flavor-group">
+                                        <div class="explore-flavor-group__heading"><?php echo esc_html( $fam['name'] ); ?></div>
+                                        <div class="explore-facet__options explore-flavor-group__options">
+                                            <?php foreach ( $fam['options'] as $opt ) : ?>
+                                                <label class="explore-facet__option">
+                                                    <input
+                                                        type="checkbox"
+                                                        class="explore-filter-cb"
+                                                        data-filter-group="<?php echo esc_attr( $group['data_key'] ); ?>"
+                                                        value="<?php echo esc_attr( $opt['slug'] ); ?>">
+                                                    <span class="explore-facet__option-label"><?php echo esc_html( $opt['name'] ); ?></span>
+                                                    <span class="explore-facet__option-count"><?php echo absint( $opt['count'] ); ?></span>
+                                                </label>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+
+                                <?php if ( ! empty( $flavor_other_options ) ) : ?>
+                                    <details class="explore-flavor-group explore-flavor-group--other">
+                                        <summary class="explore-flavor-group__heading">Other</summary>
+                                        <div class="explore-facet__options explore-flavor-group__options">
+                                            <?php foreach ( $flavor_other_options as $opt ) : ?>
+                                                <label class="explore-facet__option">
+                                                    <input
+                                                        type="checkbox"
+                                                        class="explore-filter-cb"
+                                                        data-filter-group="<?php echo esc_attr( $group['data_key'] ); ?>"
+                                                        value="<?php echo esc_attr( $opt['slug'] ); ?>">
+                                                    <span class="explore-facet__option-label"><?php echo esc_html( $opt['name'] ); ?></span>
+                                                    <span class="explore-facet__option-count"><?php echo absint( $opt['count'] ); ?></span>
+                                                </label>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </details>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                    </div>
+
+                    <?php else : ?>
+
+                        <div class="explore-facet" data-facet="<?php echo esc_attr( $group['data_key'] ); ?>">
+                            <div class="explore-facet__heading"><?php echo esc_html( $group['label'] ); ?></div>
+                            <div class="explore-facet__options">
+                                <?php foreach ( $group['terms'] as $term ) : ?>
+                                    <label class="explore-facet__option">
+                                        <input
+                                            type="checkbox"
+                                            class="explore-filter-cb"
+                                            data-filter-group="<?php echo esc_attr( $group['data_key'] ); ?>"
+                                            value="<?php echo esc_attr( $term->slug ); ?>">
+                                        <span class="explore-facet__option-label"><?php echo esc_html( $term->name ); ?></span>
+                                        <span class="explore-facet__option-count"><?php echo absint( $term->count ); ?></span>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
+                    <?php endif; ?>
                 <?php endforeach; ?>
 
                 <!-- Minimum rating slider -->
@@ -211,7 +413,18 @@ echo wp_json_encode( [
                         $data_origin  = ( $origins_tax  && ! is_wp_error( $origins_tax ) )  ? implode( ' ', wp_list_pluck( $origins_tax,  'slug' ) ) : '';
                         $data_roast   = ( $roast_tax    && ! is_wp_error( $roast_tax ) )     ? implode( ' ', wp_list_pluck( $roast_tax,    'slug' ) ) : '';
                         $data_process = ( $process_tax  && ! is_wp_error( $process_tax ) )   ? implode( ' ', wp_list_pluck( $process_tax,  'slug' ) ) : '';
-                        $data_flavor  = ( $flavor_tax   && ! is_wp_error( $flavor_tax ) )    ? implode( ' ', wp_list_pluck( $flavor_tax,   'slug' ) ) : '';
+                        // Flavor: include each note slug AND its parent family slug, so a
+                        // Simple-view family chip matches any bean carrying a note in that family.
+                        $flavor_slug_set = [];
+                        if ( $flavor_tax && ! is_wp_error( $flavor_tax ) ) {
+                            foreach ( $flavor_tax as $ft ) {
+                                $flavor_slug_set[ $ft->slug ] = true;
+                                if ( (int) $ft->parent !== 0 && isset( $terms_by_id[ $ft->parent ] ) ) {
+                                    $flavor_slug_set[ $terms_by_id[ $ft->parent ]->slug ] = true;
+                                }
+                            }
+                        }
+                        $data_flavor  = implode( ' ', array_keys( $flavor_slug_set ) );
                         $data_brew    = ( $brew_tax     && ! is_wp_error( $brew_tax ) )       ? implode( ' ', wp_list_pluck( $brew_tax,     'slug' ) ) : '';
 
                         $data_rating = ( $rating !== '' && $rating !== null ) ? floatval( $rating ) : 0;

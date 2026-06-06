@@ -2977,6 +2977,121 @@ details[open] .cbi-faq__question::after {
   appearance: auto;
 }
 
+/* ── Flavor facet: Simple / Advanced two-tier ── */
+
+.explore-flavor-toggle {
+  display: inline-flex;
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--cbi-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.explore-flavor-toggle__btn {
+  background: transparent;
+  border: none;
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cbi-text-muted);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.explore-flavor-toggle__btn + .explore-flavor-toggle__btn {
+  border-left: 1px solid var(--cbi-border);
+}
+
+.explore-flavor-toggle__btn:hover { color: var(--cbi-accent); }
+
+.explore-flavor-toggle__btn.is-active {
+  background: var(--cbi-accent);
+  color: var(--cbi-bg);
+}
+
+/* Simple view: family chips */
+.explore-flavor-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.explore-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--cbi-border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+/* Visually hide the chip's checkbox — the chip itself is the control */
+.explore-chip input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.explore-chip__label {
+  font-size: var(--text-sm);
+  color: var(--cbi-text-muted);
+  transition: color 0.15s;
+}
+
+.explore-chip__count {
+  font-size: var(--text-2xs);
+  font-family: var(--font-mono);
+  color: var(--cbi-text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.explore-chip:hover { border-color: var(--cbi-accent); }
+
+/* Checked state: sibling selector colours the label (broad support); :has
+   adds the chip fill where supported (progressive enhancement). */
+.explore-chip input:checked ~ .explore-chip__label { color: var(--cbi-accent); }
+
+.explore-chip:has(input:checked) {
+  background: var(--cbi-accent-bg);
+  border-color: var(--cbi-accent);
+}
+
+.explore-chip:focus-within {
+  outline: 2px solid var(--cbi-accent);
+  outline-offset: 2px;
+}
+
+/* Advanced view: families as headers with nested notes */
+.explore-flavor-group { margin-bottom: var(--space-4); }
+
+.explore-flavor-group__heading {
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cbi-text-dim);
+  font-family: var(--font-mono);
+  margin-bottom: var(--space-2);
+}
+
+.explore-flavor-group__options {
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--cbi-border-light);
+}
+
+.explore-flavor-group--other > summary {
+  cursor: pointer;
+  margin-bottom: var(--space-2);
+}
+
+.explore-flavor-group--other[open] > summary { color: var(--cbi-accent); }
+
 .explore-sort-select:focus {
   outline: 2px solid var(--cbi-accent);
   outline-offset: 1px;
