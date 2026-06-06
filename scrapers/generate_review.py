@@ -497,7 +497,7 @@ def stream_claude(prompt: str, env: dict) -> str:
     full_text = []
 
     with client.messages.stream(
-        model="claude-sonnet-4-20250514",
+        model="claude-sonnet-4-6",
         max_tokens=2000,
         messages=[{"role": "user", "content": prompt}],
     ) as stream:
