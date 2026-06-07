@@ -1071,3 +1071,9 @@ function cbi_register_block_patterns() {
         'content'     => "<!-- wp:shortcode -->\n[cbi_bean slug=\"lavazza-super-crema\"]\n<!-- /wp:shortcode -->",
     ] );
 }
+
+// Flaticon attribution shortcode
+function cbi_flaticon_attribution() {
+    return '<p class="cbi-flaticon-attribution"><a href="https://www.flaticon.com/free-icons/coffee" title="coffee icons">Coffee icons created by Freepik – Flaticon</a></p>';
+}
+add_shortcode( 'flaticon_attribution', 'cbi_flaticon_attribution' );
