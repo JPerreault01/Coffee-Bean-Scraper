@@ -31,42 +31,45 @@ if ( ! $products ) {
 // ---------------------------------------------------------------------------
 // Origin canonical map
 // Keys: exact "origin" strings from products.json
-// Values: [ slug, display name ]
+// Values: list of [ slug, display name ] canonical country/region pairs.
 //
-// Single-country origins map to themselves.
-// Latin-America-only blends consolidate to latin-america.
-// Cross-region blends (Indonesia + Americas, Africa + Americas, etc.) go to
-// multi-origin-blend. This prevents dozens of long ugly slugs in the taxonomy.
+// A bean's origin resolves to MULTIPLE country tags so it surfaces under each
+// country's filter and archive. Single-origin beans get one entry; blends get
+// one entry per named country plus a ['blend','Blend'] marker so "show me only
+// blends" stays possible. Where a source only names a region (e.g. "Latin
+// America") with no countries, the regional term is kept alongside the marker.
 // ---------------------------------------------------------------------------
 
 $origin_map = [
-    // Single-country / single-region
-    'Colombia'                                      => [ 'colombia',          'Colombia'         ],
-    'Sumatra'                                       => [ 'sumatra',           'Sumatra'          ],
-    'Nicaragua (single origin)'                     => [ 'nicaragua',         'Nicaragua'        ],
-    'Limu, Ethiopia'                                => [ 'ethiopia',          'Ethiopia'         ],
-    'Yirgacheffe, Ethiopia'                         => [ 'ethiopia',          'Ethiopia'         ],
-    'Guji, Ethiopia'                                => [ 'ethiopia',          'Ethiopia'         ],
-    'Chiapas, Mexico'                               => [ 'mexico',            'Mexico'           ],
-    'Kona, Hawaii'                                  => [ 'hawaii',            'Hawaii'           ],
-    'Tarrazu, Costa Rica'                           => [ 'costa-rica',        'Costa Rica'       ],
+    // Single-country / single-region — one tag each
+    'Colombia'                  => [ ['colombia',   'Colombia']   ],
+    'Sumatra'                   => [ ['sumatra',    'Sumatra']    ],
+    'Nicaragua (single origin)' => [ ['nicaragua',  'Nicaragua']  ],
+    'Limu, Ethiopia'            => [ ['ethiopia',   'Ethiopia']   ],
+    'Yirgacheffe, Ethiopia'     => [ ['ethiopia',   'Ethiopia']   ],
+    'Guji, Ethiopia'            => [ ['ethiopia',   'Ethiopia']   ],
+    'Chiapas, Mexico'           => [ ['mexico',     'Mexico']     ],
+    'Kona, Hawaii'              => [ ['hawaii',     'Hawaii']     ],
+    'Tarrazu, Costa Rica'       => [ ['costa-rica', 'Costa Rica'] ],
 
-    // Latin America blends (all countries are within Latin America)
-    'Latin America blend'                           => [ 'latin-america',     'Latin America'    ],
-    'Central and South America blend'               => [ 'latin-america',     'Latin America'    ],
-    'Colombia, Brazil, Honduras blend'              => [ 'latin-america',     'Latin America'    ],
-    'Colombia, Central America blend'               => [ 'latin-america',     'Latin America'    ],
+    // Latin-America blends — tag each named country + a blend marker.
+    // Where the source only says "Latin America" / "Central & South America"
+    // with no countries named, keep the regional term + blend marker.
+    'Latin America blend'             => [ ['latin-america', 'Latin America'], ['blend','Blend'] ],
+    'Central and South America blend' => [ ['latin-america', 'Latin America'], ['blend','Blend'] ],
+    'Colombia, Brazil, Honduras blend'=> [ ['colombia','Colombia'], ['brazil','Brazil'], ['honduras','Honduras'], ['blend','Blend'] ],
+    'Colombia, Central America blend' => [ ['colombia','Colombia'], ['central-america','Central America'], ['blend','Blend'] ],
 
-    // Cross-region blends (span two or more distinct world regions)
-    'Brazil, Colombia, Indonesia blend'             => [ 'multi-origin-blend', 'Multi-Origin Blend' ],
-    '9-country Arabica blend'                       => [ 'multi-origin-blend', 'Multi-Origin Blend' ],
-    'Latin America, Indonesia blend'                => [ 'multi-origin-blend', 'Multi-Origin Blend' ],
-    'Latin America, East Africa blend'              => [ 'multi-origin-blend', 'Multi-Origin Blend' ],
-    'India, Peru blend'                             => [ 'multi-origin-blend', 'Multi-Origin Blend' ],
-    'Indonesia, Central America, South America blend' => [ 'multi-origin-blend', 'Multi-Origin Blend' ],
-    'Ethiopia, Colombia blend'                      => [ 'multi-origin-blend', 'Multi-Origin Blend' ],
-    'Ethiopia, Latin America blend'                 => [ 'multi-origin-blend', 'Multi-Origin Blend' ],
-    'Indonesia, South America blend'                => [ 'multi-origin-blend', 'Multi-Origin Blend' ],
+    // Cross-region blends — tag each named country/region + blend marker.
+    'Brazil, Colombia, Indonesia blend'               => [ ['brazil','Brazil'], ['colombia','Colombia'], ['indonesia','Indonesia'], ['blend','Blend'] ],
+    '9-country Arabica blend'                         => [ ['blend','Blend'] ], // no countries named
+    'Latin America, Indonesia blend'                  => [ ['latin-america','Latin America'], ['indonesia','Indonesia'], ['blend','Blend'] ],
+    'Latin America, East Africa blend'                => [ ['latin-america','Latin America'], ['east-africa','East Africa'], ['blend','Blend'] ],
+    'India, Peru blend'                               => [ ['india','India'], ['peru','Peru'], ['blend','Blend'] ],
+    'Indonesia, Central America, South America blend' => [ ['indonesia','Indonesia'], ['central-america','Central America'], ['south-america','South America'], ['blend','Blend'] ],
+    'Ethiopia, Colombia blend'                        => [ ['ethiopia','Ethiopia'], ['colombia','Colombia'], ['blend','Blend'] ],
+    'Ethiopia, Latin America blend'                   => [ ['ethiopia','Ethiopia'], ['latin-america','Latin America'], ['blend','Blend'] ],
+    'Indonesia, South America blend'                  => [ ['indonesia','Indonesia'], ['south-america','South America'], ['blend','Blend'] ],
 ];
 
 // ---------------------------------------------------------------------------
@@ -253,13 +256,19 @@ foreach ( $products as $p ) {
     $brew_slugs = array_map( 'sanitize_title', $p['best_brew_methods'] ?? [] );
     wp_set_object_terms( $post_id, $brew_slugs, 'brew-method' );
 
-    // --- Origin (canonical) ---
+    // --- Origin (canonical, multi-tag) ---
     $raw_origin = $p['origin'] ?? '';
     if ( isset( $origin_map[ $raw_origin ] ) ) {
-        [ $o_slug, $o_name ] = $origin_map[ $raw_origin ];
-        $o_term_id = cbi_get_or_create_term( $o_slug, $o_name, 'origin' );
-        if ( $o_term_id ) {
-            wp_set_object_terms( $post_id, [ $o_term_id ], 'origin' );
+        $origin_term_ids = [];
+        foreach ( $origin_map[ $raw_origin ] as $pair ) {
+            [ $o_slug, $o_name ] = $pair;
+            $o_term_id = cbi_get_or_create_term( $o_slug, $o_name, 'origin' );
+            if ( $o_term_id ) {
+                $origin_term_ids[] = $o_term_id;
+            }
+        }
+        if ( $origin_term_ids ) {
+            wp_set_object_terms( $post_id, array_unique( $origin_term_ids ), 'origin' );
         }
     } else {
         WP_CLI::warning( "  UNMAPPED origin for {$id}: \"{$raw_origin}\" — falling back to sanitize_title" );

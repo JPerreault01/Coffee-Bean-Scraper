@@ -441,6 +441,17 @@ echo wp_json_encode( [
                         data-price="<?php echo esc_attr( $data_price ); ?>"
                         data-name="<?php echo esc_attr( $title ); ?>">
 
+                        <!-- Media: featured image (image-ready) or placeholder SVG.
+                             cbi_coffee_placeholder() echoes its own wrapping <div class="…">,
+                             so we pass the placeholder classes straight to it. -->
+                        <a href="<?php echo esc_url( $link ); ?>" class="explore-card__media" aria-hidden="true" tabindex="-1">
+                            <?php if ( has_post_thumbnail( $post_id ) ) :
+                                echo get_the_post_thumbnail( $post_id, 'medium', [ 'class' => 'explore-card__img', 'loading' => 'lazy' ] );
+                            else :
+                                cbi_coffee_placeholder( 'explore-card__img explore-card__img--placeholder' );
+                            endif; ?>
+                        </a>
+
                         <!-- Head: name + roaster + rating badge (fields 1, 2, 7) -->
                         <div class="explore-card__head">
                             <div class="explore-card__head-text">

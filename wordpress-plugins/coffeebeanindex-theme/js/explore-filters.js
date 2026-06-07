@@ -27,6 +27,25 @@
 
     if (!grid) return;
 
+    // ── Pagination state ─────────────────────────────────────────────────────
+    // The page renders every matched bean server-side for instant filtering,
+    // but only one page's worth is shown at a time so the visible DOM (and the
+    // bag images, once they land) isn't all painted at once. Off-page images
+    // keep loading="lazy" and never fetch until paged into view.
+
+    var PAGE_SIZE   = 24;
+    var currentPage = 1;
+
+    // Pagination control lives directly below the grid; inject it if absent.
+    var paginationEl = document.getElementById('explore-pagination');
+    if (!paginationEl) {
+        paginationEl = document.createElement('nav');
+        paginationEl.id = 'explore-pagination';
+        paginationEl.className = 'explore-pagination';
+        paginationEl.setAttribute('aria-label', 'Bean grid pagination');
+        grid.insertAdjacentElement('afterend', paginationEl);
+    }
+
     // ── Mobile sidebar drawer ────────────────────────────────────────────────
 
     if (sidebarToggle && sidebarInner) {
@@ -65,7 +84,7 @@
             }
         });
 
-        if (changed) applyFilters();
+        if (changed) applyFiltersReset();
     }
 
     flavorToggleBtns.forEach(function (btn) {
@@ -79,14 +98,14 @@
     if (ratingSlider && ratingValEl) {
         ratingSlider.addEventListener('input', function () {
             ratingValEl.textContent = ratingSlider.value;
-            applyFilters();
+            applyFiltersReset();
         });
     }
 
     // ── Checkbox changes ────────────────────────────────────────────────────
 
     document.querySelectorAll('.explore-filter-cb').forEach(function (cb) {
-        cb.addEventListener('change', applyFilters);
+        cb.addEventListener('change', applyFiltersReset);
     });
 
     // ── Sort ────────────────────────────────────────────────────────────────
@@ -94,7 +113,7 @@
     if (sortSelect) {
         sortSelect.addEventListener('change', function () {
             applySort(sortSelect.value);
-            applyFilters();
+            applyFiltersReset();
         });
     }
 
@@ -108,7 +127,7 @@
             ratingSlider.value = 1;
             if (ratingValEl) ratingValEl.textContent = '1';
         }
-        applyFilters();
+        applyFiltersReset();
     }
 
     if (clearBtn)      clearBtn.addEventListener('click', clearAll);
@@ -135,6 +154,13 @@
     }
 
     // ── Filter ──────────────────────────────────────────────────────────────
+    // Filter or sort changes reset to page 1; page-button clicks call
+    // applyFilters() directly so the current page is preserved.
+
+    function applyFiltersReset() {
+        currentPage = 1;
+        applyFilters();
+    }
 
     function applyFilters() {
         var checkedOrigin  = getChecked('origin');
@@ -144,8 +170,10 @@
         var checkedBrew    = getChecked('brew');
         var minRating      = ratingSlider ? parseInt(ratingSlider.value, 10) : 1;
 
+        // grid.querySelectorAll returns cards in DOM order, which applySort()
+        // keeps in sorted order — so `matched` is already filtered AND sorted.
         var cards   = grid.querySelectorAll('.explore-card');
-        var visible = 0;
+        var matched = [];
 
         cards.forEach(function (card) {
             var origins  = slugsOf(card.dataset.origin);
@@ -166,16 +194,83 @@
                 matchesGroup(checkedBrew,    brews)    &&
                 passRating;
 
-            card.style.display = show ? '' : 'none';
-            if (show) visible++;
+            if (show) {
+                matched.push(card);
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        renderPage(matched);
+
+        if (emptyEl) {
+            emptyEl.style.display = matched.length === 0 ? '' : 'none';
+        }
+    }
+
+    // ── Pagination over the filtered + sorted result set ──────────────────────
+
+    function renderPage(matched) {
+        var total      = matched.length;
+        var totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        var start = (currentPage - 1) * PAGE_SIZE;
+        var end   = start + PAGE_SIZE;
+
+        matched.forEach(function (card, i) {
+            card.style.display = (i >= start && i < end) ? '' : 'none';
         });
 
         if (countEl) {
-            countEl.textContent = visible + ' bean' + (visible !== 1 ? 's' : '') + ' found';
+            if (total === 0) {
+                countEl.textContent = '0 beans found';
+            } else {
+                var from = start + 1;
+                var to   = Math.min(end, total);
+                countEl.textContent =
+                    total + ' bean' + (total !== 1 ? 's' : '') + ' found · showing ' + from + '-' + to;
+            }
         }
-        if (emptyEl) {
-            emptyEl.style.display = visible === 0 ? '' : 'none';
+
+        renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages) {
+        if (!paginationEl) return;
+
+        // One page (or none): nothing to page through.
+        if (totalPages <= 1) {
+            paginationEl.innerHTML = '';
+            paginationEl.style.display = 'none';
+            return;
         }
+        paginationEl.style.display = '';
+        paginationEl.innerHTML = '';
+
+        function makeBtn(label, page, opts) {
+            opts = opts || {};
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.textContent = label;
+            if (opts.disabled)  b.disabled = true;
+            if (opts.current)   b.setAttribute('aria-current', 'page');
+            if (opts.ariaLabel) b.setAttribute('aria-label', opts.ariaLabel);
+            if (!opts.disabled && !opts.current) {
+                b.addEventListener('click', function () {
+                    currentPage = page;
+                    applyFilters();
+                    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            }
+            paginationEl.appendChild(b);
+        }
+
+        makeBtn('‹', currentPage - 1, { disabled: currentPage === 1, ariaLabel: 'Previous page' });
+        for (var p = 1; p <= totalPages; p++) {
+            makeBtn(String(p), p, { current: p === currentPage });
+        }
+        makeBtn('›', currentPage + 1, { disabled: currentPage === totalPages, ariaLabel: 'Next page' });
     }
 
     // ── Sort ────────────────────────────────────────────────────────────────

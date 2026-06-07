@@ -3379,6 +3379,18 @@ details[open] .cbi-faq__question::after {
 .explore-sidebar {
   position: sticky;
   top: var(--space-6);
+  max-height: calc(100vh - var(--space-12));
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* thin scrollbar, only the inner facet list scrolls */
+  scrollbar-width: thin;
+  scrollbar-color: var(--cbi-border) transparent;
+  padding-right: var(--space-2);
+}
+.explore-sidebar::-webkit-scrollbar { width: 6px; }
+.explore-sidebar::-webkit-scrollbar-thumb {
+  background: var(--cbi-border);
+  border-radius: 3px;
 }
 
 /* Mobile toggle — hidden on desktop */
@@ -3403,7 +3415,11 @@ details[open] .cbi-faq__question::after {
 .explore-sidebar__toggle:hover { border-color: var(--cbi-accent); }
 
 @media (max-width: 960px) {
-  .explore-sidebar { position: static; }
+  .explore-sidebar {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
   .explore-sidebar__toggle { display: flex; }
   .explore-sidebar__inner {
     display: none;
@@ -3457,6 +3473,10 @@ details[open] .cbi-faq__question::after {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  max-height: 220px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
 }
 
 .explore-facet__option {
@@ -3676,6 +3696,40 @@ details[open] .cbi-faq__question::after {
   font-variant-numeric: tabular-nums;
 }
 
+/* ── Pagination (client-side, below grid) ── */
+
+.explore-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-10);
+  flex-wrap: wrap;
+}
+.explore-pagination button {
+  min-width: 38px;
+  height: 38px;
+  padding: 0 var(--space-3);
+  background: var(--cbi-bg);
+  border: 1px solid var(--cbi-border);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--cbi-text-muted);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+}
+.explore-pagination button:hover:not(:disabled) {
+  border-color: var(--cbi-accent);
+  color: var(--cbi-accent);
+}
+.explore-pagination button[aria-current="page"] {
+  background: var(--cbi-accent);
+  border-color: var(--cbi-accent);
+  color: #fff;
+}
+.explore-pagination button:disabled { opacity: 0.4; cursor: default; }
+
 /* ── Explore bean grid ── */
 
 .explore-grid {
@@ -3703,7 +3757,7 @@ details[open] .cbi-faq__question::after {
 .explore-card {
   background: var(--cbi-bg);
   border: 1px solid var(--cbi-border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -3712,8 +3766,32 @@ details[open] .cbi-faq__question::after {
 
 .explore-card:hover {
   border-color: var(--cbi-accent);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
 }
+
+/* Media slot: bag image at top of card, placeholder when none */
+.explore-card__media {
+  display: block;
+  aspect-ratio: 4 / 3;
+  background: var(--cbi-surface);
+  border-bottom: 1px solid var(--cbi-border);
+  overflow: hidden;
+}
+.explore-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+.explore-card:hover .explore-card__img { transform: scale(1.03); }
+.explore-card__img--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cbi-border);
+}
+.explore-card__img--placeholder svg { width: 40%; height: 40%; opacity: 0.5; }
 
 /* Head: roaster label + bean name + rating badge */
 .explore-card__head {
@@ -3797,15 +3875,13 @@ details[open] .cbi-faq__question::after {
   gap: var(--space-1);
 }
 
-/* Flavor notes: emphasized — larger chips on a tinted background */
+/* Flavor notes: the visual centerpiece — larger chips, no sunk panel.
+   Inner border dropped and padding tightened so chips read as the focus. */
 .explore-card__flavors {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  padding: var(--space-3);
-  background: var(--cbi-surface);
-  border-radius: var(--radius);
-  border: 1px solid var(--cbi-border-light);
+  padding: var(--space-1) 0;
 }
 
 .explore-card__flavor-tag {
