@@ -392,18 +392,49 @@ def parse_detail(html: str, name: str, url: str) -> CoffeeReview:
 
 # ── Checkpoint helpers ────────────────────────────────────────────────────────
 
-def load_checkpoint() -> tuple[list[tuple[str, str]], list[dict], set[str]]:
-    stubs:     list[tuple[str, str]] = []
-    completed: list[dict]            = []
-    done_urls: set[str]              = set()
+def _load_stubs() -> dict:
+    """
+    Load the stubs cache.  Returns a metadata envelope:
+      {"complete": bool, "pages_scraped": int, "stubs": [(name, url), ...]}
 
-    if STUBS_FILE.exists():
-        try:
-            stubs = [tuple(s) for s in json.loads(
-                STUBS_FILE.read_text(encoding="utf-8"))]
-            log.info("Loaded %d stubs from Phase 1 cache.", len(stubs))
-        except Exception:
-            log.warning("Stubs file unreadable — will redo Phase 1.")
+    Backward compat: a plain list (old format) is treated as incomplete so
+    Phase 1 restarts from page 1.
+    """
+    default: dict = {"complete": False, "pages_scraped": 0, "stubs": []}
+    if not STUBS_FILE.exists():
+        return default
+    try:
+        data = json.loads(STUBS_FILE.read_text(encoding="utf-8"))
+        if isinstance(data, list):
+            log.warning(
+                "Old-format stubs file (plain list) — treating as incomplete, re-running Phase 1."
+            )
+            return default
+        return {
+            "complete":      bool(data.get("complete", False)),
+            "pages_scraped": int(data.get("pages_scraped", 0)),
+            "stubs":         [tuple(s) for s in data.get("stubs", [])],
+        }
+    except Exception:
+        log.warning("Stubs file unreadable — re-running Phase 1.")
+        return default
+
+
+def _save_stubs(
+    stubs: list[tuple[str, str]], *, complete: bool, pages_scraped: int
+) -> None:
+    STUBS_FILE.write_text(
+        json.dumps(
+            {"complete": complete, "pages_scraped": pages_scraped, "stubs": stubs},
+            ensure_ascii=False, indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+
+def load_checkpoint() -> tuple[list[dict], set[str]]:
+    completed: list[dict] = []
+    done_urls: set[str]   = set()
 
     if OUTPUT_FILE.exists():
         try:
@@ -414,7 +445,7 @@ def load_checkpoint() -> tuple[list[tuple[str, str]], list[dict], set[str]]:
             log.warning("Output file unreadable — starting Phase 2 fresh.")
             completed = []
 
-    return stubs, completed, done_urls
+    return completed, done_urls
 
 
 def save_output(records: list[dict]) -> None:
@@ -431,7 +462,7 @@ CHECKPOINT_EVERY = 25
 
 def scrape(max_pages: Optional[int] = 3) -> list[dict]:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    cached_stubs, completed, done_urls = load_checkpoint()
+    completed, done_urls = load_checkpoint()
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch(headless=True)
@@ -439,53 +470,75 @@ def scrape(max_pages: Optional[int] = 3) -> list[dict]:
 
         try:
             # ── Phase 1 ───────────────────────────────────────────────────────
-            if cached_stubs:
-                unique_stubs = cached_stubs
-                log.info("Skipping Phase 1 (using cached stubs).")
-            else:
-                log.info("=== Phase 1: collecting review URLs ===")
-                stub_list: list[tuple[str, str]] = []
+            stubs_data     = _load_stubs()
+            phase1_done    = stubs_data["complete"]
+            pages_scraped  = stubs_data["pages_scraped"]
+            existing_stubs: list[tuple[str, str]] = stubs_data["stubs"]
 
-                # Fetch page 1 first to discover total page count
-                first_html  = fetch_html(page, LISTING_URL,
-                                         wait_selector="div.review-template")
-                total_pages = get_total_pages(first_html)
-                if total_pages:
-                    log.info("Total pages on site: %d (~%d reviews)",
-                             total_pages, total_pages * 20)
+            if phase1_done:
+                unique_stubs = existing_stubs
+                log.info("Skipping Phase 1 (complete cache: %d stubs).", len(unique_stubs))
+            else:
+                resume_from = pages_scraped + 1  # 1 when starting fresh
+                stub_list   = list(existing_stubs)
+
+                if resume_from > 1:
+                    log.info(
+                        "Resuming Phase 1 from page %d (%d stubs already cached).",
+                        resume_from, len(stub_list),
+                    )
+                else:
+                    log.info("=== Phase 1: collecting review URLs ===")
+
+                # Fetch page 1 when starting fresh (resume_from == 1)
+                # or when --all is used and we need total_pages regardless of resume point
+                first_html  = None
+                total_pages = None
+                if resume_from == 1 or max_pages is None:
+                    first_html  = fetch_html(page, LISTING_URL,
+                                             wait_selector="div.review-template")
+                    total_pages = get_total_pages(first_html)
+                    if total_pages:
+                        log.info("Total pages on site: %d (~%d reviews)",
+                                 total_pages, total_pages * 20)
 
                 end_page = (
                     total_pages if max_pages is None
                     else min(max_pages, total_pages or max_pages)
                 )
 
-                with tqdm(range(1, end_page + 1),
-                          desc="Listing pages", unit="page") as pbar:
-                    for page_num in pbar:
-                        if page_num == 1:
-                            html = first_html
-                        else:
-                            lurl = listing_url(page_num)
+                # Add page 1 stubs only when starting fresh (not resuming)
+                if resume_from == 1 and first_html is not None:
+                    p1_stubs = parse_listing(first_html)
+                    log.info("  page 1 → %d links", len(p1_stubs))
+                    stub_list.extend(p1_stubs)
+                    _save_stubs(stub_list, complete=False, pages_scraped=1)
+
+                # Remaining pages
+                loop_start = max(resume_from, 2)
+                if end_page is not None and loop_start <= end_page:
+                    with tqdm(range(loop_start, end_page + 1),
+                              desc="Listing pages", unit="page") as pbar:
+                        for page_num in pbar:
+                            lurl  = listing_url(page_num)
                             log.info("Listing page %d → %s", page_num, lurl)
-                            html = fetch_html(page, lurl,
-                                              wait_selector="div.review-template")
+                            html  = fetch_html(page, lurl,
+                                               wait_selector="div.review-template")
+                            stubs = parse_listing(html)
+                            log.info("  → %d review links found", len(stubs))
+                            stub_list.extend(stubs)
+                            pbar.set_postfix(collected=len(stub_list))
+                            _save_stubs(stub_list, complete=False, pages_scraped=page_num)
+                            if page_num < end_page:
+                                time.sleep(random.uniform(2.0, 4.0))
 
-                        stubs = parse_listing(html)
-                        log.info("  → %d review links found", len(stubs))
-                        stub_list.extend(stubs)
-                        pbar.set_postfix(collected=len(stub_list))
-
-                        if page_num < end_page:
-                            time.sleep(random.uniform(2.0, 4.0))
-
+                # Deduplicate and mark Phase 1 complete
                 seen: set[str] = set()
                 unique_stubs = [(n, u) for n, u in stub_list
                                 if not (u in seen or seen.add(u))]
-                STUBS_FILE.write_text(
-                    json.dumps(unique_stubs, ensure_ascii=False, indent=2),
-                    encoding="utf-8",
-                )
-                log.info("Cached %d stubs to %s", len(unique_stubs), STUBS_FILE)
+                _save_stubs(unique_stubs, complete=True,
+                            pages_scraped=end_page or pages_scraped)
+                log.info("Phase 1 complete: %d unique stubs cached.", len(unique_stubs))
 
             # ── Phase 2 ───────────────────────────────────────────────────────
             remaining = [(n, u) for n, u in unique_stubs if u not in done_urls]
