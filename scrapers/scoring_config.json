@@ -1,0 +1,33 @@
+{
+  "_comment": "Tunables for the review scoring system. Read by scrapers/score_ledger.py. Safe to commit (no secrets). See CLAUDE_content_standards_section.md for the rubric these settings govern.",
+
+  "critic_weight": "advisory",
+  "_critic_weight_help": "How much scraped/external critic scores (CoffeeReview etc.) may influence OUR score. 'advisory' (default) = flag divergences, change NOTHING automatically. 'low' = also record a bounded suggested nudge for manual review, but still never overwrites our score. The external number is evidence, not a verdict.",
+
+  "agreement_threshold": 1.0,
+  "_agreement_threshold_help": "If |our_score - normalized_critic_score| <= this, we agree. Keep ours, no flag.",
+
+  "divergence_threshold": 1.5,
+  "_divergence_threshold_help": "If |our_score - normalized_critic_score| > this, flag 'score_divergence' in the ledger for manual review. Never auto-adjust.",
+
+  "max_nudge": 0.3,
+  "_max_nudge_help": "Hard cap on how far the external score may ever move ours, and only when critic_weight='low'. Recorded as a suggestion; the human applies it.",
+
+  "comparable_k": 18,
+  "_comparable_k_help": "How many closest prior beans (same roast / sensory / price tier) to inject into the scoring prompt as comparative anchors.",
+
+  "critic_scale": {
+    "offset": 50.0,
+    "divisor": 5.0,
+    "min": 1.0,
+    "max": 10.0
+  },
+  "_critic_scale_help": "Heuristic map from a 100-pt critic score to our 1-10 scale, FOR DIVERGENCE COMPARISON ONLY (never stored as our score): normalized = clamp((raw - offset) / divisor, min, max). e.g. 90->8.0, 95->9.0, 85->7.0. CoffeeReview only reviews specialty coffee and rates generously (effective range ~85-97), so a mainstream bean we score ~6 will usually flag a divergence vs a 90+ critic. That flag is a feature: it surfaces the gap for your call.",
+
+  "web_calibrate": {
+    "model": "claude-sonnet-4-6",
+    "max_searches": 3,
+    "timeout_seconds": 40
+  },
+  "_web_calibrate_help": "Settings for the optional --web-calibrate lookup of external critic scores when a bean is not in the local CoffeeReview corpus. Best-effort, gated behind the flag, degrades to None on any error or when offline. Never blocks normal generation."
+}

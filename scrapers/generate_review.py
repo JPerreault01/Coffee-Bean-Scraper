@@ -32,6 +32,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from pathlib import Path as _Path
 from reference_db import get_conn, get_specs, find_coffee
+import score_ledger
 
 
 def reference_block(product: dict) -> str:
@@ -338,7 +339,8 @@ DISCLOSURE_TOP = (
 )
 
 
-def build_prompt(product: dict, price_summary: str, style_guide: str, personal: bool) -> str:
+def build_prompt(product: dict, price_summary: str, style_guide: str, personal: bool,
+                 scoring_context: str = "") -> str:
     best_brew = ", ".join(product.get("best_brew_methods", []))
     flavor_notes = ", ".join(product.get("flavor_notes", []))
     affiliate_tag = product.get("affiliate_tag", "")
@@ -409,6 +411,16 @@ PUNCTUATION RULE: ABSOLUTE: Never use em-dashes (—) or en-dashes (–) anywher
     mtitle = meta_title(product)
     links_md = internal_links_section(product)
 
+    # Anchored rubric + comparative calibration. The rubric is always present;
+    # the comparative context is empty on a cold-start ledger. This block is what
+    # breaks the 6-7 clustering: explicit bands, an anti-default rule, the decimal
+    # mandate, and real prior beans to score against.
+    scoring_block = (
+        "## Scoring\n"
+        f"{score_ledger.RATING_RUBRIC}\n"
+        f"{scoring_context}"
+    )
+
     return f"""You are writing a coffee bean product review for a niche affiliate website.
 The review will be edited by a human before publication.
 
@@ -444,6 +456,7 @@ Every review must include all three of the following:
 ## Price history (last 30 days)
 {price_summary}
 
+{scoring_block}
 ## Required output format
 
 Write the review exactly in this structure. No preamble. No additional sections.
@@ -483,12 +496,13 @@ meta_description: [One sentence, 120-155 characters. Plain, specific, no hedging
 ### Price analysis
 [Is it good value right now? Reference the actual 30-day data. State a clear buy/wait judgment.]
 
-### Rating: X/10
-[One sentence. Justify the number specifically.]
+{score_ledger.rating_section_instruction()}
 
 {links_md}
 ---
 *[Affiliate disclosure: links in this review are affiliate links. Prices accurate at time of writing.]*
+
+{score_ledger.SCORE_TRAILER_INSTRUCTION}
 """
 
 
@@ -566,10 +580,12 @@ def stream_claude_code(prompt: str) -> str:
     """Generate a review by shelling out to the locally authenticated Claude Code
     CLI (`claude -p`). Uses Pro subscription tokens instead of pay-per-token API
     credits. LOCAL ONLY — the caller must keep this off the VPS cron path."""
+    import os
     import shutil
     import subprocess
 
-    if shutil.which("claude") is None:
+    exe = shutil.which("claude")
+    if exe is None:
         print(
             "ERROR: claude CLI not found. Install Claude Code and sign in, "
             "or use --api claude or --api minimax instead.",
@@ -577,10 +593,16 @@ def stream_claude_code(prompt: str) -> str:
         )
         sys.exit(1)
 
+    # Prompt via stdin (no arg-length limit); route Windows .cmd launchers through
+    # cmd.exe so CreateProcess can execute them.
+    args = ["cmd", "/c", exe, "-p"] if os.name == "nt" else [exe, "-p"]
     result = subprocess.run(
-        ["claude", "-p", prompt],
+        args,
+        input=prompt,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
     )
     draft = result.stdout
 
@@ -624,6 +646,13 @@ def generate_mock(product: dict, price_summary: str, personal: bool) -> str:
     meta_desc = meta_description_mock(product)
     links_md = internal_links_section(product)
 
+    # Deterministic decimal mock score so --mock exercises the parse/ledger path
+    # offline. Varies a little by sensory profile; clamped to the rubric range.
+    body = product.get("body") or 3
+    bitterness = product.get("bitterness") or 3
+    sweetness = product.get("sweetness") or 3
+    mock_score = max(1.0, min(10.0, round(5.0 + 0.4 * (body - bitterness) + 0.2 * (sweetness - 3), 1)))
+
     return f"""{meta_header(product, meta_desc)}## {product['name']} Review
 
 {DISCLOSURE_TOP}
@@ -650,12 +679,17 @@ Drip and french press drinkers who want a reliable daily driver. Not a special o
 ### Price analysis
 {price_summary}
 
-### Rating: X/10
+### Rating: {mock_score}/10
 [Mock draft. Edit rating and justification before publishing.]
 
 {links_md}
 ---
 *[Affiliate disclosure: links in this review are affiliate links. Prices accurate at time of writing.]*
+
+<!--SCORE
+score: {mock_score}
+rationale: Mock draft, deterministic placeholder score derived from sensory profile. Replace with real model output before publishing.
+-->
 
 ---
 [MOCK DRAFT, voice mode: {mode}. Replace with real API output before publishing.]
@@ -676,8 +710,40 @@ def save_draft(product_id: str, content: str) -> Path:
     DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
     date_str = datetime.now().strftime("%Y-%m-%d")
     path = DRAFTS_DIR / f"{product_id}-{date_str}.md"
-    path.write_text(content)
+    path.write_text(content, encoding="utf-8")
     return path
+
+
+def record_score(product: dict, draft_text: str, config: dict, ledger: dict,
+                 web_calibrate: bool, env: dict) -> None:
+    """Parse the score the model just wrote, run the external-critic divergence
+    check (sanity check only — never changes our score), and write the ledger
+    entry. Wrapped so a ledger failure can never break review generation."""
+    try:
+        score, rationale = score_ledger.parse_score_from_text(draft_text)
+        if score is None:
+            print("Ledger: no parseable score in draft — not recorded.", file=sys.stderr)
+            return
+        external, divergence = score_ledger.divergence_check(
+            score, product, config, web_calibrate=web_calibrate, env=env
+        )
+        entry = score_ledger.make_entry(
+            product, score, rationale or "", "generate",
+            external=external, divergence=divergence,
+        )
+        score_ledger.upsert_entry(ledger, entry)
+        score_ledger.save_ledger(ledger)
+
+        msg = f"Ledger: {product['id']} scored {score}"
+        if external:
+            msg += (f" | critic {external['raw']}->{external['normalized']} "
+                    f"({external['status']})")
+        print(msg, file=sys.stderr)
+        if divergence:
+            print(f"  ** SCORE DIVERGENCE flagged for your review: {divergence}",
+                  file=sys.stderr)
+    except Exception as e:
+        print(f"Ledger: write skipped ({e}).", file=sys.stderr)
 
 
 def main() -> None:
@@ -708,6 +774,23 @@ def main() -> None:
         default=False,
         help="Generate a mock draft locally without an API call (for testing)",
     )
+    parser.add_argument(
+        "--web-calibrate",
+        action="store_true",
+        default=False,
+        help=(
+            "Optional: when the bean is not in the local CoffeeReview corpus, do a "
+            "best-effort web lookup of an external critic score for the divergence "
+            "check only. Advisory; degrades to nothing offline; never blocks or "
+            "changes our score."
+        ),
+    )
+    parser.add_argument(
+        "--no-ledger",
+        action="store_true",
+        default=False,
+        help="Skip writing this bean's score to the comparative rationale ledger.",
+    )
     args = parser.parse_args()
 
     env = load_env()
@@ -729,10 +812,22 @@ def main() -> None:
 
     ref_context = reference_block(product)
 
+    # Comparative scoring calibration: the anchored rubric is always injected; the
+    # comparable-bean context is built from the ledger (empty on a cold start).
+    config = score_ledger.load_config()
+    ledger = score_ledger.load_ledger()
+    scoring_context = score_ledger.format_scoring_context(product, ledger, products, config)
+    if scoring_context:
+        print(f"Scoring: anchoring against {score_ledger.distribution_stats(ledger)['n']} "
+              f"prior beans in the ledger.", file=sys.stderr)
+    else:
+        print("Scoring: cold-start ledger — rubric only, no comparables yet.", file=sys.stderr)
+
     if args.mock:
         print("Mode: MOCK (no API call)", file=sys.stderr)
         print("=" * 60, file=sys.stderr)
-        prompt = ref_context + build_prompt(product, price_summary, style_guide, args.personal)
+        prompt = ref_context + build_prompt(product, price_summary, style_guide,
+                                            args.personal, scoring_context)
         print("\n=== CONSTRUCTED PROMPT ===", file=sys.stderr)
         print(prompt, file=sys.stderr)
         print("=== END PROMPT ===\n", file=sys.stderr)
@@ -741,9 +836,12 @@ def main() -> None:
         path = save_draft(args.product_id, draft)
         print(f"\n{'=' * 60}", file=sys.stderr)
         print(f"Mock draft saved to: {path}", file=sys.stderr)
+        print("Ledger: not written in mock mode (mock score is a placeholder).",
+              file=sys.stderr)
         return
 
-    prompt = ref_context + build_prompt(product, price_summary, style_guide, args.personal)
+    prompt = ref_context + build_prompt(product, price_summary, style_guide,
+                                        args.personal, scoring_context)
 
     api = args.api
     if api is None:
@@ -780,6 +878,9 @@ def main() -> None:
     path = save_draft(args.product_id, draft)
     print(f"\n{'=' * 60}", file=sys.stderr)
     print(f"Draft saved to: {path}", file=sys.stderr)
+
+    if not args.no_ledger:
+        record_score(product, draft, config, ledger, args.web_calibrate, env)
 
 
 if __name__ == "__main__":

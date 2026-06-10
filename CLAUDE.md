@@ -213,9 +213,16 @@ without the appropriate disclosure in place.
 ### Price analysis
 [Current price vs 30-day average, value judgment, when to buy]
 
-### Rating: X/10
-[One sentence explaining the score]
+### Rating: X.X/10
+[One sentence explaining the score. Use a DECIMAL (e.g. 7.3) chosen against the
+anchored rubric. The score is decided last, after the "Who should skip it" critique.]
 ```
+
+> **Scoring is governed by an anchored rubric, not a free-form 1-10.** Score bands,
+> the decimal mandate, the "score last" rule, the comparative rationale ledger, and
+> the external-critic sanity check are all documented in
+> [CLAUDE_content_standards_section.md](CLAUDE_content_standards_section.md). That
+> file is the source of truth for how a bean is scored.
 
 ---
 
