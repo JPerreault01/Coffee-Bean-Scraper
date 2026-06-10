@@ -218,8 +218,8 @@ The specific mismatches found (the rewrites in §2 resolve the doc side of each)
 | D5 | Reviews are WordPress posts via plugin | Reviews are a `bean` CPT with ACF fields, rendered by the theme |
 | D6 | data_pipeline sources: 4 subreddits / 3 sites / 2 channels (`data_pipeline/README.md`) | `config.json`: 9 / 9 / 7 |
 | D7 | "Transcripts fetched via youtube-transcript-api" (`data_pipeline/README.md`) | Code uses `yt-dlp` |
-| D8 | `select_products.py` next-step cites `batch_build_products.py` and `waytocoffee_scraper.py --details-for/--tag` | Those don't exist — that script has no `--details-for`/`--tag` flags and `batch_build_products.py` is absent (stale in-code docs) |
-| D9 | README reference corpus "~14,000"; `select_products.py` "~17k" | DB has 14,386 — use 14k |
+| D8 | `select_products.py` next-step cites `batch_build_products.py` and `waytocoffee_scraper.py --details-for/--tag` | Those don't exist — that script has no `--details-for`/`--tag` flags and `batch_build_products.py` is absent (stale in-code docs). **RESOLVED:** docstring rewritten to the real step (curate `promotion_candidates.json` → add to `products.json` → `generate_review.py <id>`) |
+| D9 | README reference corpus "~14,000"; `select_products.py` "~17k" | DB has 14,386 — use 14k. **RESOLVED:** `select_products.py` now says ~14k |
 | D10 | `.gitignore` / `CLAUDE.md` old gitignore block | Real `.gitignore` also ignores `training_data/*`, `skill_data/`, `voice_materials/`, `.tmp-shots/`, `data/*.json` — now reflected |
 
 > Note: `SEO_PLAYBOOK.md`, `PREPUBLISH_CHECKLIST.md`, `CONTENT_REFRESH.md`, `THEME.md`,

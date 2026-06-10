@@ -107,8 +107,13 @@ waytocoffee_scraper.py ──► data/waytocoffee.json ──► reference_db.py
 - **`scrapers/reference_db.py`** — loads the JSON into a normalized schema and exposes a
   CLI: `load`, `specs <slug>`, `find "<name>"`, `map products.json` (fuzzy-suggests a
   `reference_slug` for each tracked product).
-- **`scrapers/select_products.py`** — filters/ranks reference beans worth promoting to
-  full reviews, writing `data/promotion_candidates.json`.
+- **`scrapers/select_products.py`** — filters reference beans worth promoting to full
+  reviews, enriches each with an independent professional-critic signal from
+  `coffeereview.db` (strong-match only), ranks by a tunable composite (monetizability,
+  critic data, search demand, completeness), and writes `data/promotion_candidates.json`.
+  The attached critic data is for selection/ranking + factual cross-check ONLY and never
+  reaches the scoring prompt (the score_ledger firewall). Optional `--enrich-web` verifies
+  roaster/bean liveness and price. The shortlist is curated by hand into `products.json`.
 
 ### Schema (`data/coffee_reference.db`)
 
