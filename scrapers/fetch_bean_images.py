@@ -412,6 +412,12 @@ def main() -> None:
         image_url = None
         source = None
 
+        # Skip if we already have a valid cached file for this product.
+        if dest.exists() and dest.stat().st_size >= MIN_IMAGE_BYTES:
+            log.info("CACHED %s — skipping fetch", pid)
+            manifest[pid] = str(dest)
+            continue
+
         # (1) PA-API
         if paapi_ready and asin:
             image_url = get_image_paapi(asin)
