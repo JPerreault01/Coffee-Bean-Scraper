@@ -41,35 +41,141 @@ if ( ! $products ) {
 // ---------------------------------------------------------------------------
 
 $origin_map = [
-    // Single-country / single-region — one tag each
-    'Colombia'                  => [ ['colombia',   'Colombia']   ],
-    'Sumatra'                   => [ ['sumatra',    'Sumatra']    ],
-    'Nicaragua (single origin)' => [ ['nicaragua',  'Nicaragua']  ],
-    'Limu, Ethiopia'            => [ ['ethiopia',   'Ethiopia']   ],
-    'Yirgacheffe, Ethiopia'     => [ ['ethiopia',   'Ethiopia']   ],
-    'Guji, Ethiopia'            => [ ['ethiopia',   'Ethiopia']   ],
-    'Chiapas, Mexico'           => [ ['mexico',     'Mexico']     ],
-    'Kona, Hawaii'              => [ ['hawaii',     'Hawaii']     ],
-    'Tarrazu, Costa Rica'       => [ ['costa-rica', 'Costa Rica'] ],
+    // ---- Single-country / no-data fallback ----
+    'Colombia'                  => [ ['colombia',          'Colombia']          ],
+    'Sumatra'                   => [ ['sumatra',           'Sumatra']           ],
+    'Nicaragua (single origin)' => [ ['nicaragua',         'Nicaragua']         ],
+    'Nicaragua'                 => [ ['nicaragua',         'Nicaragua']         ],
+    'India'                     => [ ['india',             'India']             ],
+    'Burundi'                   => [ ['burundi',           'Burundi']           ],
+    'Tanzania, Oldeani'         => [ ['tanzania',          'Tanzania']          ],
+    'Bolivia, Caranavi'         => [ ['bolivia',           'Bolivia']           ],
+    'Ecuador, Hacienda La Papaya' => [ ['ecuador',         'Ecuador']           ],
+    ''                          => [ ['blend',             'Blend']             ], // no origin data
 
-    // Latin-America blends — tag each named country + a blend marker.
-    // Where the source only says "Latin America" / "Central & South America"
-    // with no countries named, keep the regional term + blend marker.
-    'Latin America blend'             => [ ['latin-america', 'Latin America'], ['blend','Blend'] ],
-    'Central and South America blend' => [ ['latin-america', 'Latin America'], ['blend','Blend'] ],
-    'Colombia, Brazil, Honduras blend'=> [ ['colombia','Colombia'], ['brazil','Brazil'], ['honduras','Honduras'], ['blend','Blend'] ],
-    'Colombia, Central America blend' => [ ['colombia','Colombia'], ['central-america','Central America'], ['blend','Blend'] ],
+    // ---- Ethiopia variants ----
+    'Limu, Ethiopia'                            => [ ['ethiopia', 'Ethiopia'] ],
+    'Yirgacheffe, Ethiopia'                     => [ ['ethiopia', 'Ethiopia'] ],
+    'Guji, Ethiopia'                            => [ ['ethiopia', 'Ethiopia'] ],
+    'Guji, Ethiopia, Hambela'                   => [ ['ethiopia', 'Ethiopia'] ],
+    'Guji, Ethiopia, Oromia, Oromia (snnp)'    => [ ['ethiopia', 'Ethiopia'] ],
+    'Ethiopia, Arbegona'                        => [ ['ethiopia', 'Ethiopia'] ],
+    'Ethiopia, Bench Maji'                      => [ ['ethiopia', 'Ethiopia'] ],
+    'Ethiopia, Bensa'                           => [ ['ethiopia', 'Ethiopia'] ],
+    'Ethiopia, Bensa, Sidama, Ware'             => [ ['ethiopia', 'Ethiopia'] ],
+    'Ethiopia, Danse Sayisa'                    => [ ['ethiopia', 'Ethiopia'] ],
+    'Ethiopia, Gedeb'                           => [ ['ethiopia', 'Ethiopia'] ],
+    'Ethiopia, Gedeo Zone'                      => [ ['ethiopia', 'Ethiopia'] ],
+    'Ethiopia, Guji Uraga'                      => [ ['ethiopia', 'Ethiopia'] ],
+    'Ethiopia, Sidama'                          => [ ['ethiopia', 'Ethiopia'] ],
+    'Ethiopia, Worka Chelichele'                => [ ['ethiopia', 'Ethiopia'] ],
+    'Ethiopia, Yirgacheffe'                     => [ ['ethiopia', 'Ethiopia'] ],
+    'Ethiopia, Yirgacheffe, Gedeb'              => [ ['ethiopia', 'Ethiopia'] ],
+    'Ethiopia, Yirgacheffe, Gedeb, Worka Chelichele' => [ ['ethiopia', 'Ethiopia'] ],
 
-    // Cross-region blends — tag each named country/region + blend marker.
-    'Brazil, Colombia, Indonesia blend'               => [ ['brazil','Brazil'], ['colombia','Colombia'], ['indonesia','Indonesia'], ['blend','Blend'] ],
-    '9-country Arabica blend'                         => [ ['blend','Blend'] ], // no countries named
-    'Latin America, Indonesia blend'                  => [ ['latin-america','Latin America'], ['indonesia','Indonesia'], ['blend','Blend'] ],
-    'Latin America, East Africa blend'                => [ ['latin-america','Latin America'], ['east-africa','East Africa'], ['blend','Blend'] ],
-    'India, Peru blend'                               => [ ['india','India'], ['peru','Peru'], ['blend','Blend'] ],
-    'Indonesia, Central America, South America blend' => [ ['indonesia','Indonesia'], ['central-america','Central America'], ['south-america','South America'], ['blend','Blend'] ],
-    'Ethiopia, Colombia blend'                        => [ ['ethiopia','Ethiopia'], ['colombia','Colombia'], ['blend','Blend'] ],
-    'Ethiopia, Latin America blend'                   => [ ['ethiopia','Ethiopia'], ['latin-america','Latin America'], ['blend','Blend'] ],
-    'Indonesia, South America blend'                  => [ ['indonesia','Indonesia'], ['south-america','South America'], ['blend','Blend'] ],
+    // ---- Colombia variants ----
+    'Colombia, Calarca'   => [ ['colombia', 'Colombia'] ],
+    'Colombia, Caldas'    => [ ['colombia', 'Colombia'] ],
+    'Colombia, Huila'     => [ ['colombia', 'Colombia'] ],
+    'Colombia, Pitalito'  => [ ['colombia', 'Colombia'] ],
+    'Colombia, Planadas'  => [ ['colombia', 'Colombia'] ],
+    'Colombia, Quindío'   => [ ['colombia', 'Colombia'] ],
+    'Colombia, Risaralda' => [ ['colombia', 'Colombia'] ],
+
+    // ---- Kenya variants ----
+    'Kenya, Kiambu'      => [ ['kenya', 'Kenya'] ],
+    'Kenya, Kirinyaga'   => [ ['kenya', 'Kenya'] ],
+    'Kenya, Nyeri'       => [ ['kenya', 'Kenya'] ],
+    'Kenya, Nyeri, Tetu' => [ ['kenya', 'Kenya'] ],
+
+    // ---- Costa Rica variants ----
+    'Tarrazu, Costa Rica'                        => [ ['costa-rica', 'Costa Rica'] ],
+    'Costa Rica, Brunca-chirripó'                => [ ['costa-rica', 'Costa Rica'] ],
+    'Costa Rica, Central Valley'                 => [ ['costa-rica', 'Costa Rica'] ],
+    'Costa Rica, Finca La Candelilla'            => [ ['costa-rica', 'Costa Rica'] ],
+    'Costa Rica, Sabanilla De Alajuela, Naranjo' => [ ['costa-rica', 'Costa Rica'] ],
+    'Costa Rica, Santa Barbara De Heredia'       => [ ['costa-rica', 'Costa Rica'] ],
+    'Costa Rica, West Valley'                    => [ ['costa-rica', 'Costa Rica'] ],
+    'Costa Rica, West Valley Zarcero'            => [ ['costa-rica', 'Costa Rica'] ],
+
+    // ---- Panama variants ----
+    'Panama, Bambito'     => [ ['panama', 'Panama'] ],
+    'Panama, Boquete'     => [ ['panama', 'Panama'] ],
+    'Panama, Santa Clara' => [ ['panama', 'Panama'] ],
+    'Jaramillo, Panama'   => [ ['panama', 'Panama'] ],
+
+    // ---- Brazil variants ----
+    'Minas Gerais, Brazil'           => [ ['brazil', 'Brazil'] ],
+    'Brazil, Carmo De Minas'         => [ ['brazil', 'Brazil'] ],
+    'Brazil, Matas De Minas'         => [ ['brazil', 'Brazil'] ],
+    'Brazil, Paraná, Norte Pioneiro' => [ ['brazil', 'Brazil'] ],
+
+    // ---- El Salvador ----
+    'El Salvador, Apaneca Ilamatepec' => [ ['el-salvador', 'El Salvador'] ],
+    'El Salvador, Chalatenango'       => [ ['el-salvador', 'El Salvador'] ],
+
+    // ---- Guatemala ----
+    'Guatemala, Antigua'       => [ ['guatemala', 'Guatemala'] ],
+    'Guatemala, Huehuetenango' => [ ['guatemala', 'Guatemala'] ],
+
+    // ---- Indonesia variants ----
+    'Indonesia, Aceh'    => [ ['indonesia', 'Indonesia'] ],
+    'Indonesia, Sumatra' => [ ['indonesia', 'Indonesia'] ],
+
+    // ---- India variants ----
+    'India, Western Ghats' => [ ['india', 'India'] ],
+
+    // ---- Burundi variants ----
+    'Kayanza, Burundi' => [ ['burundi', 'Burundi'] ],
+
+    // ---- Papua New Guinea ----
+    'Papua New Guinea, Chimbu Province' => [ ['papua-new-guinea', 'Papua New Guinea'] ],
+
+    // ---- Hawaii / United States ----
+    'Kona, Hawaii'                             => [ ['hawaii', 'Hawaii'] ],
+    'South Kona, United States, Hōlualoa'      => [ ['hawaii', 'Hawaii'] ],
+    'United States'                            => [ ['hawaii', 'Hawaii'] ],
+    'United States, Hawaii'                    => [ ['hawaii', 'Hawaii'] ],
+    "United States, Ka'u"                      => [ ['hawaii', 'Hawaii'] ],
+    'United States, Kona'                      => [ ['hawaii', 'Hawaii'] ],
+    'United States, Kona Coffee Belt (hawaii)' => [ ['hawaii', 'Hawaii'] ],
+    "United States, Kona District, Hawai'i"    => [ ['hawaii', 'Hawaii'] ],
+    'United States, Kona, Hawaii, Big Island'  => [ ['hawaii', 'Hawaii'] ],
+    'Chiapas, Mexico'                          => [ ['mexico',  'Mexico'] ],
+
+    // ---- Multi-country blends ----
+    'Latin America blend'             => [ ['latin-america', 'Latin America'], ['blend', 'Blend'] ],
+    'Central and South America blend' => [ ['latin-america', 'Latin America'], ['blend', 'Blend'] ],
+    'Central America, South America, Sumatra blend' => [
+        ['central-america', 'Central America'], ['south-america', 'South America'],
+        ['sumatra', 'Sumatra'], ['blend', 'Blend'],
+    ],
+    'Colombia, Brazil, Honduras blend'  => [ ['colombia', 'Colombia'], ['brazil', 'Brazil'], ['honduras', 'Honduras'], ['blend', 'Blend'] ],
+    'Colombia, Central America blend'   => [ ['colombia', 'Colombia'], ['central-america', 'Central America'], ['blend', 'Blend'] ],
+    'Brazil, Colombia, Indonesia blend' => [ ['brazil', 'Brazil'], ['colombia', 'Colombia'], ['indonesia', 'Indonesia'], ['blend', 'Blend'] ],
+    'Brazil, Colombia, Carmo De Minas'  => [ ['brazil', 'Brazil'], ['colombia', 'Colombia'], ['blend', 'Blend'] ],
+    'Brazil, Cerrado, Guatemala, Indonesia, Huehuetenango, Sumatra' => [
+        ['brazil', 'Brazil'], ['guatemala', 'Guatemala'], ['indonesia', 'Indonesia'], ['blend', 'Blend'],
+    ],
+    'Brazil, Ethiopia, Bensa, Mantiqueira De Minas, Yirgacheffe' => [
+        ['brazil', 'Brazil'], ['ethiopia', 'Ethiopia'], ['blend', 'Blend'],
+    ],
+    'Brazil, Indonesia, India, Idukki, Sumatra, Cerrado Minero' => [
+        ['brazil', 'Brazil'], ['indonesia', 'Indonesia'], ['india', 'India'], ['blend', 'Blend'],
+    ],
+    'Brazil, Tarrazú, Costa Rica, Cerrado Mineiro, Guatemala, Huehuetenango' => [
+        ['brazil', 'Brazil'], ['costa-rica', 'Costa Rica'], ['guatemala', 'Guatemala'], ['blend', 'Blend'],
+    ],
+    '9-country Arabica blend'                         => [ ['blend', 'Blend'] ],
+    'Latin America, Indonesia blend'                  => [ ['latin-america', 'Latin America'], ['indonesia', 'Indonesia'], ['blend', 'Blend'] ],
+    'Latin America, East Africa blend'                => [ ['latin-america', 'Latin America'], ['east-africa', 'East Africa'], ['blend', 'Blend'] ],
+    'India, Peru blend'                               => [ ['india', 'India'], ['peru', 'Peru'], ['blend', 'Blend'] ],
+    'Indonesia, Central America, South America blend' => [ ['indonesia', 'Indonesia'], ['central-america', 'Central America'], ['south-america', 'South America'], ['blend', 'Blend'] ],
+    'Ethiopia, Colombia blend'                        => [ ['ethiopia', 'Ethiopia'], ['colombia', 'Colombia'], ['blend', 'Blend'] ],
+    'Ethiopia, Latin America blend'                   => [ ['ethiopia', 'Ethiopia'], ['latin-america', 'Latin America'], ['blend', 'Blend'] ],
+    'Indonesia, South America blend'                  => [ ['indonesia', 'Indonesia'], ['south-america', 'South America'], ['blend', 'Blend'] ],
+    'Nyamasheke, Rwanda, Guatemala, Peña Blanca' => [ ['rwanda', 'Rwanda'], ['guatemala', 'Guatemala'], ['blend', 'Blend'] ],
+    'Nyamasheke, Rwanda, Kayanza, Burundi'       => [ ['rwanda', 'Rwanda'], ['burundi', 'Burundi'], ['blend', 'Blend'] ],
 ];
 
 // ---------------------------------------------------------------------------
@@ -87,12 +193,13 @@ $origin_map = [
 
 $flavor_structural_drops = [
     // Body/texture
-    'bold', 'smooth', 'mild', 'intense',
-    'full body', 'medium body', 'thick body', 'smooth body', 'creamy body', 'thick crema',
+    'bold', 'smooth', 'mild', 'intense', 'silky',
+    'full body', 'medium body', 'thick body', 'smooth body', 'creamy body', 'thick crema', 'light body',
     // Acidity/bitterness
-    'low acid', 'low acidity', 'low bitterness', 'bright acidity',
-    // Finish/balance
+    'low acid', 'low acidity', 'low bitterness', 'bright acidity', 'citric acid',
+    // Finish/balance/descriptive
     'balanced', 'clean', 'clean finish', 'lingering finish',
+    'boozy', 'funky', 'herb-like', 'mineral', 'sour aromatics', 'sugary/sweet', 'sweetness', 'tea-like',
 ];
 
 $flavor_canonical_map = [
@@ -167,6 +274,171 @@ $flavor_canonical_map = [
     'sweet'          => 'caramel',
     'bright'         => false,
     'light body'     => false,
+
+    // Additional flavors from 100-bean catalog expansion (2026-06)
+
+    // Berries
+    'blackberry'       => 'red-fruit',
+    'blackcurrant'     => 'red-fruit',
+    'boysenberry'      => 'red-fruit',
+    'cranberry'        => 'red-fruit',
+    'grape'            => 'red-fruit',
+    'grape candy'      => 'red-fruit',
+    'grape soda'       => 'red-fruit',
+    'black grape'      => 'red-fruit',
+    'pomegranate'      => 'red-fruit',
+    'raspberries'      => 'red-fruit',
+    'yellow berries'   => 'red-fruit',
+    'yellow berry'     => 'red-fruit',
+    'strawberries'     => 'strawberry',
+    'strawberry papaya' => 'strawberry',
+    'strawberry yogurt' => 'strawberry',
+    'dried strawberry' => 'dried-fruit',
+    'blueberry candy'  => 'blueberry',
+
+    // Cherries
+    'black cherry'     => 'dark-cherry',
+    'dried cherry'     => 'dark-cherry',
+    'red cherry'       => 'dark-cherry',
+    'white cherry'     => 'dark-cherry',
+    'cherry liqueur'   => 'dark-cherry',
+    'maraschino'       => 'dark-cherry',
+
+    // Stone fruit
+    'apricot'          => 'stone-fruit',
+    'apricot liqueur'  => 'stone-fruit',
+    'dried apricot'    => 'dried-fruit',
+    'nectarine'        => 'stone-fruit',
+    'peach'            => 'stone-fruit',
+    'purple plum'      => 'dried-fruit',
+
+    // Tree fruit / tropical
+    'apple'            => 'fruit',
+    'baked apple'      => 'fruit',
+    'crisp apple'      => 'fruit',
+    'fuji apple'       => 'fruit',
+    'green apple'      => 'fruit',
+    'pear'             => 'fruit',
+    'yellow pear'      => 'fruit',
+    'pineapple'        => 'fruit',
+    'pineapple juice'  => 'fruit',
+    'canned pineapple' => 'fruit',
+    'watermelon candy' => 'fruit',
+    'honeydew melon'   => 'fruit',
+    'orchard fruit'    => 'fruit',
+    'dried fig'        => 'dried-fruit',
+    'dried currants'   => 'dried-fruit',
+    'dried fruits'     => 'dried-fruit',
+
+    // Citrus
+    'blood orange'     => 'citrus-floral',
+    'citrus fruit'     => 'citrus-floral',
+    'citrus brightness' => 'citrus-floral',
+    'grapefruit'       => 'citrus-floral',
+    'white grapefruit' => 'citrus-floral',
+    'lemon'            => 'citrus-floral',
+    'lemon candy'      => 'citrus-floral',
+    'lemon cream'      => 'citrus-floral',
+    'lemon sponge'     => 'citrus-floral',
+    'lemon verbena'    => 'citrus-floral',
+    'sweet lemon'      => 'citrus-floral',
+    'lime'             => 'citrus-floral',
+    'mandarin peel'    => 'citrus-floral',
+    'meyer lemon'      => 'citrus-floral',
+    'orange'           => 'citrus-floral',
+    'orange peel'      => 'citrus-floral',
+    'orange zest'      => 'citrus-floral',
+    'pink lemonade'    => 'citrus-floral',
+    'preserved lemon'  => 'citrus-floral',
+    'yuzu'             => 'citrus-floral',
+
+    // Floral
+    'coffee blossom'   => 'floral',
+    'dried florals'    => 'floral',
+    'floral notes'     => 'floral',
+    'gardenia'         => 'floral',
+    'hibiscus'         => 'floral',
+    'jasmine honey'    => 'jasmine',
+    'linden blossom'   => 'floral',
+    'marigold'         => 'floral',
+    'parma violet'     => 'floral',
+    'pink rose'        => 'floral',
+    'plumeria'         => 'floral',
+    'poppy'            => 'floral',
+    'rose'             => 'floral',
+    'rosehip'          => 'floral',
+    'subtle florals'   => 'floral',
+    'white florals'    => 'floral',
+    'white flower syrup' => 'floral',
+
+    // Chocolate
+    'cocoa nibs'       => 'chocolate',
+    'cocoa powder'     => 'chocolate',
+    'dark cocoa'       => 'chocolate',
+    'liquor chocolate' => 'chocolate',
+    'mint choc'        => 'chocolate',
+
+    // Caramel & sweet
+    'barley malt syrup'   => 'caramel',
+    'burnt sugar'         => 'caramel',
+    'butter cookie'       => 'caramel',
+    'caramelized'         => 'caramel',
+    'cookie'              => 'caramel',
+    'dulce de leche'      => 'caramel',
+    'fruit toffee'        => 'toffee',
+    'malt'                => 'caramel',
+    'maltose'             => 'caramel',
+    'maple syrup'         => 'caramel',
+    'raw honey'           => 'caramel',
+    'toasted marshmallow' => 'caramel',
+    'turbinado sugar'     => 'brown-sugar',
+    'vanilla'             => 'caramel',
+
+    // Nutty
+    'almond'           => 'nutty',
+    'peanuts'          => 'nutty',
+    'pistachio'        => 'nutty',
+    'praline nut'      => 'nutty',
+    'roasted hazelnut' => 'hazelnut',
+
+    // Spice
+    'baking spices'    => 'spice',
+    'brown spice'      => 'spice',
+    'cinnamon'         => 'spice',
+    'ginger'           => 'spice',
+    'nutmeg'           => 'spice',
+    'peppercorn'       => 'spice',
+    'pink peppercorn'  => 'spice',
+    'spices'           => 'spice',
+    'woody spices'     => 'spice',
+
+    // Earthy / smoky
+    'pipe tobacco'     => 'tobacco',
+    'woody'            => 'earthy',
+
+    // Genuine flavors with no curated term — skip to avoid orphan taxonomy entries
+    'berry milk tea'   => null,
+    'black tea'        => null,
+    'buah bidara'      => null,
+    'calpis'           => null,
+    'ceylon'           => null,
+    'coffee ice cream' => null,
+    'elephant heart plum' => null,
+    'haskap'           => null,
+    'hawthorn'         => null,
+    'lychee jelly'     => null,
+    'mango cream'      => null,
+    'mint'             => null,
+    'oolong'           => null,
+    'sangria'          => null,
+    'sherbet'          => null,
+    'shiraz'           => null,
+    'shiso plum'       => null,
+    'soursop'          => null,
+    'spearmint'        => null,
+    'tamarind'         => null,
+    'tomato'           => null,
+    'whipped cream'    => null,
 ];
 
 // ---------------------------------------------------------------------------
