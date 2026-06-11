@@ -134,6 +134,19 @@ HARD ANTI-CLUSTERING RULES:
   - Decide the number AFTER you have written the honest "who should skip it"
     critique. Let the criticism pull the score down. Do not let the positive
     tasting notes inflate it.
+
+USE THE TOP OF THE SCALE WHEN IT IS EARNED (this balances the rules above):
+  - 7.x is NOT a ceiling. Clustering everything into 7.0-7.5 is the same failure as
+    the old 6-7 cluster, just shifted up. A genuinely exceptional cup MUST score 8.0+.
+  - Competition-grade and benchmark single origins belong in the 8s: a clean,
+    distinctive Geisha/Gesha; a top-tier washed Kenyan (SL28/SL34) with defined,
+    high-grown acidity and clarity; an exemplary, well-separated single-origin lot
+    that is clearly a standout in its category. Score these 8.0-8.9.
+  - Reserve 9.0+ for a near-flawless, bench-defining coffee, but DO place it there
+    when the bean genuinely is that good. A tiny handful per catalog is expected.
+  - Do not suppress a real standout into 7.x out of caution. Over-caution that hides
+    genuine quality is the same bias as inflation, inverted. Judge the cup on its
+    merits against the bands, and use the full 1.0-10.0 range.
 """
 
 # Machine-readable trailer the model must emit at the very end of a review (or as
@@ -149,7 +162,8 @@ SCORE_TRAILER_INSTRUCTION = """At the VERY END of your output, after everything 
 emit this machine-readable block EXACTLY in this shape (it is an HTML comment and stays
 invisible on the page). The score here MUST equal the "### Rating" number above, to one
 decimal. The rationale is 15-25 words naming the specific thing that set that exact
-decimal, written in our voice:
+decimal, written in our voice. Do NOT name or compare to any other specific coffee,
+roaster, or score in the rationale - judge this bean on its own merits:
 
 <!--SCORE
 score: 7.3
@@ -164,7 +178,9 @@ def rating_section_instruction() -> str:
         "### Rating: [X.X]/10\n"
         "[One sentence. Use a DECIMAL (e.g. 7.3, 5.8) chosen with the rubric above. "
         "Name the specific thing that set that exact decimal. No vague praise. The "
-        "number must reflect the honest critique you just wrote, not the tasting notes.]"
+        "number must reflect the honest critique you just wrote, not the tasting notes. "
+        "Do NOT name or compare to any other specific coffee, roaster, or score; justify "
+        "the number on this bean's own merits.]"
     )
 
 
@@ -444,6 +460,16 @@ def format_scoring_context(
             "number, clearly worse means a lower one. But take the actual NUMBER from the absolute "
             "rubric bands, not from this set's range. Use the full scale where the bean earns it."
         )
+    lines.append("")
+    lines.append(
+        "INTERNAL CALIBRATION ONLY - this comparables list is scaffolding for choosing the number. "
+        "It MUST NOT surface in the review. Never name, reference, or compare to another specific "
+        "coffee, roaster, or its score anywhere in the visible output (verdict, tasting notes, "
+        "who-for / who-skip, price analysis, the Rating sentence, or the SCORE rationale). Justify "
+        "the score purely on THIS bean's own merits and the rubric bands. The catalog will hold "
+        "1000+ beans; naming neighbours would read as random and date instantly. Phrases like "
+        "\"better than X\", \"past Koa's 7.4\", or \"edges out <bean>\" are forbidden."
+    )
     return "\n".join(lines) + "\n"
 
 

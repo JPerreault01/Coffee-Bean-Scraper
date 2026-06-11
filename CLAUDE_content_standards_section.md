@@ -36,6 +36,17 @@ Every bean is scored against fixed, named bands. Use the **full 1.0-10.0 range i
 - Most beans are average: score them 5.0-6.9, not 7.
 - A 7.0+ requires a specific, stated reason it beats the field. No reason means below 7.
 
+**Use the top of the scale when earned (the rules above must not become a 7.x cap):**
+- 7.x is NOT a ceiling. Compressing every good bean into 7.0-7.5 is the old 6-7 bias
+  shifted up. A genuinely exceptional cup must score 8.0+.
+- Competition-grade and benchmark single origins belong in the 8s: a clean, distinctive
+  Geisha/Gesha; a top-tier washed Kenyan (SL28/SL34) with defined high-grown acidity; an
+  exemplary, clearly-standout single-origin lot. Score these 8.0-8.9.
+- Reserve 9.0+ for a near-flawless, bench-defining coffee, but place it there when the
+  bean genuinely is that good.
+- Suppressing a real standout into 7.x out of caution is the same bias as inflation,
+  inverted. Judge the cup on its merits and use the full 1.0-10.0 range.
+
 ## 2. Decimals carry meaning
 
 Scores use any value 1.0-10.0 to **0.1 precision**. The one-sentence justification
@@ -103,6 +114,19 @@ Scores are calibrated **relative to real prior beans**, not in a vacuum.
 > bands, using comparables only to rank a bean among its neighbours. For the same
 > reason, `backfill_scores.py` re-scores from a **cold** ledger by default; pass
 > `--autoseed` only if you understand it re-imports the old bias as anchors.
+
+> **Comparables are INTERNAL calibration only - they must never surface in the review.**
+> The comparables list is scaffolding for choosing the number; it is not material for the
+> prose. The model must never name, reference, or compare to another specific coffee,
+> roaster, or its score anywhere in the visible output (verdict, tasting notes, who-for /
+> who-skip, price analysis, the `### Rating` sentence, or the `<!--SCORE` rationale).
+> Each review must justify its score purely on that bean's own merits and the rubric
+> bands. With a catalog heading past 1000 beans, naming a neighbour ("better than X",
+> "past Koa's 7.4", "edges out <bean>") reads as arbitrary to a reader who never saw that
+> bean and dates the page the moment the ledger shifts. This is enforced in the prompt
+> (`format_scoring_context`, `rating_section_instruction`, `SCORE_TRAILER_INSTRUCTION`).
+> The deliberate, owner-authored "X vs Y" comparison via a product's `comparison_anchors`
+> is a separate, intentional feature and is unaffected by this rule.
 
 ---
 

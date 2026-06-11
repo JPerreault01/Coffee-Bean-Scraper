@@ -183,7 +183,7 @@ def load_env() -> dict:
     import os
     env = {}
     if ENV_FILE.exists():
-        with open(ENV_FILE) as f:
+        with open(ENV_FILE, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if line and not line.startswith("#") and "=" in line:
@@ -197,14 +197,14 @@ def load_products() -> dict:
     if not PRODUCTS_FILE.exists():
         print(f"ERROR: products.json not found at {PRODUCTS_FILE}", file=sys.stderr)
         sys.exit(1)
-    with open(PRODUCTS_FILE) as f:
+    with open(PRODUCTS_FILE, encoding="utf-8") as f:
         products = json.load(f)
     return {p["id"]: p for p in products}
 
 
 def load_style_guide() -> str:
     if STYLE_GUIDE_FILE.exists():
-        return STYLE_GUIDE_FILE.read_text().strip()
+        return STYLE_GUIDE_FILE.read_text(encoding="utf-8").strip()
     return FALLBACK_STYLE_GUIDE.strip()
 
 
@@ -459,7 +459,11 @@ Every review must include all three of the following:
 {scoring_block}
 ## Required output format
 
-Write the review exactly in this structure. No preamble. No additional sections.
+Write the review exactly in this structure. Output ONLY the review itself: begin with
+the META comment and end with the SCORE block. Do NOT add any preamble, postscript,
+self-review, summary of what you did, notes about saving/committing/gitignore, or any
+other conversational text. The SCORE block is the LAST thing in your output and nothing
+follows it. No preamble. No additional sections.
 Reproduce the META block, the disclosure line, and the "Explore further" block
 EXACTLY as given. Do not change the title, the URLs, or the link text. Replace
 only the bracketed placeholders (including the meta_description) with your copy.
@@ -594,17 +598,26 @@ def stream_claude_code(prompt: str) -> str:
         sys.exit(1)
 
     # Prompt via stdin (no arg-length limit); route Windows .cmd launchers through
-    # cmd.exe so CreateProcess can execute them.
-    args = ["cmd", "/c", exe, "-p"] if os.name == "nt" else [exe, "-p"]
-    result = subprocess.run(
-        args,
-        input=prompt,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-    )
-    draft = result.stdout
+    # cmd.exe so CreateProcess can execute them. CBI_CC_MODEL optionally pins the
+    # claude-code backend to a specific model (e.g. "opus"); unset = CLI default.
+    model = os.environ.get("CBI_CC_MODEL", "").strip()
+    base = [exe, "-p"] + (["--model", model] if model else [])
+    args = (["cmd", "/c"] + base) if os.name == "nt" else base
+
+    # Capture raw bytes and decode UTF-8 with a cp1252 fallback. On Windows the
+    # claude CLI may emit text in the console codepage (cp1252), so a strict UTF-8
+    # decode would turn accented names and dashes into replacement chars; trying
+    # UTF-8 first then cp1252 recovers the real characters whichever it used.
+    def _decode(b: bytes) -> str:
+        if not b:
+            return ""
+        try:
+            return b.decode("utf-8")
+        except UnicodeDecodeError:
+            return b.decode("cp1252", errors="replace")
+
+    result = subprocess.run(args, input=prompt.encode("utf-8"), capture_output=True)
+    draft = _decode(result.stdout)
 
     if result.returncode != 0 or not draft.strip():
         print(
@@ -612,8 +625,9 @@ def stream_claude_code(prompt: str) -> str:
             f"(exit code {result.returncode}).",
             file=sys.stderr,
         )
-        if result.stderr:
-            print(result.stderr.strip(), file=sys.stderr)
+        err = _decode(result.stderr).strip()
+        if err:
+            print(err, file=sys.stderr)
         sys.exit(1)
 
     print(draft)
@@ -706,12 +720,68 @@ def strip_dashes(text: str) -> str:
     )
 
 
+import re as _re
+
+_SCORE_TRAILER_RE = _re.compile(r"<!--SCORE.*?-->", _re.S)
+
+
+def truncate_after_score(text: str) -> str:
+    """The SCORE block is the intended final element. The claude-code backend (an
+    agentic CLI) sometimes appends self-review notes or 'I tried to save this...'
+    chatter after it. Cut everything past the FIRST complete SCORE trailer so trailing
+    commentary (and any duplicated review) never lands in the draft. No-op when there
+    is no SCORE trailer (leave the draft intact rather than risk dropping content)."""
+    m = _SCORE_TRAILER_RE.search(text)
+    if not m:
+        return text
+    return text[: m.end()].rstrip() + "\n"
+
+
 def save_draft(product_id: str, content: str) -> Path:
     DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
     date_str = datetime.now().strftime("%Y-%m-%d")
     path = DRAFTS_DIR / f"{product_id}-{date_str}.md"
     path.write_text(content, encoding="utf-8")
     return path
+
+
+# Price-pending manifest: prices.db currently holds only seed data, so most drafts are
+# written with no real 30-day history. We stamp an invisible marker into the draft AND
+# record the id here so these reviews can be batch-found and refreshed once the scraper
+# produces real prices. Derived artifact, gitignored (data/*.json).
+PRICE_PENDING_FILE = (Path("/opt/data") if Path("/opt/data").exists()
+                      else _REPO_ROOT / "data") / "price_pending.json"
+PRICE_PENDING_MARKER = (
+    "<!--PRICE_PENDING: no tracked price at generation time; "
+    "refresh the Price analysis section once prices.db has data-->"
+)
+
+
+def note_price_pending(product_id: str, content: str, has_history: bool) -> str:
+    """If the draft was generated with no real price history, stamp an invisible
+    marker into it and add the id to the price-pending manifest. Returns the
+    (possibly marker-appended) content. Never fatal."""
+    if has_history:
+        return content
+    if "PRICE_PENDING" not in content:
+        content = content.rstrip() + "\n\n" + PRICE_PENDING_MARKER + "\n"
+    try:
+        data = {}
+        if PRICE_PENDING_FILE.exists():
+            data = json.loads(PRICE_PENDING_FILE.read_text(encoding="utf-8"))
+            if not isinstance(data, dict):
+                data = {}
+        data[product_id] = {
+            "draft": f"{product_id}-{datetime.now().strftime('%Y-%m-%d')}.md",
+            "flagged_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        }
+        PRICE_PENDING_FILE.parent.mkdir(parents=True, exist_ok=True)
+        PRICE_PENDING_FILE.write_text(
+            json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+    except Exception as e:
+        print(f"Price-pending manifest: write skipped ({e}).", file=sys.stderr)
+    return content
 
 
 def record_score(product: dict, draft_text: str, config: dict, ledger: dict,
@@ -747,6 +817,15 @@ def record_score(product: dict, draft_text: str, config: dict, ledger: dict,
 
 
 def main() -> None:
+    # Force UTF-8 stdio so printing drafts with non-cp1252 characters (e.g. macrons
+    # like "Hōlualoa", "ū") does not crash on Windows, where stdout defaults to the
+    # locale codepage. No-op where stdout is already UTF-8 (Linux/VPS).
+    for _stream in (sys.stdout, sys.stderr):
+        try:
+            _stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
+
     parser = argparse.ArgumentParser(description="Generate an AI coffee bean review draft")
     parser.add_argument("product_id", help="Product ID from products.json")
     parser.add_argument(
@@ -832,6 +911,7 @@ def main() -> None:
         print(prompt, file=sys.stderr)
         print("=== END PROMPT ===\n", file=sys.stderr)
         draft = strip_dashes(generate_mock(product, price_summary, args.personal))
+        draft = note_price_pending(args.product_id, draft, bool(history))
         print(draft)
         path = save_draft(args.product_id, draft)
         print(f"\n{'=' * 60}", file=sys.stderr)
@@ -875,6 +955,8 @@ def main() -> None:
         draft = stream_minimax(prompt, env)
 
     draft = strip_dashes(draft)
+    draft = truncate_after_score(draft)
+    draft = note_price_pending(args.product_id, draft, bool(history))
     path = save_draft(args.product_id, draft)
     print(f"\n{'=' * 60}", file=sys.stderr)
     print(f"Draft saved to: {path}", file=sys.stderr)
