@@ -306,4 +306,51 @@ HTML,
         'description' => '<p>Tobacco in coffee is the dry, slightly astringent note of very dark espresso roasts. It reads as intensity rather than bitterness — present without harshness in the best expressions. Café Bustelo Espresso Style Dark Roast carries tobacco alongside intense dark chocolate and thick body. See the <a href="/flavor/earthy-smoky/">Earthy &amp; Smoky family guide</a>.</p>',
     ],
 
+    // Additional Fruit-family notes (referenced by the canonical map; seeded here
+    // so the tags are captured rather than silently dropped at import).
+    [
+        'taxonomy'    => 'flavor-note',
+        'slug'        => 'red-fruit',
+        'name'        => 'Red Fruit',
+        'parent_slug' => 'fruit',
+        'description' => '<p>Red fruit covers the berry and red-cherry end of the fruit spectrum: raspberry, blackberry, currant, grape, and pomegranate. It appears in natural-process and high-altitude washed lots where bright acidity carries a juicy, berry-forward character. See the <a href="/flavor/fruit/">Fruit family guide</a>.</p>',
+    ],
+    [
+        'taxonomy'    => 'flavor-note',
+        'slug'        => 'blueberry',
+        'name'        => 'Blueberry',
+        'parent_slug' => 'fruit',
+        'description' => '<p>Blueberry is the signature note of natural-process Ethiopian coffee, especially Yirgacheffe lots. The fruit sugars absorbed during dry-on-the-cherry drying read as a deep, jammy blue-fruit sweetness. See the <a href="/flavor/fruit/">Fruit family guide</a>.</p>',
+    ],
+
+    // Additional Citrus & Floral note.
+    [
+        'taxonomy'    => 'flavor-note',
+        'slug'        => 'floral',
+        'name'        => 'Floral',
+        'parent_slug' => 'citrus-floral',
+        'description' => '<p>Floral covers the perfumed aromatic notes beyond named flowers: jasmine, honeysuckle, rose, chamomile, and general blossom character. It is most present in high-altitude washed coffees and light roasts that preserve the volatile aromatics. See the <a href="/flavor/citrus-floral/">Citrus &amp; Floral family guide</a>.</p>',
+    ],
+
+    // ──────────────────────────────────────────────
+    // FAMILY: Spice
+    // ──────────────────────────────────────────────
+    [
+        'taxonomy'        => 'flavor-note',
+        'slug'            => 'spice',
+        'name'            => 'Spice',
+        'parent_slug'     => null,
+        'focus_keyword'   => 'spice notes in coffee',
+        'seo_title'       => 'Spice Notes in Coffee: Cinnamon, Ginger & What Causes Them | Coffee Bean Index',
+        'seo_description' => 'Spice notes in coffee — cinnamon, ginger, nutmeg, baking spice — come from origin character and roast development. Here is what causes them and which beans carry them.',
+        'description'     => <<<'HTML'
+<h2>What Spice Notes in Coffee Are</h2>
+<p>Spice notes — cinnamon, ginger, nutmeg, clove, baking spice — are aromatic compounds (eugenol, cinnamaldehyde, and related phenols) that develop from origin character and roast chemistry. They are not added. Certain origins, particularly Indian, Indonesian, and some Central American lots, carry a natural warm-spice character that medium roasting brings forward.</p>
+<p>Spice reads as a secondary, structural note rather than a dominant one. It supports chocolate, nut, and dried-fruit notes the way baking spice supports a dessert. At medium roast it is warm and rounded; pushed darker it shifts toward dry, peppery, and woody.</p>
+
+<h2>Which Beans Carry Spice Notes</h2>
+<p>Indian and Indonesian beans are the most reliably spiced, a function of their growing conditions and processing. Medium-roast Latin American lots can carry cinnamon and brown-spice character alongside caramel. Look for spice in beans described with cinnamon, ginger, nutmeg, or baking-spice notes.</p>
+HTML,
+    ],
+
 ];

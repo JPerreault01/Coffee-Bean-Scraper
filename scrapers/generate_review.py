@@ -267,6 +267,46 @@ def slugify(value: str) -> str:
 
 # Real taxonomy rewrite slugs (see functions.php cbi_register_taxonomies):
 #   origin -> /origin/   roast-level -> /roast/   roaster -> /roaster/
+
+_ORIGIN_CANON_CACHE: dict | None = None
+
+
+def _origin_canon_map() -> dict:
+    """Parse create_beans.php's $origin_map → {raw origin string: primary canonical
+    slug}. create_beans assigns origins via this map (e.g. 'Ethiopia, Yirgacheffe
+    (idido)' -> the 'ethiopia' term), so the review's origin link must point at the
+    SAME canonical term, not sanitize_title() of the raw composite string (which
+    yields a /origin/ethiopia-yirgacheffe-idido/ page that does not exist)."""
+    global _ORIGIN_CANON_CACHE
+    if _ORIGIN_CANON_CACHE is not None:
+        return _ORIGIN_CANON_CACHE
+    import re
+    from pathlib import Path
+    mapping: dict = {}
+    php = Path(__file__).parent / "create_beans.php"
+    try:
+        text = php.read_text(encoding="utf-8")
+        block = text[text.index("$origin_map"):]
+        block = block[: block.index("\n];")]
+        pat = re.compile(
+            r"""(?:'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")\s*=>\s*\[\s*\[\s*'([a-z0-9-]+)'"""
+        )
+        for m in pat.finditer(block):
+            key = (m.group(1) if m.group(1) is not None else m.group(2))
+            key = key.replace("\\'", "'").replace('\\"', '"')
+            mapping[key] = m.group(3)
+    except (OSError, ValueError):
+        pass
+    _ORIGIN_CANON_CACHE = mapping
+    return mapping
+
+
+def origin_link_slug(origin: str) -> str:
+    """Canonical origin term slug for the internal link. Falls back to slugify()
+    for any origin not in the map (pre-flight guarantees the catalog is mapped)."""
+    return _origin_canon_map().get(origin.strip(), slugify(origin))
+
+
 def build_internal_links(product: dict) -> list[dict]:
     """Deterministic internal links to this bean's origin guide, roast-level
     guide, and roaster archive. Built from product data so the model never has
@@ -278,7 +318,7 @@ def build_internal_links(product: dict) -> list[dict]:
     if roast:
         links.append({"label": f"{roast} roast guide", "url": f"/roast/{slugify(roast)}/"})
     if origin:
-        links.append({"label": f"{origin} origin guide", "url": f"/origin/{slugify(origin)}/"})
+        links.append({"label": f"{origin} origin guide", "url": f"/origin/{origin_link_slug(origin)}/"})
     if brand:
         links.append({"label": f"more from {brand}", "url": f"/roaster/{slugify(brand)}/"})
     return links
