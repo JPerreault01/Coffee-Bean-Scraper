@@ -1077,3 +1077,19 @@ function cbi_flaticon_attribution() {
     return '<p class="cbi-flaticon-attribution"><a href="https://www.flaticon.com/free-icons/coffee" title="coffee icons">Coffee icons created by Freepik – Flaticon</a></p>';
 }
 add_shortcode( 'flaticon_attribution', 'cbi_flaticon_attribution' );
+
+// ============================================================
+// 23. TAXONOMY ARCHIVE FAQPage JSON-LD
+// ============================================================
+
+add_action( 'wp_head', 'cbi_taxonomy_faq_schema', 5 );
+function cbi_taxonomy_faq_schema() {
+    if ( ! is_tax() ) return;
+    $term = get_queried_object();
+    if ( ! $term || ! isset( $term->term_id ) ) return;
+    $schema = get_term_meta( $term->term_id, '_cbi_faq_schema', true );
+    if ( empty( $schema ) ) return;
+    $decoded = json_decode( $schema );
+    if ( ! $decoded ) return;
+    echo '<script type="application/ld+json">' . wp_json_encode( $decoded, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . "</script>\n";
+}
