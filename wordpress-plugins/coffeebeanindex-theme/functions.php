@@ -93,27 +93,48 @@ function cbi_font_preconnect() {
     echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
 }
 
-// Homepage hero LCP preload. The hero is a CSS background on .cbi-hero__bg,
-// which browsers do not discover until the stylesheet parses, delaying the LCP
-// image. This preload tells the browser to fetch it immediately. Front page
-// only, so inner pages are not penalised with an unused download.
-//
-// PASTE HERO IMAGE URL: drop the WP Media Library URL for web/hero.webp between
-// the quotes below. This must be the SAME URL you paste into .cbi-hero__bg in
-// style.css (also marked "PASTE HERO IMAGE URL"). Left blank, nothing is
-// emitted, so there is no broken/empty preload.
-add_action( 'wp_head', 'cbi_hero_preload', 2 );
-function cbi_hero_preload() {
+/**
+ * Resolve a homepage image URL by logical key — no URLs are ever hardcoded in
+ * the theme. The deploy script (deploy-homepage.ps1) runs `wp media import` for
+ * each WebP and writes the resulting attachment IDs to the cbi_home_image_ids
+ * option, e.g. { "hero":123, "espresso":124, ... }. This reads that map.
+ *
+ * Keys: hero, espresso, dark_roast, beans, ground_coffee.
+ * Returns '' when the image has not been imported yet, so callers fall back to
+ * their placeholder (cards) or the CSS gradient (hero).
+ */
+function cbi_home_image_url( $key, $size = 'full' ) {
+    $ids = get_option( 'cbi_home_image_ids', [] );
+    if ( ! is_array( $ids ) || empty( $ids[ $key ] ) ) {
+        return '';
+    }
+    $url = wp_get_attachment_image_url( (int) $ids[ $key ], $size );
+    return $url ? $url : '';
+}
+
+// Homepage hero head output (front page only). The hero is a CSS background on
+// .cbi-hero__bg, which browsers do not discover until the stylesheet parses,
+// delaying the LCP image. We (1) preload it at high priority so it is fetched
+// immediately, and (2) set the background-image inline from the same resolved
+// URL, so the hero photo lives in exactly one place (the Media Library) with
+// nothing to paste. Until the image is imported, the CSS gradient fallback in
+// style.css shows and nothing is emitted here.
+add_action( 'wp_head', 'cbi_hero_head', 2 );
+function cbi_hero_head() {
     if ( ! is_front_page() ) {
         return;
     }
-    $hero_url = ''; // PASTE HERO IMAGE URL (web/hero.webp Media Library URL)
-    if ( ! $hero_url ) {
+    $hero = cbi_home_image_url( 'hero', 'full' );
+    if ( ! $hero ) {
         return;
     }
     printf(
         '<link rel="preload" as="image" href="%s" fetchpriority="high">' . "\n",
-        esc_url( $hero_url )
+        esc_url( $hero )
+    );
+    printf(
+        '<style id="cbi-hero-bg">.cbi-hero__bg{background:url(%s) center/cover no-repeat;}</style>' . "\n",
+        esc_url( $hero )
     );
 }
 

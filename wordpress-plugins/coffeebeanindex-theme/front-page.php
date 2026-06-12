@@ -15,10 +15,10 @@
  *
  * All sections self-wrap in .cbi-container so they're immune to GP width.
  *
- * IMAGES: the hero uses a CSS background on .cbi-hero__bg (see "PASTE HERO
- * IMAGE URL" in style.css). Category cards take Media Library URLs pasted into
- * the $cat_img_* variables below. Convert sources with convert-images.py first.
- * Never hotlink copyrighted photos.
+ * IMAGES: fully automated. convert-images.py makes the WebPs; deploy-homepage.ps1
+ * runs `wp media import` and stores the attachment IDs in the cbi_home_image_ids
+ * option. The hero (cbi_hero_head in functions.php) and the cards (cbi_home_image_url
+ * below) read that option, so no URLs are ever pasted. Never hotlink copyrighted photos.
  */
 
 get_header();
@@ -39,10 +39,10 @@ $beans_url = get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' );
 
     <!-- ============================================================
          1. HERO (LCP) — full-width CSS background, dark overlay, single CTA.
-         IMAGE DROP-IN: set the background image on .cbi-hero__bg in style.css
-         (search "PASTE HERO IMAGE URL"). Upload web/hero.webp to the WP Media
-         Library and paste its URL there. The hero uses a CSS background, not
-         an <img>, so it stays the LCP element with no layout shift.
+         The hero photo is injected (background-image + preload) by cbi_hero_head()
+         in functions.php from the cbi_home_image_ids option, so it stays the LCP
+         element with no <img> and no layout shift. Until the WebP is imported, the
+         CSS gradient fallback on .cbi-hero__bg shows. Nothing to paste.
          ============================================================ -->
     <section class="cbi-hero">
         <div class="cbi-hero__bg" aria-hidden="true"></div>
@@ -87,16 +87,16 @@ $beans_url = get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' );
 
     <!-- ============================================================
          3. CATEGORY CARDS — 4 image cards (authority distribution).
-            IMAGE DROP-IN: upload the converted WebPs (in homepage-images/web/)
-            to the WP Media Library, then paste each URL into the matching
-            variable below. Leave a URL blank to render the styled placeholder.
-            Do NOT use local file paths as image sources.
+            Image URLs resolve automatically from the Media Library via
+            cbi_home_image_url() (IDs set by deploy-homepage.ps1 -> wp media
+            import). Nothing to paste. Until a WebP is imported, the matching
+            card shows its styled placeholder.
          ============================================================ -->
     <?php
-    $cat_img_espresso = ''; // PASTE Media Library URL for web/espresso.webp
-    $cat_img_dark     = ''; // PASTE Media Library URL for web/dark_roast.webp
-    $cat_img_origin   = ''; // PASTE Media Library URL for web/beans.webp
-    $cat_img_ground   = ''; // PASTE Media Library URL for web/ground_coffee.webp
+    $cat_img_espresso = cbi_home_image_url( 'espresso' );
+    $cat_img_dark     = cbi_home_image_url( 'dark_roast' );
+    $cat_img_origin   = cbi_home_image_url( 'beans' );
+    $cat_img_ground   = cbi_home_image_url( 'ground_coffee' );
 
     /**
      * Resolve a term-archive URL by slug, regardless of the taxonomy's

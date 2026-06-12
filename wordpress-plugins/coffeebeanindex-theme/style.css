@@ -3957,11 +3957,11 @@ details[open] .cbi-faq__question::after {
   overflow: hidden;
 }
 
-/* IMAGE DROP-IN: PASTE HERO IMAGE URL
-   Upload web/hero.webp to the WP Media Library, then replace the gradient
-   below with:  background: url('PASTE-HERO-URL') center / cover no-repeat;
-   Keep this a CSS background (not an <img>) so the hero stays the LCP
-   element with no layout shift. */
+/* Hero background = GRADIENT FALLBACK only. The real hero photo is injected
+   inline by cbi_hero_head() in functions.php (from the cbi_home_image_ids
+   option set by deploy-homepage.ps1), which overrides this background once the
+   WebP is imported. Kept a CSS background (not an <img>) so the hero stays the
+   LCP element with no layout shift. Nothing to paste here. */
 .cbi-hero__bg {
   position: absolute;
   inset: 0;
@@ -4051,7 +4051,7 @@ details[open] .cbi-faq__question::after {
 
 .cbi-cat:hover .cbi-cat__img { transform: scale(1.03); }
 
-/* Styled fallback shown until a Media Library URL is pasted */
+/* Styled fallback shown until the card's WebP is imported (cbi_home_image_url) */
 .cbi-cat__img--placeholder {
   background: linear-gradient(135deg, var(--cbi-bg-3), var(--cbi-surface));
 }
