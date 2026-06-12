@@ -1,238 +1,210 @@
 # scrapers/price_scraper.py
 """
 Coffee bean price scraper.
-Fetches prices from Amazon product pages and direct roaster URLs via Playwright.
-Stores results in SQLite. Designed for daily cron execution.
 
-Cron entry:
+Resolves a current price for each product by walking the price resolver chain
+(scrapers/resolvers/price.py) and writes the first success to price_history.
+Resolution order, first hit wins, recorded in the `source` column:
+
+  1. amazon              PA-API (gated behind PAAPI_ENABLED + creds; --skip-amazon off)
+  2. shopify             /products/{handle}.js / .json JSON endpoints (variant-aware)
+  3. jsonld / meta       requests + BeautifulSoup: JSON-LD Offer.price / price meta tags
+  4. roaster-playwright  headless render fallback (only if a chromium binary is installed)
+
+Requests tiers (2-3) share a 1.5s rate limiter. Playwright/PA-API tiers (1, 4)
+self-impose the random 3-8s delay only just before their call, so skipped or
+early-resolved products never pay it. Each attempt also updates
+product_data_health so a failed fetch degrades the field to 'stale' (keeping the
+last-good value) instead of blanking it. No fetch failure can raise out of the
+resolver.
+
+Cron entry (unchanged — default run = all products, writes to DB):
   0 6 * * * /opt/venv/bin/python3 /opt/scrapers/price_scraper.py >> /opt/data/scraper.log 2>&1
 
-Dependencies:
-  pip install playwright
-  python -m playwright install chromium
+Usage:
+  python scrapers/price_scraper.py                      # real run, all products
+  python scrapers/price_scraper.py --limit 3 --dry-run  # first 3, resolve only, no writes
+  python scrapers/price_scraper.py --product <id>       # single product by id
+  python scrapers/price_scraper.py --skip-amazon        # roaster-only (skip PA-API tier)
+  python scrapers/price_scraper.py --mock               # offline synthetic prices
+
+Dependencies: requests, beautifulsoup4, lxml  (playwright optional for tier 4)
 """
 
+import argparse
 import json
 import logging
-import os
-import random
-import re
 import sys
-import time
+from collections import Counter
+from contextlib import nullcontext
 from pathlib import Path
 
-from playwright.sync_api import sync_playwright
+_BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_BASE_DIR))
 
-ENV_FILE = Path("/opt/.env")
-BASE_DIR = Path(__file__).resolve().parent.parent
-LOG_PATH = BASE_DIR / "data" / "scraper.log"
+from scrapers.db import (  # noqa: E402
+    get_connection,
+    record_health_failure,
+    record_health_success,
+)
+from scrapers.resolvers import build_context, load_env, resolve_field  # noqa: E402
+from scrapers.resolvers._playwright import binary_exists  # noqa: E402
+from scrapers.resolvers.base import STATUS_ERROR  # noqa: E402
+from scrapers.resolvers.price import PRICE_CHAIN  # noqa: E402
+
 PRODUCTS_FILE = Path(__file__).resolve().parent / "products.json"
-
-sys.path.insert(0, str(BASE_DIR))
-from scrapers.db import get_connection  # noqa: E402
-
+LOG_PATH = _BASE_DIR / "data" / "scraper.log"
 LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
-        logging.FileHandler(LOG_PATH),
+        logging.FileHandler(LOG_PATH, encoding="utf-8"),
         logging.StreamHandler(sys.stdout),
     ],
 )
 log = logging.getLogger(__name__)
 
-
-def load_env() -> dict:
-    env = {}
-    if ENV_FILE.exists():
-        with open(ENV_FILE) as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith("#") and "=" in line:
-                    k, v = line.split("=", 1)
-                    env[k.strip()] = v.strip().strip('"').strip("'")
-    env.update(os.environ)
-    return env
+# Order tier names are listed in the summary breakdown line.
+_SOURCE_ORDER = ("amazon", "shopify", "jsonld", "meta", "roaster-playwright")
 
 
-# Amazon selectors in priority order — .a-offscreen has the full price string
-AMAZON_PRICE_SELECTORS = [
-    ".a-offscreen",
-    ".a-price-whole",
-    "#priceblock_ourprice",
-    "#priceblock_dealprice",
-    "span[data-a-color='price'] .a-offscreen",
-]
-
-ROASTER_PRICE_SELECTORS = [
-    "[data-price]",
-    ".price",
-    ".product-price",
-    ".product__price",
-    ".product__price .price",
-    "[data-product-price]",
-    ".price--main",
-    ".price__regular",
-    ".price-item--regular",
-    "[class*='price']",
-    "span.money",
-    ".woocommerce-Price-amount",
-]
-
-
-def _parse_price(text: str) -> float | None:
-    match = re.search(r"\d[\d,]*\.?\d*", text.replace(",", ""))
-    if match:
-        try:
-            return float(match.group().replace(",", ""))
-        except ValueError:
-            return None
-    return None
-
-
-def scrape_price(url: str, selectors: list[str]) -> float | None:
-    is_amazon = "amazon.com" in url
-    try:
-        with sync_playwright() as p:
-            browser = p.chromium.launch(
-                headless=True,
-                args=[
-                    "--disable-blink-features=AutomationControlled",
-                    "--no-sandbox",
-                ],
-            )
-            context = browser.new_context(
-                user_agent=(
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-                ),
-                viewport={"width": 1280, "height": 800},
-                locale="en-US",
-            )
-            page = context.new_page()
-            page.goto(url, timeout=20000, wait_until="domcontentloaded")
-            page.evaluate("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-            page.wait_for_timeout(5000 if is_amazon else 2000)
-
-            for selector in selectors:
-                try:
-                    el = page.query_selector(selector)
-                    if el:
-                        text = (el.get_attribute("data-price") or el.inner_text()).strip()
-                        price = _parse_price(text)
-                        if price and price > 0:
-                            browser.close()
-                            return price
-                except Exception:
-                    continue
-
-            browser.close()
-            log.warning("Could not find price on %s", url)
-            return None
-    except Exception as exc:
-        log.error("Playwright error for %s: %s", url, exc)
-        return None
-
-
-def print_summary(results: list[dict]) -> None:
+def print_summary(results: list[dict], source_counts: Counter, skipped: int, failed: int) -> None:
     if not results:
         print("\nNo prices collected.")
         return
 
-    col_name = max((len(r["name"]) for r in results), default=12)
-    col_name = max(col_name, 12)
+    col_name = max(max((len(r["name"]) for r in results), default=12), 12)
 
-    header = f"{'Product':<{col_name}}  {'Price':>8}  {'Price/oz':>9}  URL"
-    separator = "-" * min(len(header) + 40, 120)
+    header = f"{'Product':<{col_name}}  {'Price':>8}  {'Price/oz':>9}  Source"
+    separator = "-" * min(len(header) + 30, 120)
     print(f"\n{header}")
     print(separator)
-
     for r in results:
-        price_str = f"${r['price']:.2f}" if r["price"] is not None else "—"
-        ppoz_str = f"${r['price_per_oz']:.3f}" if r.get("price_per_oz") is not None else "—"
-        print(f"{r['name']:<{col_name}}  {price_str:>8}  {ppoz_str:>9}  {r['url']}")
-
+        price_str = f"${r['price']:.2f}" if r["price"] is not None else "(stale)"
+        ppoz_str = f"${r['price_per_oz']:.3f}" if r.get("price_per_oz") is not None else "-"
+        print(f"{r['name']:<{col_name}}  {price_str:>8}  {ppoz_str:>9}  {r['source']}")
     print()
 
+    resolved = sum(source_counts.values())
+    ordered = list(_SOURCE_ORDER) + [s for s in source_counts if s not in _SOURCE_ORDER]
+    breakdown = " ".join(f"{s}:{source_counts[s]}" for s in ordered if source_counts[s])
+    print(
+        f"Resolved: {resolved}/{len(results)} — {breakdown or '(none)'} "
+        f"| skipped:{skipped} failed:{failed}"
+    )
 
-def run() -> None:
-    env = load_env()  # noqa: F841 — kept for env loading pattern consistency
 
+def run(
+    mock: bool = False,
+    only_product: str | None = None,
+    limit: int | None = None,
+    dry_run: bool = False,
+    skip_amazon: bool = False,
+) -> None:
     if not PRODUCTS_FILE.exists():
         log.error("products.json not found at %s", PRODUCTS_FILE)
         sys.exit(1)
 
     with open(PRODUCTS_FILE, encoding="utf-8") as f:
-        products = json.load(f)
+        catalog = json.load(f)
 
-    results = []
-    success = 0
-    failed = 0
+    products = catalog
+    if only_product:
+        products = [p for p in catalog if p["id"] == only_product]
+        if not products:
+            log.error("No product with id %s", only_product)
+            sys.exit(1)
+    if limit is not None:
+        products = products[:limit]
 
-    with get_connection() as conn:
-        for i, product in enumerate(products):
+    env = load_env()
+    # build_context needs the FULL catalog to detect shared placeholder URLs.
+    ctx = build_context(catalog, env=env, mock=mock)
+    ctx["skip_amazon"] = skip_amazon
+    ctx["playwright_ok"] = False if mock else binary_exists()
+
+    paapi_on = any(p.enabled(ctx) for p in PRICE_CHAIN if p.name == "amazon_paapi")
+    log.info(
+        "Price run — %d product(s) | PA-API: %s | Playwright: %s | mock: %s | dry-run: %s",
+        len(products),
+        "enabled" if paapi_on else ("skipped (--skip-amazon)" if skip_amazon else "disabled"),
+        "available" if ctx["playwright_ok"] else "binary missing",
+        mock, dry_run,
+    )
+
+    results: list[dict] = []
+    source_counts: Counter = Counter()
+    success = skipped = failed = 0
+
+    conn_cm = nullcontext(None) if dry_run else get_connection()
+    with conn_cm as conn:
+        for product in products:
             pid = product["id"]
             name = product["name"]
             weight_oz = product.get("weight_oz")
-            asin = product.get("amazon_asin")
-            roaster_url = product.get("roaster_url")
 
-            if i > 0:
-                delay = random.uniform(3, 8)
-                log.info("Waiting %.1f seconds before next request...", delay)
-                time.sleep(delay)
+            res = resolve_field(product, PRICE_CHAIN, ctx)
 
-            price: float | None = None
-            source_url: str = ""
-            source: str = ""
-
-            if asin:
-                source_url = f"https://www.amazon.com/dp/{asin}"
-                log.info("Scraping Amazon price for %s (%s)", name, source_url)
-                price = scrape_price(source_url, AMAZON_PRICE_SELECTORS)
-                source = "amazon"
-            elif roaster_url:
-                source_url = roaster_url
-                log.info("Scraping roaster price for %s (%s)", name, roaster_url)
-                price = scrape_price(source_url, ROASTER_PRICE_SELECTORS)
-                source = "roaster"
+            if res.ok:
+                price = float(res.value)
+                price_per_oz = res.extra.get("price_per_oz")
+                if price_per_oz is None:
+                    price_per_oz = round(price / weight_oz, 4) if weight_oz else None
+                if res.extra.get("out_of_stock"):
+                    log.info("%s out of stock — recording price anyway ($%.2f)", name, price)
+                if conn is not None:
+                    conn.execute(
+                        """
+                        INSERT INTO price_history (product_id, price, source, weight_oz, price_per_oz)
+                        VALUES (?, ?, ?, ?, ?)
+                        """,
+                        (pid, price, res.source, weight_oz, price_per_oz),
+                    )
+                    conn.commit()
+                    record_health_success(conn, pid, "price", price, res.source)
+                log.info(
+                    "Saved: %s | $%.2f | %s%s",
+                    name, price, res.source,
+                    f" (${price_per_oz:.3f}/oz)" if price_per_oz else "",
+                )
+                results.append({"name": name, "price": price, "price_per_oz": price_per_oz, "source": res.source})
+                source_counts[res.source] += 1
+                success += 1
+            elif res.status == STATUS_ERROR:
+                if conn is not None:
+                    record_health_failure(conn, pid, "price", res.source, res.error or res.status)
+                log.warning("FAILED %s — %s (%s)", name, res.source or "-", res.error)
+                results.append({"name": name, "price": None, "price_per_oz": None, "source": res.source or "-"})
+                failed += 1
             else:
-                log.warning("No ASIN or roaster URL for %s — skipping", name)
-                failed += 1
-                continue
+                if conn is not None:
+                    record_health_failure(conn, pid, "price", res.source, res.error or res.status)
+                log.info("SKIP %s — no scrapable source (%s)", name, res.error or "no usable tier")
+                results.append({"name": name, "price": None, "price_per_oz": None, "source": res.source or "-"})
+                skipped += 1
 
-            if price is None:
-                log.warning("No price found for %s — skipping", name)
-                failed += 1
-                results.append({"name": name, "price": None, "price_per_oz": None, "url": source_url})
-                continue
+    log.info("Done. %d priced, %d skipped, %d failed.", success, skipped, failed)
+    print_summary(results, source_counts, skipped, failed)
 
-            price_per_oz = round(price / weight_oz, 4) if weight_oz else None
 
-            conn.execute(
-                """
-                INSERT INTO price_history (product_id, price, source, weight_oz, price_per_oz)
-                VALUES (?, ?, ?, ?, ?)
-                """,
-                (pid, price, source, weight_oz, price_per_oz),
-            )
-            conn.commit()
-
-            log.info(
-                "Saved: %s | $%.2f | %s%s",
-                name,
-                price,
-                source,
-                f" (${price_per_oz:.3f}/oz)" if price_per_oz else "",
-            )
-            results.append({"name": name, "price": price, "price_per_oz": price_per_oz, "url": source_url})
-            success += 1
-
-    log.info("Done. %d succeeded, %d failed.", success, failed)
-    print_summary(results)
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Resolve and store coffee bean prices.")
+    parser.add_argument("--mock", action="store_true", help="Offline synthetic prices for local testing.")
+    parser.add_argument("--product", help="Only this product id.")
+    parser.add_argument("--limit", type=int, help="Only process the first N products.")
+    parser.add_argument("--dry-run", action="store_true", help="Resolve fully but write nothing; print the summary.")
+    parser.add_argument("--skip-amazon", action="store_true", help="Skip the Amazon (PA-API) tier entirely.")
+    args = parser.parse_args()
+    run(
+        mock=args.mock,
+        only_product=args.product,
+        limit=args.limit,
+        dry_run=args.dry_run,
+        skip_amazon=args.skip_amazon,
+    )
 
 
 if __name__ == "__main__":
-    run()
+    main()
