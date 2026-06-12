@@ -86,7 +86,79 @@ def init_db(conn: sqlite3.Connection) -> None:
         CREATE INDEX IF NOT EXISTS idx_alert_product
         ON alert_log (product_id, sent_at)
     """)
+    # Per-field resolution health: one row per (product, field). Tracks the
+    # last-good value/source and whether the most recent attempt succeeded.
+    # A failed attempt marks the row 'stale' and KEEPS the last-good value —
+    # a dead source never blanks a previously resolved field.
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS product_data_health (
+            product_id      TEXT,
+            field           TEXT,
+            value           TEXT,
+            source          TEXT,
+            status          TEXT,
+            last_success_at TIMESTAMP,
+            last_attempt_at TIMESTAMP,
+            fail_count      INTEGER DEFAULT 0,
+            error           TEXT,
+            PRIMARY KEY (product_id, field)
+        )
+    """)
+    conn.execute("""
+        CREATE INDEX IF NOT EXISTS idx_health_status
+        ON product_data_health (status, field)
+    """)
     conn.commit()
+
+
+def record_health_success(conn, product_id, field, value, source) -> None:
+    """Upsert a successful resolve: set value/source, status='ok',
+    last_success_at=now, reset fail_count=0, clear error."""
+    conn.execute(
+        """
+        INSERT INTO product_data_health
+            (product_id, field, value, source, status,
+             last_success_at, last_attempt_at, fail_count, error)
+        VALUES (?, ?, ?, ?, 'ok', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, NULL)
+        ON CONFLICT(product_id, field) DO UPDATE SET
+            value           = excluded.value,
+            source          = excluded.source,
+            status          = 'ok',
+            last_success_at = CURRENT_TIMESTAMP,
+            last_attempt_at = CURRENT_TIMESTAMP,
+            fail_count      = 0,
+            error           = NULL
+        """,
+        (product_id, field, _as_text(value), source),
+    )
+    conn.commit()
+
+
+def record_health_failure(conn, product_id, field, source, error) -> None:
+    """Record a failed resolve: status='stale', bump fail_count, set
+    last_attempt_at=now, store error. KEEPS the existing last-good value,
+    source, and last_success_at (never overwrites a good value with blank)."""
+    conn.execute(
+        """
+        INSERT INTO product_data_health
+            (product_id, field, value, source, status,
+             last_success_at, last_attempt_at, fail_count, error)
+        VALUES (?, ?, NULL, ?, 'stale', NULL, CURRENT_TIMESTAMP, 1, ?)
+        ON CONFLICT(product_id, field) DO UPDATE SET
+            status          = 'stale',
+            last_attempt_at = CURRENT_TIMESTAMP,
+            fail_count      = product_data_health.fail_count + 1,
+            error           = excluded.error
+        """,
+        (product_id, field, source or None, _as_text(error)),
+    )
+    conn.commit()
+
+
+def _as_text(value) -> str | None:
+    if value is None:
+        return None
+    return str(value)
 
 
 @contextmanager
