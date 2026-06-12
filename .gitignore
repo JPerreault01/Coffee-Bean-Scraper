@@ -28,3 +28,10 @@ scrapers/.image-cache/
 .tmp-shots/
 # Stray empty artifact (literal bracket file from a shell mishap)
 /\[
+
+# Homepage image sources + converted WebP output (local-only; uploaded to the
+# WP Media Library by hand, never served from the repo)
+homepage-images/
+
+# Backup artifacts (e.g. products.json.bak)
+*.bak

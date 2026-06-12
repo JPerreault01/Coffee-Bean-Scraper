@@ -14,6 +14,7 @@ Usage (from repo root, venv active):
     python convert-images.py
 """
 
+import re
 from pathlib import Path
 
 from PIL import Image
@@ -27,6 +28,9 @@ METHOD   = 6
 HERO_KB_LIMIT = 200
 CARD_KB_LIMIT = 80
 EXTS = {".jpg", ".jpeg", ".png"}
+# Skip retired hero variants (hero_2.jpg, hero_3.jpg, ...) so we never ship a
+# stale hero. The active hero is "hero.jpg"; numbered variants are archives.
+SKIP_RE = re.compile(r"^hero_\d", re.IGNORECASE)
 
 
 def resize_to_max_width(img: Image.Image, max_w: int) -> Image.Image:
@@ -44,6 +48,10 @@ def main() -> None:
         p for p in SRC_DIR.iterdir()
         if p.is_file() and p.suffix.lower() in EXTS
     )
+    skipped = [p for p in sources if SKIP_RE.match(p.stem)]
+    sources = [p for p in sources if not SKIP_RE.match(p.stem)]
+    for p in skipped:
+        print(f"skip {p.name:<19} (retired hero variant, not converted)")
     if not sources:
         print(f"No .jpg/.jpeg/.png files found in {SRC_DIR}")
         return

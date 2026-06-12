@@ -93,6 +93,30 @@ function cbi_font_preconnect() {
     echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
 }
 
+// Homepage hero LCP preload. The hero is a CSS background on .cbi-hero__bg,
+// which browsers do not discover until the stylesheet parses, delaying the LCP
+// image. This preload tells the browser to fetch it immediately. Front page
+// only, so inner pages are not penalised with an unused download.
+//
+// PASTE HERO IMAGE URL: drop the WP Media Library URL for web/hero.webp between
+// the quotes below. This must be the SAME URL you paste into .cbi-hero__bg in
+// style.css (also marked "PASTE HERO IMAGE URL"). Left blank, nothing is
+// emitted, so there is no broken/empty preload.
+add_action( 'wp_head', 'cbi_hero_preload', 2 );
+function cbi_hero_preload() {
+    if ( ! is_front_page() ) {
+        return;
+    }
+    $hero_url = ''; // PASTE HERO IMAGE URL (web/hero.webp Media Library URL)
+    if ( ! $hero_url ) {
+        return;
+    }
+    printf(
+        '<link rel="preload" as="image" href="%s" fetchpriority="high">' . "\n",
+        esc_url( $hero_url )
+    );
+}
+
 // S3 fix: remove GeneratePress's automatic child-theme stylesheet enqueue so our
 // style.css is not loaded twice. We enqueue it ourselves as 'cbi-child' (depends on
 // 'generate-style', so it still cascades after GP's main.css). Priority 100 ensures
