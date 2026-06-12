@@ -4,28 +4,24 @@
  *
  * Loads automatically for the site front page (Settings > Reading either mode).
  * Editorial review-publication layout, top to bottom:
- *   1. Hero        full-bleed warm placeholder + value prop + search + 2 CTAs
+ *   1. Hero        full-width CSS-background (LCP), value prop, single CTA
  *   2. Featured    6 latest bean reviews (reuses cbi_bean_card / .cbi-card-grid)
- *   3. Browse      category tiles → Roast, Origin, Brew (authority distribution)
+ *   3. Category    4 image cards: Espresso, Dark Roast, Single Origin, Ground
+ *   3b. Brew       4 inline-SVG device icons linking to brew-method guides
  *   4. Deals strip beans below 30-day average (cbi_price_drop_beans())
  *   5. Guides      latest informational guide pages (cbi_get_guides())
  *   6. Email       price-drop alert signup band (WPForms via filter)
- *   Footer: generate_footer (FTC disclosure) — unchanged.
+ *   Footer: generate_footer (FTC disclosure), unchanged.
  *
  * All sections self-wrap in .cbi-container so they're immune to GP width.
  *
- * IMAGES: the hero uses a CSS-driven placeholder. To drop in a real photo, see
- * .home-hero--full in style.css — supply a 2400×1200px (2:1) optimised JPG/WebP.
+ * IMAGES: the hero uses a CSS background on .cbi-hero__bg (see "PASTE HERO
+ * IMAGE URL" in style.css). Category cards take Media Library URLs pasted into
+ * the $cat_img_* variables below. Convert sources with convert-images.py first.
  * Never hotlink copyrighted photos.
  */
 
 get_header();
-
-$bean_count    = (int) wp_count_posts( 'bean' )->publish;
-$origin_terms  = get_terms( [ 'taxonomy' => 'origin',  'hide_empty' => false ] );
-$roaster_terms = get_terms( [ 'taxonomy' => 'roaster', 'hide_empty' => false ] );
-$origin_count  = is_wp_error( $origin_terms )  ? 0 : count( $origin_terms );
-$roaster_count = is_wp_error( $roaster_terms ) ? 0 : count( $roaster_terms );
 
 $beans_url = get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' );
 ?>
@@ -42,37 +38,20 @@ $beans_url = get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' );
     </div>
 
     <!-- ============================================================
-         1. HERO — full-bleed warm placeholder + overlay
-         IMAGE DROP-IN: replace the .home-hero__bg background in style.css
-         (search ".home-hero--full") with a 2400×1200px (2:1) photo or a
-         subtle looping MP4/GIF. Keep the dark overlay for text contrast.
+         1. HERO (LCP) — full-width CSS background, dark overlay, single CTA.
+         IMAGE DROP-IN: set the background image on .cbi-hero__bg in style.css
+         (search "PASTE HERO IMAGE URL"). Upload web/hero.webp to the WP Media
+         Library and paste its URL there. The hero uses a CSS background, not
+         an <img>, so it stays the LCP element with no layout shift.
          ============================================================ -->
-    <section class="home-hero home-hero--full">
-        <div class="home-hero__bg" aria-hidden="true"><!-- placeholder: drop hero image/video here (2400×1200) --></div>
-        <div class="home-hero__overlay" aria-hidden="true"></div>
-        <div class="home-hero__inner cbi-container">
-            <span class="home-hero__eyebrow">Independent &middot; Data-driven &middot; Daily price tracking</span>
-            <h1 class="home-hero__title"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></h1>
-            <p class="home-hero__lede">Honest, data-backed coffee reviews and live price tracking &mdash; for the beans worth buying and the ones worth skipping.</p>
-
-            <form role="search" method="get" class="home-search" action="<?php echo esc_url( home_url( '/' ) ); ?>">
-                <label class="screen-reader-text" for="home-search-input">Search bean reviews</label>
-                <input type="search" id="home-search-input" class="home-search__input" name="s" placeholder="Search a bean, roaster, or origin&hellip;" />
-                <input type="hidden" name="post_type" value="bean" />
-                <button type="submit" class="home-search__btn">Search</button>
-            </form>
-
-            <div class="home-hero__cta">
-                <a class="cbi-btn cbi-btn--primary" href="<?php echo esc_url( $beans_url ); ?>">Browse reviews</a>
-                <a class="cbi-btn cbi-btn--secondary cbi-btn--on-dark" href="<?php echo esc_url( home_url( '/explore/' ) ); ?>">Find your coffee &rarr;</a>
-            </div>
-
-            <ul class="home-hero__stats">
-                <li class="home-hero__stat"><strong><?php echo esc_html( $bean_count ?: '—' ); ?></strong><span>beans reviewed</span></li>
-                <li class="home-hero__stat"><strong><?php echo esc_html( $origin_count ?: '—' ); ?></strong><span>origins tracked</span></li>
-                <li class="home-hero__stat"><strong><?php echo esc_html( $roaster_count ?: '—' ); ?></strong><span>roasters indexed</span></li>
-                <li class="home-hero__stat"><strong>Daily</strong><span>price checks</span></li>
-            </ul>
+    <section class="cbi-hero">
+        <div class="cbi-hero__bg" aria-hidden="true"></div>
+        <div class="cbi-hero__overlay" aria-hidden="true"></div>
+        <div class="cbi-hero__inner cbi-container">
+            <span class="cbi-hero__eyebrow">Independent &middot; Data-driven &middot; Daily price tracking</span>
+            <h1 class="cbi-hero__title">Find the coffee beans actually worth buying.</h1>
+            <p class="cbi-hero__subhead">Honest, data-backed reviews and live price tracking. We score the beans that earn it and call out the ones that don't.</p>
+            <a class="cbi-btn cbi-btn--primary cbi-hero__cta" href="<?php echo esc_url( home_url( '/best-espresso-beans-under-20/' ) ); ?>">See the best espresso beans under $20 &rarr;</a>
         </div>
     </section>
 
@@ -107,62 +86,163 @@ $beans_url = get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' );
     <?php endif; ?>
 
     <!-- ============================================================
-         3. BROWSE BY CATEGORY — primary authority-distribution tiles
-            Routes link equity into the Roast / Origin / Brew hubs.
+         3. CATEGORY CARDS — 4 image cards (authority distribution).
+            IMAGE DROP-IN: upload the converted WebPs (in homepage-images/web/)
+            to the WP Media Library, then paste each URL into the matching
+            variable below. Leave a URL blank to render the styled placeholder.
+            Do NOT use local file paths as image sources.
          ============================================================ -->
-    <section class="home-section home-section--tint">
+    <?php
+    $cat_img_espresso = ''; // PASTE Media Library URL for web/espresso.webp
+    $cat_img_dark     = ''; // PASTE Media Library URL for web/dark_roast.webp
+    $cat_img_origin   = ''; // PASTE Media Library URL for web/beans.webp
+    $cat_img_ground   = ''; // PASTE Media Library URL for web/ground_coffee.webp
+
+    /**
+     * Resolve a term-archive URL by slug, regardless of the taxonomy's
+     * rewrite base (brew-method registers as /brew/, roast-level as /roast/).
+     * Falls back to the archive base used elsewhere in the theme if the term
+     * does not exist yet, so links never 404 to a dead term path.
+     */
+    $cbi_term_url = static function ( $slug, $taxonomy, $fallback ) {
+        $term = get_term_by( 'slug', $slug, $taxonomy );
+        if ( $term && ! is_wp_error( $term ) ) {
+            $link = get_term_link( $term );
+            if ( ! is_wp_error( $link ) ) {
+                return $link;
+            }
+        }
+        return home_url( $fallback );
+    };
+
+    $cbi_cats = [
+        [
+            'label' => 'Espresso',
+            'blurb' => 'Beans built for pressure and crema.',
+            'url'   => $cbi_term_url( 'espresso', 'brew-method', '/brew/' ),
+            'img'   => $cat_img_espresso,
+            'alt'   => 'A double shot of espresso pouring into a white cup',
+        ],
+        [
+            'label' => 'Dark Roast',
+            'blurb' => 'Bold, low-acid, built to hold up to milk.',
+            'url'   => $cbi_term_url( 'dark', 'roast-level', '/roast/' ),
+            'img'   => $cat_img_dark,
+            'alt'   => 'Dark roasted coffee beans with an oily sheen',
+        ],
+        [
+            'label' => 'Single Origin',
+            'blurb' => 'Traceable beans from one farm or region.',
+            'url'   => home_url( '/origin/' ),
+            'img'   => $cat_img_origin,
+            'alt'   => 'A pile of roasted single origin coffee beans',
+        ],
+        [
+            'label' => 'Ground Coffee',
+            'blurb' => 'Pre-ground picks for French press and drip.',
+            'url'   => $cbi_term_url( 'french-press', 'brew-method', '/brew/' ),
+            'img'   => $cat_img_ground,
+            'alt'   => 'Freshly ground coffee in a metal scoop',
+        ],
+    ];
+    ?>
+    <section class="home-section cbi-container">
+        <div class="home-section__head">
+            <h2>Browse by category</h2>
+            <p class="text-muted">Four ways into the index. Pick a thread and pull.</p>
+        </div>
+        <div class="cbi-cats">
+            <?php foreach ( $cbi_cats as $cat ) : ?>
+                <a class="cbi-cat" href="<?php echo esc_url( $cat['url'] ); ?>">
+                    <span class="cbi-cat__media">
+                        <?php if ( $cat['img'] ) : ?>
+                            <img class="cbi-cat__img"
+                                 src="<?php echo esc_url( $cat['img'] ); ?>"
+                                 width="600" height="400"
+                                 loading="lazy" decoding="async"
+                                 alt="<?php echo esc_attr( $cat['alt'] ); ?>">
+                        <?php else : ?>
+                            <span class="cbi-cat__img cbi-cat__img--placeholder" aria-hidden="true"></span>
+                        <?php endif; ?>
+                    </span>
+                    <span class="cbi-cat__body">
+                        <span class="cbi-cat__label"><?php echo esc_html( $cat['label'] ); ?></span>
+                        <span class="cbi-cat__blurb"><?php echo esc_html( $cat['blurb'] ); ?></span>
+                    </span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         3b. BREW GUIDES — 4 hand-drawn inline SVG device icons.
+            Each links to its brew-method guide. The SVGs are decorative
+            (aria-hidden); the visible text label is each link's accessible
+            name. Icons inherit the oxblood accent via stroke="currentColor".
+         ============================================================ -->
+    <section class="cbi-brew home-section--tint">
         <div class="cbi-container">
             <div class="home-section__head">
-                <h2>Browse by category</h2>
-                <p class="text-muted">Three ways into the index &mdash; pick a thread and pull.</p>
+                <h2>Brew guides</h2>
+                <p class="text-muted">Dial in the method. Four ways to pull the most from a bag.</p>
             </div>
-            <div class="home-cat-tiles">
-                <?php
-                // ICON DROP-IN: each tile uses a CSS gradient placeholder. To use
-                // images, set a background on .home-cat-tile--{slug} in style.css
-                // (recommended 800×600px). Tiles link to taxonomy term archives.
-                $categories = [
-                    [
-                        'label' => 'By Roast Level',
-                        'blurb' => 'Light, medium, dark, French.',
-                        'tax'   => 'roast-level',
-                        'url'   => home_url( '/roast/' ),
-                    ],
-                    [
-                        'label' => 'By Origin',
-                        'blurb' => 'Ethiopia, Colombia, Sumatra and more.',
-                        'tax'   => 'origin',
-                        'url'   => home_url( '/origin/' ),
-                    ],
-                    [
-                        'label' => 'By Brew Method',
-                        'blurb' => 'Espresso, pour-over, French press.',
-                        'tax'   => 'brew-method',
-                        'url'   => home_url( '/brew/' ),
-                    ],
-                ];
-                foreach ( $categories as $cat ) :
-                    $terms = get_terms( [
-                        'taxonomy'   => $cat['tax'],
-                        'hide_empty' => false,
-                        'number'     => 5,
-                        'orderby'    => 'count',
-                        'order'      => 'DESC',
-                    ] );
-                ?>
-                    <a class="home-cat-tile home-cat-tile--<?php echo esc_attr( $cat['tax'] ); ?>" href="<?php echo esc_url( $cat['url'] ); ?>">
-                        <span class="home-cat-tile__media" aria-hidden="true"></span>
-                        <span class="home-cat-tile__body">
-                            <span class="home-cat-tile__label"><?php echo esc_html( $cat['label'] ); ?></span>
-                            <span class="home-cat-tile__blurb"><?php echo esc_html( $cat['blurb'] ); ?></span>
-                            <?php if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) : ?>
-                                <span class="home-cat-tile__terms">
-                                    <?php echo esc_html( implode( ' · ', wp_list_pluck( array_slice( $terms, 0, 4 ), 'name' ) ) ); ?>
-                                </span>
-                            <?php endif; ?>
-                        </span>
-                    </a>
-                <?php endforeach; ?>
+            <div class="cbi-brew__grid">
+                <!-- Espresso machine -->
+                <a class="cbi-brew__item" href="<?php echo esc_url( $cbi_term_url( 'espresso', 'brew-method', '/brew/' ) ); ?>">
+                    <span class="cbi-brew__icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="3" y="3" width="11" height="7" rx="1"/>
+                            <path d="M3 6.5h11"/>
+                            <path d="M9 10v1.4"/>
+                            <path d="M7.5 11.4h3l-.4 1.3a.5.5 0 0 1-.48.36h-1.24a.5.5 0 0 1-.48-.36z"/>
+                            <path d="M8.7 13.1v1M9.8 13.1v1"/>
+                            <path d="M7 15h4v2a1.5 1.5 0 0 1-1.5 1.5h-1A1.5 1.5 0 0 1 7 17z"/>
+                            <path d="M11 15.8h1a1 1 0 0 1 0 2h-.5"/>
+                            <path d="M3 20h14"/>
+                        </svg>
+                    </span>
+                    <span class="cbi-brew__label">Espresso</span>
+                </a>
+                <!-- French press -->
+                <a class="cbi-brew__item" href="<?php echo esc_url( $cbi_term_url( 'french-press', 'brew-method', '/brew/' ) ); ?>">
+                    <span class="cbi-brew__icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M11 2.5h2"/>
+                            <path d="M12 2.5v2"/>
+                            <path d="M7 4.5h10"/>
+                            <path d="M8 4.5v13a1.5 1.5 0 0 0 1.5 1.5h5a1.5 1.5 0 0 0 1.5-1.5V4.5"/>
+                            <path d="M8 8.5h8"/>
+                            <path d="M16 8h2.5a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5H16"/>
+                        </svg>
+                    </span>
+                    <span class="cbi-brew__label">French Press</span>
+                </a>
+                <!-- Pour over (V60 cone + carafe) -->
+                <a class="cbi-brew__item" href="<?php echo esc_url( $cbi_term_url( 'pour-over', 'brew-method', '/brew/' ) ); ?>">
+                    <span class="cbi-brew__icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M6 4.5h12l-5 6.5h-2z"/>
+                            <path d="M10.2 11l-.7 1.5M13.8 11l.7 1.5"/>
+                            <path d="M9 13h6v2.5a3 3 0 0 1-6 0z"/>
+                            <path d="M15 13.5h1.5a1 1 0 0 1 0 2H15"/>
+                        </svg>
+                    </span>
+                    <span class="cbi-brew__label">Pour Over</span>
+                </a>
+                <!-- AeroPress -->
+                <a class="cbi-brew__item" href="<?php echo esc_url( $cbi_term_url( 'aeropress', 'brew-method', '/brew/' ) ); ?>">
+                    <span class="cbi-brew__icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M9 3h6"/>
+                            <path d="M10 3v3h4V3"/>
+                            <path d="M8.5 6h7"/>
+                            <path d="M9 6v6h6V6"/>
+                            <path d="M9.5 12h5l-.6 5a1 1 0 0 1-1 .9h-1.8a1 1 0 0 1-1-.9z"/>
+                            <path d="M14.3 13.5h1.4a1.4 1.4 0 0 1 0 2.8H14"/>
+                        </svg>
+                    </span>
+                    <span class="cbi-brew__label">AeroPress</span>
+                </a>
             </div>
         </div>
     </section>
@@ -248,7 +328,7 @@ $beans_url = get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' );
             <div class="home-cta-band__inner">
                 <div class="home-cta-band__copy">
                     <h2>Get price-drop alerts</h2>
-                    <p>An email the moment a bean we rate drops in price. No spam &mdash; just price drops.</p>
+                    <p>An email the moment a bean we rate drops in price. No spam, just price drops.</p>
                 </div>
                 <div class="home-cta-band__form">
                     <?php
