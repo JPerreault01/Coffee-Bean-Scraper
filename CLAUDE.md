@@ -152,6 +152,10 @@ REDDIT_CLIENT_ID=   REDDIT_CLIENT_SECRET=                 (optional, pipeline)
   RankMath meta) → `fetch_bean_images.py` + `set_featured_images.php` → human Publish.
   `create_beans.php` is the canonical importer (the older `create_beans_wpcli.sh` was
   removed in the June 2026 audit — see AUDIT_FINDINGS.md §R2).
+  For a **batch** run (many beans at once), follow
+  [REVIEW_GENERATION_RUNBOOK.md](REVIEW_GENERATION_RUNBOOK.md) — it front-loads the
+  pre-flight checks (taxonomy-map coverage, URL hygiene, encoding) that otherwise only
+  surface server-side at import/image time.
 - **Deploy** is manual: `scp` theme/plugin files to the VPS, then `wp cache flush`. There
   is no CI deploy. `setup.sh` provisions only the price-tracker baseline. Connect via the
   `cbi-prod` SSH alias — server-access + hardening runbook in [DEPLOY.md](DEPLOY.md).
