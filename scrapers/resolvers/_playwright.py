@@ -13,7 +13,9 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from ._http import USER_AGENT
+import json as _json
+
+from ._http import USER_AGENT, _parse_price, _is_product_node, _price_from_offers, _iter_jsonld_nodes
 
 # Common roaster price selectors (Shopify/Woo themes), most-specific first.
 ROASTER_PRICE_SELECTORS = (
@@ -27,6 +29,10 @@ ROASTER_PRICE_SELECTORS = (
     ".product-price",
     ".price .money",
     ".price",
+    # Broad fallback for custom storefronts (Blue Bottle, Intelligentsia, Onyx)
+    # whose class names contain "price" as a substring (.price only matches the
+    # literal standalone class token, not compound names like "product-price").
+    "[class*=price]",
 )
 
 
@@ -54,9 +60,33 @@ def _parse_price(text: str | None) -> float | None:
         return None
 
 
+def _extract_jsonld_price(page) -> float | None:
+    """Pull JSON-LD blocks out of the live DOM (catches SPA-injected structured
+    data that requests never sees). Returns the first Product Offer price found."""
+    try:
+        texts = page.evaluate(
+            "() => Array.from(document.querySelectorAll("
+            "'script[type=\"application/ld+json\"]'))"
+            ".map(s => s.textContent || '')"
+        )
+    except Exception:
+        return None
+    # Stitch into a fake HTML wrapper so the existing parser handles it.
+    fake_html = "".join(
+        f'<script type="application/ld+json">{t}</script>' for t in (texts or [])
+    )
+    for node in _iter_jsonld_nodes(fake_html):
+        if _is_product_node(node):
+            price = _price_from_offers(node.get("offers"))
+            if price:
+                return price
+    return None
+
+
 def get_price(url: str, *, timeout: int = 25000) -> float | None:
-    """Render the page and read the first price-bearing selector. Returns None
-    if nothing parses. Raises on a Playwright/transport error so the resolver
+    """Render the page, then try JSON-LD extraction (catches SPA-injected
+    structured data) before falling back to DOM selectors. Returns None if
+    nothing parses. Raises on a Playwright/transport error so the resolver
     can retry."""
     from playwright.sync_api import sync_playwright  # noqa: PLC0415
 
@@ -71,7 +101,15 @@ def get_price(url: str, *, timeout: int = 25000) -> float | None:
             )
             page = ctx.new_page()
             page.goto(url, timeout=timeout, wait_until="domcontentloaded")
-            page.wait_for_timeout(1500)
+            # Give React/Next.js storefronts time to hydrate and inject JSON-LD.
+            page.wait_for_timeout(3000)
+
+            # Tier A: JSON-LD from the live DOM (catches SPA-injected data).
+            price = _extract_jsonld_price(page)
+            if price:
+                return price
+
+            # Tier B: DOM selectors for standard Shopify/Woo themes.
             for sel in ROASTER_PRICE_SELECTORS:
                 try:
                     el = page.query_selector(sel)

@@ -523,7 +523,7 @@
     "process_method": "Washed",
     "weight_oz": 12.0,
     "amazon_asin": null,
-    "roaster_url": "https://atlascoffeeclub.com/products/ethiopia",
+    "roaster_url": null,
     "affiliate_tag": null,
     "best_brew_methods": [
       "pour over",
@@ -830,7 +830,7 @@
     "process_method": "Washed",
     "weight_oz": 12,
     "amazon_asin": null,
-    "roaster_url": "https://counterculturecoffee.com/products/hologram",
+    "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "pour over",
@@ -860,7 +860,7 @@
     "process_method": "Washed",
     "weight_oz": 12,
     "amazon_asin": null,
-    "roaster_url": "https://www.intelligentsia.com/products/house-blend",
+    "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "drip",
@@ -1062,7 +1062,7 @@
     "process_method": "Washed",
     "weight_oz": 16,
     "amazon_asin": null,
-    "roaster_url": "https://stonestreetcoffee.com/products/cold-brew-reserve",
+    "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "cold brew",

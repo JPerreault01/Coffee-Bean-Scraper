@@ -176,13 +176,15 @@ def run(
                 if conn is not None:
                     record_health_failure(conn, pid, "price", res.source, res.error or res.status)
                 log.warning("FAILED %s — %s (%s)", name, res.source or "-", res.error)
+                # Keep the tier name for errors so the user knows which tier failed.
                 results.append({"name": name, "price": None, "price_per_oz": None, "source": res.source or "-"})
                 failed += 1
             else:
                 if conn is not None:
                     record_health_failure(conn, pid, "price", res.source, res.error or res.status)
                 log.info("SKIP %s — no scrapable source (%s)", name, res.error or "no usable tier")
-                results.append({"name": name, "price": None, "price_per_oz": None, "source": res.source or "-"})
+                # Show "-" for skips: the last-attempted tier name is irrelevant.
+                results.append({"name": name, "price": None, "price_per_oz": None, "source": "-"})
                 skipped += 1
 
     log.info("Done. %d priced, %d skipped, %d failed.", success, skipped, failed)
