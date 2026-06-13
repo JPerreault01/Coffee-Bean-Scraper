@@ -2095,14 +2095,14 @@
   },
   {
     "id": "san-francisco-bay-fog-chaser",
-    "name": "San Francisco Bay Coffee Fog Chaser",
-    "brand": "San Francisco Bay Coffee",
+    "name": "San Francisco Bay Fog Chaser",
+    "brand": "San Francisco Bay",
     "roast_level": "Medium-Dark",
     "origin": "Central and South America blend",
     "process_method": "Washed",
-    "weight_oz": 28,
-    "amazon_asin": null,
-    "roaster_url": "https://www.sfbaycoffee.com/products/fog-chaser",
+    "weight_oz": 32,
+    "amazon_asin": "B00474ARU8",
+    "roaster_url": "https://sfbaycoffee.com/products/sf-bay-fog-chaser-coffee-2-lb-bag",
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "drip",
@@ -2118,9 +2118,21 @@
     "sweetness": 3,
     "bitterness": 2,
     "roast_intensity": 4,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": null
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {
+        "product": "San Francisco Bay French Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Peet's Coffee Major Dickason's Blend",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "SF Bay listing + Amazon (B00474ARU8) + Target: milk chocolate, toffee, sweet mandarin; balanced medium-dark, C/S America, 2 lb. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "allegro-organic-french-roast",
@@ -8176,6 +8188,390 @@
     ],
     "reference_slug": null,
     "profile_source": "Kicking Horse listing + Amazon: roasted hazelnut, chocolatey, balanced, lasting finish; Swiss Water Process decaf, organic Fairtrade 100% Arabica, Central & South America. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "san-francisco-bay-french-roast",
+    "name": "San Francisco Bay French Roast",
+    "brand": "San Francisco Bay",
+    "roast_level": "Dark",
+    "origin": "Central and South America blend",
+    "process_method": "Washed",
+    "weight_oz": 32,
+    "amazon_asin": "B0058E62SC",
+    "roaster_url": "https://sfbaycoffee.com/products/sf-bay-french-roast-coffee-2-lb-bag",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "french press",
+      "drip",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "brown spice",
+      "smoky",
+      "full body"
+    ],
+    "acidity": 1,
+    "body": 4,
+    "sweetness": 2,
+    "bitterness": 4,
+    "roast_intensity": 5,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "Stumptown French Roast Organic",
+        "logic": "performance"
+      },
+      {
+        "product": "Peet's Coffee French Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "SF Bay listing + Amazon (B0058E62SC): dark chocolate, brown spice, long smoky finish; C/S America Arabica, 2 lb bag, 'West Coast Roast'. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "san-francisco-bay-decaf-gourmet-blend",
+    "name": "San Francisco Bay Decaf Gourmet Blend",
+    "brand": "San Francisco Bay",
+    "roast_level": "Medium-Dark",
+    "origin": "Central and South America blend",
+    "process_method": "Swiss Water decaf (washed)",
+    "weight_oz": 32,
+    "amazon_asin": "BACKFILL",
+    "roaster_url": "https://sfbaycoffee.com/collections/decaf",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "smooth",
+      "mild cocoa",
+      "nutty",
+      "medium body"
+    ],
+    "acidity": 2,
+    "body": 3,
+    "sweetness": 2,
+    "bitterness": 2,
+    "roast_intensity": 3,
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {
+        "product": "Kicking Horse Decaf Swiss Water Dark Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "San Francisco Bay Fog Chaser",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "SF Bay decaf collection page: Swiss Water Process decaf, C/S America, 'lively, medium-bodied smoothness'. Whole-bean Gourmet Blend decaf SKU/ASIN not confidently confirmed (SF Bay's confirmed decaf whole beans are French Roast and Espresso Roast) -> amazon_asin BACKFILL; flavor notes inferred from line description. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "san-francisco-bay-rainforest-blend",
+    "name": "San Francisco Bay Organic Rainforest Blend",
+    "brand": "San Francisco Bay",
+    "roast_level": "Medium-Dark",
+    "origin": "Central and South America blend (organic)",
+    "process_method": "Washed",
+    "weight_oz": 32,
+    "amazon_asin": "B07XZXHXYV",
+    "roaster_url": "https://sfbaycoffee.com/products/sf-bay-organic-rainforest-blend-coffee-2-lb-bag",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "creamy cocoa",
+      "brown sugar",
+      "sweet berry",
+      "dark chocolate"
+    ],
+    "acidity": 2,
+    "body": 4,
+    "sweetness": 3,
+    "bitterness": 3,
+    "roast_intensity": 4,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "San Francisco Bay Fog Chaser",
+        "logic": "performance"
+      },
+      {
+        "product": "Cafe Don Pablo Gourmet Coffee Signature Blend",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "SF Bay listing + CoffeeReview (Organic Rainforest Blend) + Amazon (B07XZXHXYV): creamy cocoa, brown sugar, sweet berry, dark chocolate; USDA organic, C/S America, medium-dark, 2 lb. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "bulletproof-original",
+    "name": "Bulletproof The Original Medium Roast",
+    "brand": "Bulletproof",
+    "roast_level": "Medium",
+    "origin": "Guatemala, Colombia, El Salvador",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": "B00R7FG5BO",
+    "roaster_url": "https://shop.bulletproof.com/products/coffee-the-original-whole-bean-12oz",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "cinnamon",
+      "plum",
+      "orange",
+      "cocoa hazelnut finish"
+    ],
+    "acidity": 3,
+    "body": 3,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 3,
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {
+        "product": "Cafe Don Pablo Gourmet Coffee Signature Blend",
+        "logic": "performance"
+      },
+      {
+        "product": "Bulletproof The Mentalist Medium-Dark Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Bulletproof listing + Amazon (B00R7FG5BO) + Walmart: cinnamon, plum, orange, cocoa-hazelnut finish; 100% Arabica Guatemala/Colombia/El Salvador, Rainforest Alliance, batch toxin-tested. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "bulletproof-the-mentalist",
+    "name": "Bulletproof The Mentalist Medium-Dark Roast",
+    "brand": "Bulletproof",
+    "roast_level": "Medium-Dark",
+    "origin": "Guatemala, Colombia, El Salvador",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": "B01IN8GK8Q",
+    "roaster_url": "https://shop.bulletproof.com/products/coffee-the-mentalist-whole-bean-12oz",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso",
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "cherry",
+      "almond",
+      "caramel",
+      "dark cocoa"
+    ],
+    "acidity": 2,
+    "body": 4,
+    "sweetness": 3,
+    "bitterness": 3,
+    "roast_intensity": 4,
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {
+        "product": "Bulletproof The Original Medium Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Peet's Coffee Major Dickason's Blend",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Bulletproof listing + Amazon (B01IN8GK8Q) + Walmart: cherry, almond, caramel, dark cocoa and vanilla aromatics; 100% Arabica Guatemala/Colombia/El Salvador, Rainforest Alliance, batch toxin-tested. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "bones-highland-grog",
+    "name": "Bones Coffee Highland Grog",
+    "brand": "Bones Coffee",
+    "roast_level": "Medium",
+    "origin": "Arabica base (flavored)",
+    "process_method": "Washed (flavored)",
+    "weight_oz": 12,
+    "amazon_asin": "B07T864S3F",
+    "roaster_url": "https://www.bonescoffee.com/products/highland-grog-by-bones-coffee-company",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "butterscotch",
+      "caramel",
+      "spiced rum",
+      "low acid"
+    ],
+    "acidity": 2,
+    "body": 3,
+    "sweetness": 4,
+    "bitterness": 2,
+    "roast_intensity": 3,
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {
+        "product": "Bones Coffee Jamaican Me Crazy",
+        "logic": "performance"
+      },
+      {
+        "product": "Bones Coffee French Toast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Bones Coffee listing + Amazon (B07T864S3F) + Walmart/Target: added butterscotch, caramel, spiced-rum flavoring on a medium-roast Arabica base, low acid. Flavored coffee. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "bones-french-toast",
+    "name": "Bones Coffee French Toast",
+    "brand": "Bones Coffee",
+    "roast_level": "Medium",
+    "origin": "Brazil Arabica base (flavored)",
+    "process_method": "Washed (flavored)",
+    "weight_oz": 12,
+    "amazon_asin": "B0947CS5BY",
+    "roaster_url": "https://www.bonescoffee.com/products/bones-coffee-company-french-toast-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "maple",
+      "vanilla",
+      "cinnamon",
+      "buttery"
+    ],
+    "acidity": 2,
+    "body": 3,
+    "sweetness": 4,
+    "bitterness": 2,
+    "roast_intensity": 3,
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {
+        "product": "Bones Coffee Highland Grog",
+        "logic": "performance"
+      },
+      {
+        "product": "Bones Coffee Jamaican Me Crazy",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Bones Coffee listing + Amazon (B0947CS5BY) + Walmart: added maple, vanilla, cinnamon flavoring on a medium-roast Brazil Arabica base, sweet and buttery. Flavored coffee. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "bones-jamaican-me-crazy",
+    "name": "Bones Coffee Jamaican Me Crazy",
+    "brand": "Bones Coffee",
+    "roast_level": "Medium",
+    "origin": "Arabica base (flavored)",
+    "process_method": "Washed (flavored)",
+    "weight_oz": 12,
+    "amazon_asin": "BACKFILL",
+    "roaster_url": "https://www.bonescoffee.com/products/jamaican-me-crazy-by-bones-coffee-company",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "vanilla",
+      "caramel",
+      "coffee liqueur",
+      "smooth"
+    ],
+    "acidity": 2,
+    "body": 3,
+    "sweetness": 4,
+    "bitterness": 2,
+    "roast_intensity": 3,
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {
+        "product": "Bones Coffee Highland Grog",
+        "logic": "performance"
+      },
+      {
+        "product": "Bones Coffee French Toast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Bones Coffee listing + Amazon (ground SKU B07TCCRBZ3) + Walmart whole-bean listing: added vanilla, caramel, coffee-liqueur flavoring on medium-roast Arabica, low acid. Whole-bean Amazon ASIN not confidently confirmed -> BACKFILL. Flavored coffee. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "peets-cafe-domingo",
+    "name": "Peet's Coffee Cafe Domingo",
+    "brand": "Peet's Coffee",
+    "roast_level": "Medium",
+    "origin": "Latin America blend (100% Arabica)",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": "BACKFILL",
+    "roaster_url": "https://www.peets.com/products/cafe-domingo",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over",
+      "french press",
+      "cold brew"
+    ],
+    "flavor_notes": [
+      "toast",
+      "toffee",
+      "nougat",
+      "crisp finish"
+    ],
+    "acidity": 3,
+    "body": 3,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 3,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Peet's Coffee Big Bang Medium Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Caribou Coffee Caribou Blend",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Peet's listing + CoffeeReview (Cafe Domingo): three Latin American coffees, toast, toffee, nougat, crisp clean finish, medium roast. Whole-bean Amazon ASIN not confidently confirmed (K-Cup ASIN B00D5QPCI6 found) -> BACKFILL. Verified 2026-06-13.",
     "price_per_oz": null,
     "price_status": "BACKFILL"
   }
