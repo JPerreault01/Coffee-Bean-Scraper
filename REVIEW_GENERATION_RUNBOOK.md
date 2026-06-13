@@ -103,6 +103,14 @@ Flag any new bean missing it.
 5. **Extend the PHP maps now, not at import.** Add the batch's new origin strings to
    `$origin_map` and new flavor strings to `$flavor_canonical_map` in `create_beans.php`.
    Then re-run Phase 0 until coverage is 100%.
+6. **Complete the sensory profile (drives the flavor radar).** Every bean needs all five
+   1-5 axes (`acidity, body, sweetness, bitterness, roast_intensity`) or its radar won't
+   render. Run `python scrapers/backfill_sensory_scores.py --write`. It keeps existing AI
+   scores (`ai_sensory_scores.py` → `data/sensory_scores.json`) verbatim, fills any blanks
+   in `products.json`, and derives the rest from each bean's own roast/origin/process/notes,
+   tagging derived beans `confidence: "derived"`. **Firewall:** the derivation uses the
+   bean's own attributes only — never `coffeereview.db`. Optionally upgrade specific
+   `derived` beans to grounded AI scores later with `ai_sensory_scores.py --only <id>`.
 
 ---
 
@@ -157,6 +165,13 @@ wp eval-file /opt/scrapers/push_drafts.php  --allow-root   # hydrate ACF from dr
 - **SCP everything the scripts need.** `push_drafts.php` was forgotten in the first SCP and
   the run errored `does not exist`. The set: `create_beans.php`, `push_drafts.php`,
   `products.json` → `/opt/scrapers/`; all `drafts/*.md` → `/opt/drafts/`.
+- **Sensory scores on beans that already exist as posts.** `create_beans.php` writes the five
+  sensory ACF fields, but only for beans it creates — it skips existing slugs, so re-running it
+  will NOT add a radar to beans created in a prior batch. For those, push the scores with the
+  overlay: SCP `data/sensory_scores.json` → `/opt/data/` and `scrapers/populate_sensory_scores.php`
+  → `/opt/scrapers/scrapers/`, then `wp eval-file /opt/scrapers/scrapers/populate_sensory_scores.php
+  --allow-root`. It overwrites the five fields each run (safe to re-run) and reports any IDs with
+  no matching post.
 
 ---
 
