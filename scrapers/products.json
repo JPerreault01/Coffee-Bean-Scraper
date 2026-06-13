@@ -410,10 +410,10 @@
     "name": "Blue Bottle Hayes Valley Espresso",
     "brand": "Blue Bottle Coffee",
     "roast_level": "Dark",
-    "origin": "Ethiopia, Colombia blend",
+    "origin": "Guatemala, Congo, Brazil blend",
     "process_method": "Washed",
     "weight_oz": 12.0,
-    "amazon_asin": null,
+    "amazon_asin": "B07CH3L35G",
     "roaster_url": "https://bluebottlecoffee.com/store/hayes-valley-espresso",
     "affiliate_tag": null,
     "best_brew_methods": [
@@ -442,17 +442,20 @@
         "logic": "performance"
       }
     ],
-    "reference_slug": null
+    "reference_slug": null,
+    "profile_source": "Blue Bottle listing + CoffeeReview (Hayes Valley Espresso) + Amazon (B07CH3L35G): one of Blue Bottle's darkest espressos, baking chocolate, orange zest, brown sugar, heavy red-brown crema; Guatemala, Congo, Brazil blend. (Corrects prior entry's origin.) Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "intelligentsia-black-cat",
-    "name": "Intelligentsia Black Cat Espresso",
+    "name": "Intelligentsia Black Cat Classic Espresso",
     "brand": "Intelligentsia",
     "roast_level": "Medium-Dark",
-    "origin": "Latin America blend",
+    "origin": "Brazil, Colombia blend",
     "process_method": "Washed",
     "weight_oz": 12.0,
-    "amazon_asin": null,
+    "amazon_asin": "B0055ZRUOO",
     "roaster_url": "https://www.intelligentsia.com/products/black-cat-classic-espresso",
     "affiliate_tag": null,
     "best_brew_methods": [
@@ -481,14 +484,17 @@
         "logic": "flavor_profile"
       }
     ],
-    "reference_slug": null
+    "reference_slug": null,
+    "profile_source": "Intelligentsia listing + CoffeeReview (Black Cat) + Amazon (B0055ZRUOO): Brazil and Colombia blend, dark chocolate, ripe cherry, molasses (also cola, orange), syrupy sweet, clean, complex. Intelligentsia roasts it light to highlight sweetness while keeping toasty chocolate for espresso. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "counter-culture-big-trouble",
     "name": "Counter Culture Big Trouble",
     "brand": "Counter Culture Coffee",
     "roast_level": "Medium",
-    "origin": "Latin America blend",
+    "origin": "Ecuador, Honduras blend (seasonal)",
     "process_method": "Washed",
     "weight_oz": 12.0,
     "amazon_asin": null,
@@ -521,7 +527,10 @@
         "logic": "flavor_profile"
       }
     ],
-    "reference_slug": null
+    "reference_slug": null,
+    "profile_source": "Counter Culture listing + CoffeeReview (Big Trouble) + Honest Coffee Reviews: caramel, nutty, round, with chocolate; medium to medium-dark, sustainably sourced Arabica that changes seasonally (currently Ecuador and Honduras). Sold mainly direct from Counter Culture; Amazon single-bag ASIN not confirmed -> BACKFILL. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "atlas-limu-ethiopia",
@@ -812,8 +821,8 @@
     "name": "Blue Bottle Bella Donovan",
     "brand": "Blue Bottle Coffee",
     "roast_level": "Medium-Dark",
-    "origin": "Ethiopia, Latin America blend",
-    "process_method": "Washed",
+    "origin": "Ethiopia, Sumatra, Peru blend",
+    "process_method": "Washed and natural blend",
     "weight_oz": 12,
     "amazon_asin": null,
     "roaster_url": "https://bluebottlecoffee.com/us/eng/product/bella-donovan",
@@ -832,19 +841,31 @@
     "sweetness": 4,
     "bitterness": 3,
     "roast_intensity": 4,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": null
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {
+        "product": "Blue Bottle Hayes Valley Espresso",
+        "logic": "performance"
+      },
+      {
+        "product": "Death Wish Valhalla Java",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Blue Bottle listing + CoffeeReview references: Moka-Java-style blend, wild jammy natural Ethiopia balanced by Sumatra and Peru; raspberry, chocolate, molasses, berry delicacy with subtle smokiness; medium-dark, versatile. Sold mainly direct; Amazon ASIN not confirmed -> BACKFILL. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "counter-culture-hologram",
     "name": "Counter Culture Hologram",
     "brand": "Counter Culture Coffee",
     "roast_level": "Medium",
-    "origin": "Latin America, East Africa blend",
-    "process_method": "Washed",
+    "origin": "Colombia, Ethiopia, Peru blend",
+    "process_method": "Washed and natural blend",
     "weight_oz": 12,
-    "amazon_asin": null,
+    "amazon_asin": "B018CSY0R0",
     "roaster_url": null,
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
@@ -862,20 +883,32 @@
     "sweetness": 4,
     "bitterness": 2,
     "roast_intensity": 3,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": null
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Intelligentsia House Blend",
+        "logic": "performance"
+      },
+      {
+        "product": "Counter Culture Big Trouble",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Counter Culture listing + Whole Foods + Amazon (B018CSY0R0): medium-roast blend (about 70% Cueva Colombia, 15% Jabanto Natural Ethiopia, 15% Incahuasi Natural Peru), fruity, milk chocolate, syrupy. Natural and washed components. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "intelligentsia-house-blend",
     "name": "Intelligentsia House Blend",
-    "brand": "Intelligentsia Coffee",
-    "roast_level": "Medium",
-    "origin": "Latin America, East Africa blend",
+    "brand": "Intelligentsia",
+    "roast_level": "Light",
+    "origin": "Colombia, Burundi blend (direct trade)",
     "process_method": "Washed",
     "weight_oz": 12,
-    "amazon_asin": null,
-    "roaster_url": null,
+    "amazon_asin": "B0055ZRUNK",
+    "roaster_url": "https://www.intelligentsia.com/products/house-blend",
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "drip",
@@ -891,9 +924,21 @@
     "sweetness": 3,
     "bitterness": 2,
     "roast_intensity": 3,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": "intelligentsia-house-blend"
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Counter Culture Hologram",
+        "logic": "performance"
+      },
+      {
+        "product": "Intelligentsia Black Cat Classic Espresso",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": "intelligentsia-house-blend",
+    "profile_source": "Intelligentsia listing + Amazon (B0055ZRUNK) + clearlycoffee: benchmark light roast, direct-trade Colombia and Burundi, cocoa, caramel, sweet citrus and red apple, milk chocolate and toffee finish, clean and balanced. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "onyx-monarch",
@@ -9417,6 +9462,176 @@
     ],
     "reference_slug": null,
     "profile_source": "Mt. Comfort listing + Amazon (B07RDZ5D42): organic single-origin Peru (Chanchamayo, Chontali), nutty, chocolate, citrus; smooth, balanced, bright clean finish, small-batch roasted. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "tiny-footprint-organic-cold-brew",
+    "name": "Tiny Footprint Organic Cold Press Elixir",
+    "brand": "Tiny Footprint",
+    "roast_level": "Light and dark blend",
+    "origin": "Blend with Ethiopian coffees (carbon negative)",
+    "process_method": "Washed and natural blend",
+    "weight_oz": 16,
+    "amazon_asin": "B00BN4WBJK",
+    "roaster_url": "https://www.tinyfootprintcoffee.com/products/cold-press-coffee-elixir-9",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "cold brew",
+      "french press"
+    ],
+    "flavor_notes": [
+      "bright fruit",
+      "floral",
+      "cocoa body",
+      "silky"
+    ],
+    "acidity": 2,
+    "body": 3,
+    "sweetness": 4,
+    "bitterness": 2,
+    "roast_intensity": 3,
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {
+        "product": "Stone Street Cold Brew Reserve Dark Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Tiny Footprint Organic Nicaragua Segovia Dark Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Tiny Footprint listing + Amazon (B00BN4WBJK): blend of light and dark roasts spiked with Ethiopian coffees, built for cold brew; sweet, silky, bright fruit and floral over a cocoa body. Organic, carbon-negative. Seed-listed name 'Cold Press Elevation Blend' maps to the roaster's 'Cold Press Elixir'. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "tiny-footprint-organic-dark",
+    "name": "Tiny Footprint Organic Nicaragua Segovia Dark Roast",
+    "brand": "Tiny Footprint",
+    "roast_level": "Dark",
+    "origin": "Segovia, Nicaragua (single origin, organic)",
+    "process_method": "Washed",
+    "weight_oz": 16,
+    "amazon_asin": "B00Z4Z87CE",
+    "roaster_url": "https://www.tinyfootprintcoffee.com/products/nicaragua",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "apricot",
+      "fig",
+      "spice"
+    ],
+    "acidity": 2,
+    "body": 4,
+    "sweetness": 2,
+    "bitterness": 3,
+    "roast_intensity": 4,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "Tiny Footprint Organic Cold Press Elixir",
+        "logic": "performance"
+      },
+      {
+        "product": "Kicking Horse Kick Ass Dark Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Tiny Footprint listing + Amazon (B00Z4Z87CE) + Coffee Detective: single-origin Nicaragua Segovia dark roast, bold with dark chocolate and bright apricot/fig/spice, bittersweet edge. Organic, Fair Trade, carbon-negative. Seed name 'Nicaragua + Ethiopia Dark' maps to the verified Nicaragua Segovia Dark SKU. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "cooper-ethiopian-bold",
+    "name": "Cooper's Cask Ethiopia Bold Light Roast",
+    "brand": "Cooper's Cask Coffee",
+    "roast_level": "Light",
+    "origin": "Goma Woreda, Ethiopia (single origin, Grade 1)",
+    "process_method": "Natural",
+    "weight_oz": 12,
+    "amazon_asin": "B06XSVGYJ8",
+    "roaster_url": "https://www.cooperscoffeeco.com/product/ethiopian-bold-light-roast-coffee/",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over",
+      "espresso",
+      "drip"
+    ],
+    "flavor_notes": [
+      "lemon tart",
+      "raw honey",
+      "floral nectar",
+      "wild berry"
+    ],
+    "acidity": 4,
+    "body": 3,
+    "sweetness": 4,
+    "bitterness": 1,
+    "roast_intensity": 1,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "Fresh Roasted Coffee Organic Ethiopian Sidamo Guji",
+        "logic": "origin"
+      },
+      {
+        "product": "The Coffee Bean & Tea Leaf Ethiopia Yirgacheffe",
+        "logic": "performance"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Cooper's Cask listing + Amazon (B06XSVGYJ8): Grade 1 dry-processed Ethiopian from Goma Woreda (2000m) heirloom, intensely bright and clean, lemon tart, raw honey, floral nectar, wild berry; jammy as espresso. Light roast. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "coffee-bean-tea-leaf-yirgacheffe",
+    "name": "The Coffee Bean & Tea Leaf Ethiopia Yirgacheffe",
+    "brand": "The Coffee Bean & Tea Leaf",
+    "roast_level": "Light",
+    "origin": "Yirgacheffe, Ethiopia (single origin)",
+    "process_method": "Washed",
+    "weight_oz": 16,
+    "amazon_asin": "B0D19DNBFS",
+    "roaster_url": "https://www.coffeebean.com/products/ethiopia-yirgacheffe-single-origin-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over",
+      "drip",
+      "aeropress"
+    ],
+    "flavor_notes": [
+      "lemon",
+      "floral",
+      "milk chocolate",
+      "berry"
+    ],
+    "acidity": 4,
+    "body": 3,
+    "sweetness": 4,
+    "bitterness": 1,
+    "roast_intensity": 2,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Volcanica Ethiopian Yirgacheffe",
+        "logic": "origin"
+      },
+      {
+        "product": "Intelligentsia House Blend",
+        "logic": "performance"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Coffee Bean & Tea Leaf listing + Amazon (B0D19DNBFS) + Pull and Pour review: washed Yirgacheffe (72h fermentation), floral aroma, pronounced lemon, milk chocolate and subtle berries, smooth sweet, bright citrus acidity, thick body. Light roast. Verified 2026-06-13.",
     "price_per_oz": null,
     "price_status": "BACKFILL"
   }
