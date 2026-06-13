@@ -284,10 +284,10 @@
   },
   {
     "id": "cafe-don-pablo-gourmet",
-    "name": "CafÃ© Don Pablo Gourmet Coffee Signature Blend",
-    "brand": "CafÃ© Don Pablo",
+    "name": "Cafe Don Pablo Gourmet Coffee Signature Blend",
+    "brand": "Cafe Don Pablo",
     "roast_level": "Medium-Dark",
-    "origin": "Colombia, Brazil, Honduras blend",
+    "origin": "Colombia, Guatemala, Brazil blend",
     "process_method": "Washed",
     "weight_oz": 16.0,
     "amazon_asin": "B00J2TUWBO",
@@ -320,7 +320,10 @@
         "logic": "performance"
       }
     ],
-    "reference_slug": null
+    "reference_slug": null,
+    "profile_source": "Cafe Don Pablo listing + Amazon (B00CZ2KYRU): sweet milk chocolate, cedar, hint of ripe tomato; medium-to-full body, cocoa-toned smooth finish, low acidity; 100% Arabica from Colombia, Guatemala, Brazil. Seed entry 'cafe-don-pablo-signature' maps to this existing Signature Blend id. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "camano-island-sumatra",
@@ -1711,10 +1714,10 @@
     "name": "La Colombe Corsica Blend",
     "brand": "La Colombe",
     "roast_level": "Dark",
-    "origin": "Latin America, East Africa blend",
+    "origin": "Brazil, Colombia, Honduras, Mexico blend",
     "process_method": "Washed",
     "weight_oz": 12,
-    "amazon_asin": null,
+    "amazon_asin": "B07CX3JSNF",
     "roaster_url": "https://www.lacolombe.com/products/corsica",
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
@@ -1731,19 +1734,31 @@
     "sweetness": 2,
     "bitterness": 4,
     "roast_intensity": 5,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": null
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "La Colombe Nizza Blend",
+        "logic": "performance"
+      },
+      {
+        "product": "Starbucks Caffe Verona",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "La Colombe listing + Amazon (B07CX3JSNF): baker's chocolate, red wine, spices; full-bodied, chocolatey, roasty dark roast; Latin American Arabica (Brazil, Colombia, Honduras, Mexico). La Colombe's 30-year signature drip blend. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "la-colombe-nizza",
     "name": "La Colombe Nizza Blend",
     "brand": "La Colombe",
     "roast_level": "Medium",
-    "origin": "Latin America, East Africa blend",
-    "process_method": "Washed",
+    "origin": "Brazil, Colombia, Nicaragua, DR Congo blend",
+    "process_method": "Washed and natural blend",
     "weight_oz": 12,
-    "amazon_asin": null,
+    "amazon_asin": "B00MZXU6CW",
     "roaster_url": "https://www.lacolombe.com/products/nizza",
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
@@ -1760,9 +1775,21 @@
     "sweetness": 4,
     "bitterness": 2,
     "roast_intensity": 3,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": null
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "La Colombe Corsica Blend",
+        "logic": "performance"
+      },
+      {
+        "product": "Lavazza Espresso Barista Gran Crema",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "La Colombe listing + Amazon (B00MZXU6CW): milk chocolate, nuts, brownie, honey-sweet roasted nuttiness; full-bodied; Brazil, Colombia, Nicaragua, DR Congo. La Colombe's cafe espresso base. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "philz-tesora",
@@ -2299,13 +2326,13 @@
   {
     "id": "allegro-organic-french-roast",
     "name": "Allegro Coffee Organic French Roast",
-    "brand": "Allegro Coffee",
+    "brand": "Allegro",
     "roast_level": "Dark",
-    "origin": "Latin America blend",
+    "origin": "Multi-origin organic (high-elevation co-ops; origin not published)",
     "process_method": "Washed",
     "weight_oz": 12,
-    "amazon_asin": null,
-    "roaster_url": "https://www.allegrocoffee.com/products/organic-french-roast",
+    "amazon_asin": "B00GVMNEW2",
+    "roaster_url": "https://www.allegrocoffee.com/",
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "drip",
@@ -2321,9 +2348,21 @@
     "sweetness": 2,
     "bitterness": 4,
     "roast_intensity": 5,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": "_skip"
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "Stumptown French Roast Organic",
+        "logic": "performance"
+      },
+      {
+        "product": "Wide Awake Coffee Co French Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": "_skip",
+    "profile_source": "Allegro listing + Amazon (B00GVMNEW2) + Honest Coffee Reviews: organic, high-elevation small-holder co-op beans; sweet, smoky, smooth with molasses and black pepper; heavier, sweeter and richer than most French roasts. Specific origins not published. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "caribou-coffee-blend",
@@ -9632,6 +9671,263 @@
     ],
     "reference_slug": null,
     "profile_source": "Coffee Bean & Tea Leaf listing + Amazon (B0D19DNBFS) + Pull and Pour review: washed Yirgacheffe (72h fermentation), floral aroma, pronounced lemon, milk chocolate and subtle berries, smooth sweet, bright citrus acidity, thick body. Light roast. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "blue-bottle-three-africas",
+    "name": "Blue Bottle Three Africas",
+    "brand": "Blue Bottle Coffee",
+    "roast_level": "Light",
+    "origin": "Ethiopia (washed and natural), Uganda blend",
+    "process_method": "Washed and natural blend",
+    "weight_oz": 12,
+    "amazon_asin": "B0746QWMSG",
+    "roaster_url": "https://bluebottlecoffee.com/us/eng/product/three-africas",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over",
+      "drip",
+      "aeropress"
+    ],
+    "flavor_notes": [
+      "golden raisin",
+      "winey blueberry",
+      "lemon zest",
+      "chocolate"
+    ],
+    "acidity": 4,
+    "body": 3,
+    "sweetness": 4,
+    "bitterness": 1,
+    "roast_intensity": 2,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Volcanica Ethiopian Yirgacheffe",
+        "logic": "origin"
+      },
+      {
+        "product": "Intelligentsia House Blend",
+        "logic": "performance"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Blue Bottle listing + CoffeeReview (Three Africans) + Amazon (B0746QWMSG): light-roast blend of washed Ethiopia Yirgacheffe, natural Ethiopia Sidamo, and washed Uganda; golden raisin, winey blueberry, lemon zest, chocolate sweetness; fruity, bright, clean. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "cafe-don-pablo-colombian-supremo",
+    "name": "Cafe Don Pablo Colombian Supremo",
+    "brand": "Cafe Don Pablo",
+    "roast_level": "Medium-Dark",
+    "origin": "Colombia (single origin)",
+    "process_method": "Washed",
+    "weight_oz": 32,
+    "amazon_asin": "B00JSUCSJE",
+    "roaster_url": "https://donpablocoffee.com/products/don-pablo-colombian-supremo-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over",
+      "french press"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "citrus",
+      "walnut",
+      "caramel"
+    ],
+    "acidity": 2,
+    "body": 3,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 4,
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {
+        "product": "Cafe Don Pablo Gourmet Coffee Signature Blend",
+        "logic": "performance"
+      },
+      {
+        "product": "Fresh Roasted Coffee Colombian Supremo",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Cafe Don Pablo listing + Amazon (B00JSUCSJE): single-origin Colombian Supremo, citrus brightness with chocolate and walnut, caramel, smooth cocoa-toned finish, low acidity; 100% Arabica, medium-dark. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "wide-awake-coffee-french-roast",
+    "name": "Wide Awake Coffee Co French Roast",
+    "brand": "Wide Awake",
+    "roast_level": "Dark",
+    "origin": "Indonesia, South America blend",
+    "process_method": "Washed",
+    "weight_oz": null,
+    "amazon_asin": "BACKFILL",
+    "roaster_url": "https://wideawakecoffee.com/product-category/whole-coffee-beans/",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "french press",
+      "drip"
+    ],
+    "flavor_notes": [
+      "caramelized",
+      "smooth",
+      "full body",
+      "low acidity"
+    ],
+    "acidity": 1,
+    "body": 4,
+    "sweetness": 2,
+    "bitterness": 4,
+    "roast_intensity": 5,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "San Francisco Bay French Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Allegro Organic French Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Wide Awake Coffee Co listing + coffee review blog: French roast fusing Indonesian and South American Arabica, sweet caramelized flavor, smooth full body, low acidity, high caffeine. Brand 'Wide Awake' is ambiguous (multiple roasters); no confirmed Amazon ASIN and bag size unconfirmed -> amazon_asin and weight BACKFILL. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "groundwork-ethiopian-light",
+    "name": "Groundwork Ethiopia Heirloom Blend Light Roast",
+    "brand": "Groundwork",
+    "roast_level": "Light",
+    "origin": "Ethiopia (single origin, heirloom, organic)",
+    "process_method": "Washed and natural blend",
+    "weight_oz": 12,
+    "amazon_asin": "B00J7YE3TO",
+    "roaster_url": "https://www.groundworkcoffee.com/products/ethiopia-heirloom-blend-organic-single-origin-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over",
+      "drip",
+      "aeropress"
+    ],
+    "flavor_notes": [
+      "citrus",
+      "dark fruit",
+      "milk chocolate",
+      "floral"
+    ],
+    "acidity": 4,
+    "body": 2,
+    "sweetness": 4,
+    "bitterness": 1,
+    "roast_intensity": 2,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "The Coffee Bean & Tea Leaf Ethiopia Yirgacheffe",
+        "logic": "origin"
+      },
+      {
+        "product": "Blue Bottle Three Africas",
+        "logic": "performance"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Groundwork listing + Amazon (B00J7YE3TO) + Thrive Market: organic single-origin Ethiopia heirloom, citrus, dark fruit, milk chocolate, floral; silky, clean, sweet; washed and natural processing. Light roast. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "verena-street-double-shot",
+    "name": "Verena Street Shot Tower Espresso",
+    "brand": "Verena Street",
+    "roast_level": "Dark",
+    "origin": "Central America, South America, Indonesia blend",
+    "process_method": "Washed and natural blend",
+    "weight_oz": 11,
+    "amazon_asin": "B018633X9M",
+    "roaster_url": "https://www.verenastreet.com/products/shot-tower-espresso-whole-bean",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso",
+      "drip",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "sweet",
+      "creamy",
+      "full body",
+      "no bitterness"
+    ],
+    "acidity": 2,
+    "body": 4,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 4,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Lavazza Super Crema",
+        "logic": "performance"
+      },
+      {
+        "product": "Intelligentsia Black Cat Classic Espresso",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Verena Street listing + Amazon (B018633X9M): signature espresso blend, smooth yet sharp with no bitterness, delicately dark, full-bodied with sweet creamy complexity; Central America, South America, Indonesia; Rainforest Alliance. Seed name 'Double Shot Espresso' maps to the verified Shot Tower Espresso product. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "spirit-animal-honduras",
+    "name": "Spirit Animal Honduras Single Origin",
+    "brand": "Spirit Animal",
+    "roast_level": "Medium",
+    "origin": "Honduras (single origin, high-altitude microlots)",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": "BACKFILL",
+    "roaster_url": "https://spiritanimalcoffee.com/",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over",
+      "drip",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "peach",
+      "honey",
+      "citrus",
+      "floral"
+    ],
+    "acidity": 3,
+    "body": 3,
+    "sweetness": 4,
+    "bitterness": 1,
+    "roast_intensity": 3,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Mt. Comfort Organic Peru Medium Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Volcanica Costa Rica Tarrazu",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Spirit Animal listing + Amazon (tasting set B09S3XF1FS) + Walmart: high-altitude Honduran single-origin microlots, SCA 87-89, low-acid, lab-tested; varietal-dependent notes of peach, honey, citrus, sweet fruit, floral (Bourbon/Catuai/Parainema). Sold mainly direct or as a tasting set; specific single-bag ASIN not confirmed -> BACKFILL. Verified 2026-06-13.",
     "price_per_oz": null,
     "price_status": "BACKFILL"
   }
