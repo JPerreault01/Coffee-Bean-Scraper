@@ -123,12 +123,12 @@
     "name": "Stumptown Hair Bender",
     "brand": "Stumptown",
     "roast_level": "Medium",
-    "origin": "Latin America, East Africa blend",
-    "process_method": "Washed",
-    "weight_oz": 12.0,
-    "amazon_asin": null,
+    "origin": "Latin America, East Africa, Indonesia blend",
+    "process_method": "Washed and natural blend",
+    "weight_oz": 12,
+    "amazon_asin": "B008J4WEBM",
     "roaster_url": "https://www.stumptowncoffee.com/products/hair-bender",
-    "affiliate_tag": null,
+    "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "espresso",
       "pour over",
@@ -155,7 +155,10 @@
         "logic": "performance"
       }
     ],
-    "reference_slug": null
+    "reference_slug": null,
+    "profile_source": "Stumptown listing + CoffeeReview + Whole Foods listing converge on sweet citrus, dark chocolate, raisin; 100% Arabica, Latin America + East Africa + Indonesia. Also sold via Stumptown direct (ShareASale ~10%). Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "death-wish-coffee",
@@ -163,10 +166,10 @@
     "brand": "Death Wish Coffee",
     "roast_level": "Dark",
     "origin": "India, Peru blend",
-    "process_method": "Natural",
-    "weight_oz": 16.0,
-    "amazon_asin": "B006BSXQTQ",
-    "roaster_url": "https://www.deathwishcoffee.com/products/death-wish-coffee-whole-bean",
+    "process_method": "Washed and natural blend",
+    "weight_oz": 16,
+    "amazon_asin": "B006CNTR6W",
+    "roaster_url": "https://www.deathwishcoffee.com/products/death-wish-coffee",
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "french press",
@@ -195,7 +198,10 @@
         "logic": "performance"
       }
     ],
-    "reference_slug": null
+    "reference_slug": null,
+    "profile_source": "Death Wish listing + Amazon + coffeehow/coffeechronicler reviews: dark chocolate, black cherry; Arabica + Robusta from India + Peru, USDA Organic + Fair Trade, ~180mg caffeine/6oz, 'deep never bitter'. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "kicking-horse-454-horse-power",
@@ -1000,10 +1006,10 @@
     "name": "Kicking Horse Three Sisters Medium Roast",
     "brand": "Kicking Horse Coffee",
     "roast_level": "Medium",
-    "origin": "Latin America, Indonesia blend",
+    "origin": "Indonesia, Central and South America blend",
     "process_method": "Washed",
-    "weight_oz": 35,
-    "amazon_asin": null,
+    "weight_oz": 35.2,
+    "amazon_asin": "B0027Z5J6G",
     "roaster_url": "https://kickinghorsecoffee.com/products/three-sisters",
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
@@ -1020,9 +1026,21 @@
     "sweetness": 4,
     "bitterness": 1,
     "roast_intensity": 3,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": null
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Caribou Coffee Caribou Blend",
+        "logic": "performance"
+      },
+      {
+        "product": "Stumptown Holler Mountain Organic",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Kicking Horse listing + Amazon: sweet tobacco, stone fruit, cocoa; aroma dried fruit, toasted coconut, chocolate malt; organic Fairtrade 100% Arabica, Indonesia + C/S America. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "kicking-horse-kick-ass",
@@ -1031,9 +1049,9 @@
     "roast_level": "Dark",
     "origin": "Indonesia, South America blend",
     "process_method": "Washed",
-    "weight_oz": 35,
-    "amazon_asin": null,
-    "roaster_url": "https://kickinghorsecoffee.com/products/kick-ass",
+    "weight_oz": 35.2,
+    "amazon_asin": "B0027Z8VES",
+    "roaster_url": "https://kickinghorsecoffee.com/products/kick-ass-coffee",
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "french press",
@@ -1049,9 +1067,21 @@
     "sweetness": 2,
     "bitterness": 4,
     "roast_intensity": 5,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": null
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "Kicking Horse Grizzly Claw Dark Roast",
+        "logic": "flavor_profile"
+      },
+      {
+        "product": "Death Wish Coffee Whole Bean",
+        "logic": "performance"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Kicking Horse listing + Amazon + coffeehow review: chocolate malt, molasses, licorice, earthy lingering finish; organic Fairtrade 100% Arabica, Indonesia + South America. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "stone-street-cold-brew",
@@ -7887,6 +7917,265 @@
     ],
     "reference_slug": null,
     "profile_source": "Peet's listing (dark roast, Latin American, bright and balanced with a hint of spice, crisp finish) + Amazon listing copy. Whole-bean ASIN not confidently confirmed (listed B000FZX9IK ambiguous whole vs ground) -> BACKFILL.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "stumptown-holler-mountain",
+    "name": "Stumptown Holler Mountain Organic",
+    "brand": "Stumptown",
+    "roast_level": "Medium",
+    "origin": "Central and South America, East Africa blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": "B008J4Z3C4",
+    "roaster_url": "https://www.stumptowncoffee.com/products/holler-mountain",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso",
+      "drip",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "citrus zest",
+      "berry jam",
+      "caramel",
+      "hazelnut"
+    ],
+    "acidity": 3,
+    "body": 3,
+    "sweetness": 4,
+    "bitterness": 2,
+    "roast_intensity": 3,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Stumptown Hair Bender",
+        "logic": "performance"
+      },
+      {
+        "product": "Counter Culture Big Trouble",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Stumptown listing + CoffeeReview (Holler Mountain Organic) + Amazon/Walmart listing: citrus zest, berry jam, caramel, hazelnut; organic 100% Arabica, C/S America + East Africa. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "stumptown-french-roast",
+    "name": "Stumptown French Roast Organic",
+    "brand": "Stumptown",
+    "roast_level": "Dark",
+    "origin": "Africa, Central and South America blend",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": "B008J4ZV8U",
+    "roaster_url": "https://www.stumptowncoffee.com/products/french-roast",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "french press",
+      "drip",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "clove",
+      "bittersweet chocolate",
+      "brown sugar",
+      "smoky"
+    ],
+    "acidity": 1,
+    "body": 4,
+    "sweetness": 2,
+    "bitterness": 4,
+    "roast_intensity": 5,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "Peet's Coffee French Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Kicking Horse Kick Ass Dark Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Stumptown listing + Amazon listing: clove, bittersweet chocolate, brown sugar, smoky; organic 100% Arabica, washed Africa + C/S America. 'Toasty but never burnt'. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "stumptown-trapper-creek-decaf",
+    "name": "Stumptown Trapper Creek Decaf",
+    "brand": "Stumptown",
+    "roast_level": "Dark",
+    "origin": "Latin America blend",
+    "process_method": "Swiss Water decaf (washed)",
+    "weight_oz": 12,
+    "amazon_asin": "B00RXYPJZM",
+    "roaster_url": "https://www.stumptowncoffee.com/products/trapper-creek-decaf",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso",
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "cocoa",
+      "graham",
+      "dried fruit",
+      "full body"
+    ],
+    "acidity": 2,
+    "body": 4,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 4,
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {
+        "product": "Kicking Horse Decaf Swiss Water Dark Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Stumptown French Roast Organic",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Stumptown listing + Kroger/Amazon listing: cocoa, graham, dried fruit; Swiss Water Process decaf, Latin America, sweet full body. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "death-wish-valhalla-java",
+    "name": "Death Wish Valhalla Java Odinforce Blend",
+    "brand": "Death Wish Coffee",
+    "roast_level": "Medium-Dark",
+    "origin": "Indonesia (Sumatra), Honduras, Guatemala, Peru, India blend",
+    "process_method": "Washed and natural blend",
+    "weight_oz": 12,
+    "amazon_asin": "B00FL7J3O6",
+    "roaster_url": "https://www.deathwishcoffee.com/products/valhalla-java-odin-force-blend",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "french press",
+      "drip",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "cocoa powder",
+      "molasses",
+      "roasted nut",
+      "low acidity"
+    ],
+    "acidity": 1,
+    "body": 4,
+    "sweetness": 2,
+    "bitterness": 3,
+    "roast_intensity": 4,
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {
+        "product": "Death Wish Coffee Whole Bean",
+        "logic": "performance"
+      },
+      {
+        "product": "Kicking Horse Kick Ass Dark Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Death Wish listing + Amazon + Wacaco/Roasty reviews: cocoa powder, molasses, roasted nut, low acidity, medium body; Arabica + Robusta from Sumatra + Central/South America, USDA Organic + Fair Trade. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "kicking-horse-grizzly-claw",
+    "name": "Kicking Horse Grizzly Claw Dark Roast",
+    "brand": "Kicking Horse Coffee",
+    "roast_level": "Dark",
+    "origin": "Central and South America blend",
+    "process_method": "Washed",
+    "weight_oz": 35.2,
+    "amazon_asin": "B0758FYYKG",
+    "roaster_url": "https://kickinghorsecoffee.com/products/grizzly-claw-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "french press",
+      "drip",
+      "pour over",
+      "cold brew"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "cacao nibs",
+      "brown sugar",
+      "roasted hazelnut"
+    ],
+    "acidity": 1,
+    "body": 4,
+    "sweetness": 3,
+    "bitterness": 3,
+    "roast_intensity": 5,
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {
+        "product": "Kicking Horse Kick Ass Dark Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Peet's Coffee Major Dickason's Blend",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Kicking Horse listing + Amazon: dark chocolate, cacao nibs, brown sugar, roasted hazelnut; aroma sugar cane + cocoa; organic Fairtrade 100% Arabica, Central & South America. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "kicking-horse-decaf",
+    "name": "Kicking Horse Decaf Swiss Water Dark Roast",
+    "brand": "Kicking Horse Coffee",
+    "roast_level": "Dark",
+    "origin": "Central and South America blend",
+    "process_method": "Swiss Water decaf (washed)",
+    "weight_oz": 35.2,
+    "amazon_asin": "B0027Z8V4S",
+    "roaster_url": "https://kickinghorsecoffee.com/products/decaf-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "french press",
+      "drip",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "roasted hazelnut",
+      "chocolate",
+      "balanced body",
+      "lasting finish"
+    ],
+    "acidity": 1,
+    "body": 3,
+    "sweetness": 2,
+    "bitterness": 3,
+    "roast_intensity": 4,
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {
+        "product": "Stumptown Trapper Creek Decaf",
+        "logic": "performance"
+      },
+      {
+        "product": "Kicking Horse Kick Ass Dark Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Kicking Horse listing + Amazon: roasted hazelnut, chocolatey, balanced, lasting finish; Swiss Water Process decaf, organic Fairtrade 100% Arabica, Central & South America. Verified 2026-06-13.",
     "price_per_oz": null,
     "price_status": "BACKFILL"
   }
