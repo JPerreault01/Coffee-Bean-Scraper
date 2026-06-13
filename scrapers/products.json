@@ -1249,7 +1249,7 @@
     "name": "Volcanica Costa Rica Tarrazu",
     "brand": "Volcanica Coffee",
     "roast_level": "Medium",
-    "origin": "Tarrazu, Costa Rica",
+    "origin": "Tarrazu, Costa Rica (single origin)",
     "process_method": "Washed",
     "weight_oz": 16,
     "amazon_asin": null,
@@ -1269,9 +1269,21 @@
     "sweetness": 4,
     "bitterness": 1,
     "roast_intensity": 3,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": null
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Volcanica House Blend",
+        "logic": "performance"
+      },
+      {
+        "product": "Fresh Roasted Coffee Colombian Supremo",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Volcanica listing + Tarrazu references: single-origin Tarrazu Estate, citrus (lime, lemon), honey, subtle chocolate, medium-high acidity, clean crisp finish. Amazon whole-bean ASIN not confirmed -> BACKFILL. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "tattle-tale-french-roast",
@@ -9018,6 +9030,393 @@
     ],
     "reference_slug": null,
     "profile_source": "Volcanica listing + Amazon (B0030LIKUI): medium roast South and Central American blend, chocolate notes, sweet yet bold, balanced acidity, clean, full body. Mycotoxin/mold tested. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "fresh-roasted-ethiopian-sidamo-guji",
+    "name": "Fresh Roasted Coffee Organic Ethiopian Sidamo Guji",
+    "brand": "Fresh Roasted Coffee",
+    "roast_level": "Light",
+    "origin": "Guji, Sidamo, Ethiopia (single origin)",
+    "process_method": "Natural",
+    "weight_oz": 32,
+    "amazon_asin": "BACKFILL",
+    "roaster_url": "https://www.freshroastedcoffee.com/products/ethiopian-sidamo-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over",
+      "drip",
+      "aeropress"
+    ],
+    "flavor_notes": [
+      "strawberry",
+      "blueberry",
+      "cherry",
+      "wine-like"
+    ],
+    "acidity": 4,
+    "body": 2,
+    "sweetness": 4,
+    "bitterness": 1,
+    "roast_intensity": 1,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "Volcanica Ethiopian Yirgacheffe",
+        "logic": "origin"
+      },
+      {
+        "product": "Counter Culture Hologram",
+        "logic": "performance"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Fresh Roasted Coffee listing + Amazon/Walmart: natural-process Ethiopian heirloom, fruit-forward (strawberry, blueberry, cherry), wine-like, bright, earthy finish, organic. Light roast. Amazon SKU labeled 'Sidamo' vs 'Guji' inconsistently -> ASIN BACKFILL. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "fresh-roasted-colombian-supremo",
+    "name": "Fresh Roasted Coffee Colombian Supremo",
+    "brand": "Fresh Roasted Coffee",
+    "roast_level": "Medium",
+    "origin": "Colombia (single origin, Caturra and Castillo)",
+    "process_method": "Washed",
+    "weight_oz": 32,
+    "amazon_asin": "B00ELPSOXU",
+    "roaster_url": "https://www.freshroastedcoffee.com/products/colombian-supremo-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over",
+      "french press"
+    ],
+    "flavor_notes": [
+      "honey",
+      "cherry",
+      "balanced",
+      "clean"
+    ],
+    "acidity": 3,
+    "body": 3,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 3,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Don Francisco's Colombia Supremo Medium Roast",
+        "logic": "origin"
+      },
+      {
+        "product": "Mt. Comfort Organic Peru Medium Roast",
+        "logic": "performance"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Fresh Roasted Coffee listing + Amazon (B00ELPSOXU): washed Colombian Supremo, Caturra and Castillo at 1300m, honey and cherry, balanced body, bright clean finish, 100% Arabica, Loring-roasted, nitrogen flushed. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "fresh-roasted-sumatra-dark",
+    "name": "Fresh Roasted Coffee Dark Sumatra Mandheling",
+    "brand": "Fresh Roasted Coffee",
+    "roast_level": "Dark",
+    "origin": "Bener Meriah, Sumatra, Indonesia (single origin)",
+    "process_method": "Wet-hulled (Giling Basah)",
+    "weight_oz": 32,
+    "amazon_asin": "BACKFILL",
+    "roaster_url": "https://www.freshroastedcoffee.com/products/dark-sumatra-mandheling-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "french press",
+      "drip",
+      "cold brew"
+    ],
+    "flavor_notes": [
+      "bittersweet chocolate",
+      "syrupy",
+      "earthy",
+      "spiced"
+    ],
+    "acidity": 1,
+    "body": 5,
+    "sweetness": 2,
+    "bitterness": 3,
+    "roast_intensity": 5,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "Volcanica Sumatra Mandheling",
+        "logic": "origin"
+      },
+      {
+        "product": "Coffee Bean Direct Italian Roast",
+        "logic": "performance"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Fresh Roasted Coffee listing + Walmart: single-origin Bener Meriah Sumatra (Ateng, Tim Tim, Bourbon), bold, syrupy, earthy, bittersweet chocolate, spiced, low acidity, extra bold body. Amazon whole-bean ASIN not confirmed -> BACKFILL. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "coffee-bean-direct-tanzanian-peaberry",
+    "name": "Coffee Bean Direct Tanzanian Peaberry",
+    "brand": "Coffee Bean Direct",
+    "roast_level": "Light",
+    "origin": "Tanzania (single origin, peaberry)",
+    "process_method": "Washed",
+    "weight_oz": 16,
+    "amazon_asin": "B0126VNAOS",
+    "roaster_url": "https://www.coffeebeandirect.com/products/tanzanian-peaberry",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "pour over",
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "oat",
+      "winey body",
+      "fruity"
+    ],
+    "acidity": 3,
+    "body": 4,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 2,
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {
+        "product": "Fresh Roasted Coffee Organic Ethiopian Sidamo Guji",
+        "logic": "origin"
+      },
+      {
+        "product": "Coffee Bean Direct Italian Roast",
+        "logic": "performance"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Coffee Bean Direct listing + Amazon (B0126VNAOS): 100% Arabica Tanzanian peaberry, chocolaty aroma, oat-y notes, winey body, Kenya-like fruit with lighter acidity, bold heavy body, moderate acidity. Light roast. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "coffee-bean-direct-italian-roast",
+    "name": "Coffee Bean Direct Italian Roast Espresso",
+    "brand": "Coffee Bean Direct",
+    "roast_level": "Dark",
+    "origin": "Brazil, Costa Rica, Sumatra, Kenya blend",
+    "process_method": "Washed and natural blend",
+    "weight_oz": 16,
+    "amazon_asin": "B07QWJ5MBF",
+    "roaster_url": "https://www.coffeebeandirect.com/products/italian-roast-espresso",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso",
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "cocoa powder",
+      "smoky molasses",
+      "deep chocolate",
+      "nutty"
+    ],
+    "acidity": 1,
+    "body": 4,
+    "sweetness": 2,
+    "bitterness": 4,
+    "roast_intensity": 5,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "Eight O'Clock Dark Italian Espresso",
+        "logic": "performance"
+      },
+      {
+        "product": "Cafe Bustelo Espresso Style Dark Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Coffee Bean Direct listing + Amazon (B07QWJ5MBF): dark Italian espresso blend (Brazil, Costa Rica, Sumatra, Kenya), toasty honeyed aroma, cocoa powder, smoky molasses, deep chocolate, subtle nutty brightness, full velvety body. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "real-good-coffee-donut-shop",
+    "name": "Real Good Coffee Co Donut Shop Medium Roast",
+    "brand": "Real Good Coffee Co",
+    "roast_level": "Medium",
+    "origin": "Central and South America blend",
+    "process_method": "Washed",
+    "weight_oz": 32,
+    "amazon_asin": "B01N4JBH3X",
+    "roaster_url": "https://realgoodcoffeeco.com/products/donut-shop-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over",
+      "french press"
+    ],
+    "flavor_notes": [
+      "brown sugar",
+      "hazelnut",
+      "plum",
+      "smooth"
+    ],
+    "acidity": 2,
+    "body": 3,
+    "sweetness": 4,
+    "bitterness": 2,
+    "roast_intensity": 3,
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {
+        "product": "Eight O'Clock Original Whole Bean Coffee",
+        "logic": "performance"
+      },
+      {
+        "product": "Dunkin' Original Blend Medium Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Real Good Coffee Co listing + Amazon (B01N4JBH3X): brown sugar and hazelnut with subtle plum, smooth and sweet; 100% Arabica from Central and South America, Seattle-roasted, extra bold. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "real-good-coffee-french-roast",
+    "name": "Real Good Coffee Co French Roast",
+    "brand": "Real Good Coffee Co",
+    "roast_level": "Dark",
+    "origin": "Central and South America blend",
+    "process_method": "Washed",
+    "weight_oz": 32,
+    "amazon_asin": "B01N7NJ1TB",
+    "roaster_url": "https://realgoodcoffeeco.com/products/french-roast-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "french press",
+      "drip",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "raspberry",
+      "anise",
+      "bold"
+    ],
+    "acidity": 1,
+    "body": 4,
+    "sweetness": 2,
+    "bitterness": 4,
+    "roast_intensity": 5,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "San Francisco Bay French Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Real Good Coffee Co Donut Shop Medium Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Real Good Coffee Co listing + Amazon (B01N7NJ1TB): extra dark French roast, dark chocolate and raspberry with a hint of anise; 100% Arabica from Central and South America, Seattle-roasted. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "java-planet-colombian",
+    "name": "Java Planet Colombian Organic Medium-Dark",
+    "brand": "Java Planet",
+    "roast_level": "Medium-Dark",
+    "origin": "Colombia (single origin, organic)",
+    "process_method": "Washed",
+    "weight_oz": 16,
+    "amazon_asin": "B01MEC7WHL",
+    "roaster_url": "https://www.amazon.com/Java-Planet-Colombian-Alliance-Specialty/dp/B01MEC7WHL",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over",
+      "french press"
+    ],
+    "flavor_notes": [
+      "dark chocolate",
+      "berry",
+      "allspice",
+      "pecan finish"
+    ],
+    "acidity": 2,
+    "body": 4,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 4,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Volcanica House Blend",
+        "logic": "performance"
+      },
+      {
+        "product": "Cafe Don Pablo Gourmet Coffee Signature Blend",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Java Planet listing + Amazon (B01MEC7WHL): organic single-origin Colombian, low acid; floral and chocolate with hibiscus and allspice, into dark chocolate with a pecan finish; big body, mild acidity, clean; Rainforest Alliance, third-party tested. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "mt-comfort-peru-medium",
+    "name": "Mt. Comfort Organic Peru Medium Roast",
+    "brand": "Mt. Comfort",
+    "roast_level": "Medium",
+    "origin": "Chanchamayo and Chontali, Peru (single origin, organic)",
+    "process_method": "Washed",
+    "weight_oz": 12,
+    "amazon_asin": "B07RDZ5D42",
+    "roaster_url": "https://mtcomfortcoffee.com/products/peru-medium-roast",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over",
+      "french press"
+    ],
+    "flavor_notes": [
+      "nutty",
+      "chocolate",
+      "citrus",
+      "clean"
+    ],
+    "acidity": 3,
+    "body": 3,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 3,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Fresh Roasted Coffee Colombian Supremo",
+        "logic": "performance"
+      },
+      {
+        "product": "Volcanica Costa Rica Tarrazu",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Mt. Comfort listing + Amazon (B07RDZ5D42): organic single-origin Peru (Chanchamayo, Chontali), nutty, chocolate, citrus; smooth, balanced, bright clean finish, small-batch roasted. Verified 2026-06-13.",
     "price_per_oz": null,
     "price_status": "BACKFILL"
   }
