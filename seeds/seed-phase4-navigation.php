@@ -84,14 +84,16 @@ cbi_add_menu_item( $menu_id, 'Medium-Dark', home_url( '/roast-level/medium-dark/
 cbi_add_menu_item( $menu_id, 'Dark', home_url( '/roast-level/dark/' ), $roasts );
 
 // Brew Methods
-$brew = cbi_add_menu_item( $menu_id, 'Brew Methods', home_url( '/brew-method/' ) );
-cbi_add_menu_item( $menu_id, 'Espresso', home_url( '/brew-method/espresso/' ), $brew );
-cbi_add_menu_item( $menu_id, 'Pour Over', home_url( '/brew-method/pour-over/' ), $brew );
-cbi_add_menu_item( $menu_id, 'French Press', home_url( '/brew-method/french-press/' ), $brew );
-cbi_add_menu_item( $menu_id, 'Moka Pot', home_url( '/brew-method/moka-pot/' ), $brew );
-cbi_add_menu_item( $menu_id, 'Drip / Auto', home_url( '/brew-method/drip/' ), $brew );
-cbi_add_menu_item( $menu_id, 'Cold Brew', home_url( '/brew-method/cold-brew/' ), $brew );
-cbi_add_menu_item( $menu_id, 'AeroPress', home_url( '/brew-method/aeropress/' ), $brew );
+// NOTE: the brew-method taxonomy rewrite base is '/brew/', NOT '/brew-method/'.
+// These URLs must match the live archive base or the menu links 404.
+$brew = cbi_add_menu_item( $menu_id, 'Brew Methods', home_url( '/brew/' ) );
+cbi_add_menu_item( $menu_id, 'Espresso', home_url( '/brew/espresso/' ), $brew );
+cbi_add_menu_item( $menu_id, 'Pour Over', home_url( '/brew/pour-over/' ), $brew );
+cbi_add_menu_item( $menu_id, 'French Press', home_url( '/brew/french-press/' ), $brew );
+cbi_add_menu_item( $menu_id, 'Moka Pot', home_url( '/brew/moka-pot/' ), $brew );
+cbi_add_menu_item( $menu_id, 'Drip / Auto', home_url( '/brew/drip/' ), $brew );
+cbi_add_menu_item( $menu_id, 'Cold Brew', home_url( '/brew/cold-brew/' ), $brew );
+cbi_add_menu_item( $menu_id, 'AeroPress', home_url( '/brew/aeropress/' ), $brew );
 
 // Rankings
 $rankings = cbi_add_menu_item( $menu_id, 'Rankings', home_url( '/rankings/' ) );
@@ -101,7 +103,7 @@ cbi_add_menu_item( $menu_id, 'Best Dark Roast', home_url( '/best-dark-roast-coff
 // Learn
 $learn = cbi_add_menu_item( $menu_id, 'Learn', home_url( '/learn/' ) );
 cbi_add_menu_item( $menu_id, 'Origin Guides', home_url( '/origin/' ), $learn );
-cbi_add_menu_item( $menu_id, 'Brew Guides', home_url( '/brew-method/' ), $learn );
+cbi_add_menu_item( $menu_id, 'Brew Guides', home_url( '/brew/' ), $learn );
 cbi_add_menu_item( $menu_id, 'Roast Guides', home_url( '/roast-level/' ), $learn );
 cbi_add_menu_item( $menu_id, 'Process Methods', home_url( '/process-method/' ), $learn );
 
