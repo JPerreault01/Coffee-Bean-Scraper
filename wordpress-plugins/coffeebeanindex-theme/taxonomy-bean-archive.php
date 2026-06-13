@@ -150,8 +150,24 @@ if ( $term && $term->parent ) {
 }
 ?>
 
+<?php
+// Term hero image (set by upload_taxonomy_images.py). One tasteful full-width
+// banner with the oxblood accent — not a gallery. LCP candidate, so eager.
+$hero_image_id = function_exists( 'cbi_term_hero_id' ) ? cbi_term_hero_id( $term ) : 0;
+?>
+
 <!-- Archive Hero -->
-<section class="archive-hero">
+<section class="archive-hero<?php echo $hero_image_id ? ' archive-hero--has-image' : ''; ?>">
+    <?php if ( $hero_image_id ) : ?>
+    <figure class="archive-hero__media">
+        <?php echo wp_get_attachment_image( $hero_image_id, 'large', false, [
+            'class'         => 'archive-hero__img',
+            'loading'       => 'eager',
+            'fetchpriority' => 'high',
+            'decoding'      => 'async',
+        ] ); ?>
+    </figure>
+    <?php endif; ?>
     <div class="cbi-container">
         <?php cbi_breadcrumb( $breadcrumb_items ); ?>
         <div class="archive-hero__eyebrow"><?php echo esc_html( $eyebrow ); ?></div>

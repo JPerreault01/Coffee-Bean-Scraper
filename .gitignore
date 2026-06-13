@@ -24,6 +24,12 @@ data/*.json
 # Bean image pipeline cache (downloaded product images + manifest)
 scrapers/.image-cache/
 
+# Taxonomy image pipeline — staged downloads + attribution sidecars + manifest.
+# Binaries never enter the repo; they upload to the WP Media Library by script.
+# (/data/* already covers these, listed explicitly to document intent.)
+data/image_staging/
+data/image_manifest.json
+
 # Local design-QA screenshots (Stage 2 visual verification)
 .tmp-shots/
 # Stray empty artifact (literal bracket file from a shell mishap)

@@ -301,6 +301,67 @@ function cbi_register_taxonomies() {
     ] );
 }
 
+// ------------------------------------------------------------------
+// Taxonomy hero image — term meta cbi_hero_image_id (a media attachment
+// ID). Written by scrapers/upload_taxonomy_images.py over the REST API, so
+// it MUST be registered with show_in_rest. Rendered by taxonomy-bean-archive.php
+// (hero) and single-bean.php (inline flavor/brew icons). Conceptual imagery
+// only — roaster terms keep their affiliate-feed product photos, so they are
+// deliberately excluded here.
+// ------------------------------------------------------------------
+
+add_action( 'init', 'cbi_register_term_hero_meta', 11 ); // after cbi_register_taxonomies (priority 10)
+function cbi_register_term_hero_meta() {
+    $taxonomies = [ 'flavor-note', 'origin', 'roast-level', 'process-method', 'brew-method' ];
+    foreach ( $taxonomies as $tax ) {
+        register_term_meta( $tax, 'cbi_hero_image_id', [
+            'type'              => 'integer',
+            'single'            => true,
+            'show_in_rest'      => true,
+            'sanitize_callback' => 'absint',
+            'auth_callback'     => function () {
+                return current_user_can( 'manage_categories' );
+            },
+        ] );
+    }
+}
+
+/**
+ * Attachment ID of a term's hero image, or 0 if none is set.
+ *
+ * @param WP_Term|null $term
+ * @return int
+ */
+function cbi_term_hero_id( $term ) {
+    if ( ! $term || is_wp_error( $term ) || empty( $term->term_id ) ) {
+        return 0;
+    }
+    $id = get_term_meta( $term->term_id, 'cbi_hero_image_id', true );
+    return $id ? (int) $id : 0;
+}
+
+/**
+ * Small lazy-loaded inline icon (<img>) for a term chip, or '' if the term has
+ * no hero image. Decorative next to its text label, so alt is empty by design
+ * (the adjacent term name is the accessible label). Used in single-bean.php.
+ *
+ * @param WP_Term|null $term
+ * @return string
+ */
+function cbi_term_chip_icon( $term ) {
+    $id = cbi_term_hero_id( $term );
+    if ( ! $id ) {
+        return '';
+    }
+    return wp_get_attachment_image( $id, [ 36, 36 ], false, [
+        'class'    => 'bean-tag__icon',
+        'loading'  => 'lazy',
+        'decoding' => 'async',
+        'alt'      => '',
+        'aria-hidden' => 'true',
+    ] );
+}
+
 // ============================================================
 // 4. FLUSH REWRITE RULES ON ACTIVATION
 // ============================================================
@@ -385,6 +446,160 @@ function cbi_sensory_bar( $label, $value, $max = 5 ) {
         esc_html( $value )
     );
 }
+
+// ============================================================
+// 8a. SENSORY PROFILE — sensory bars + flavor radar (reusable)
+//     One code path shared by single-bean.php and the [coffee_profile]
+//     shortcode so every bean draws an identical chart. 5 axes:
+//     acidity, body, sweetness, bitterness, roast_intensity.
+// ============================================================
+
+/**
+ * Read the 5 sensory ACF scores for a post. Missing/empty axes come back as
+ * null (not 0) so the renderer can tell "no data" from a real low score.
+ */
+function cbi_get_sensory_scores( $post_id ) {
+    if ( ! function_exists( 'get_field' ) ) {
+        return [];
+    }
+    $keys = [ 'acidity', 'body', 'sweetness', 'bitterness', 'roast_intensity' ];
+    $out  = [];
+    foreach ( $keys as $key ) {
+        $v = get_field( $key, $post_id );
+        $out[ $key ] = ( $v === '' || $v === null ) ? null : intval( $v );
+    }
+    return $out;
+}
+
+/**
+ * Render the sensory bars + flavor radar for a bean from its own ACF scores.
+ *
+ * Returns the HTML string (the `.bean-profile__viz` column), or '' when the
+ * bean has no sensory data. A static guard renders each post at most once per
+ * request, so the template and an in-content [coffee_profile] for the SAME bean
+ * never draw two radars (whichever runs first wins; the template runs first).
+ * The radar canvas only draws when all 5 axes are present — a partial bean
+ * shows its bars without a collapsed/misleading chart.
+ */
+function cbi_render_sensory_profile( $post_id = null ) {
+    static $rendered = [];
+
+    $post_id = $post_id ? intval( $post_id ) : get_the_ID();
+    if ( ! $post_id || isset( $rendered[ $post_id ] ) ) {
+        return '';
+    }
+
+    $scores  = cbi_get_sensory_scores( $post_id );
+    $present = array_filter( $scores, static function ( $v ) { return $v !== null; } );
+    if ( empty( $present ) ) {
+        return '';
+    }
+    $rendered[ $post_id ] = true;
+
+    // Chart.js auto-enqueues on bean pages; ensure it's present if the shortcode
+    // is used elsewhere (e.g. embedding a bean's radar in a roundup page).
+    if ( ! wp_script_is( 'chartjs', 'enqueued' ) ) {
+        wp_enqueue_script(
+            'chartjs',
+            'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js',
+            [], '4.4.1', true
+        );
+    }
+
+    $labels = [
+        'acidity'         => 'Acidity',
+        'body'            => 'Body',
+        'sweetness'       => 'Sweetness',
+        'bitterness'      => 'Bitterness',
+        'roast_intensity' => 'Roast',
+    ];
+    $title          = get_the_title( $post_id );
+    $radar_id       = 'bean-radar-' . $post_id;
+    $radar_complete = ( count( $present ) === count( $scores ) );
+    $radar_data     = wp_json_encode( array_values( $scores ) );
+    $radar_labels   = wp_json_encode( array_values( $labels ) );
+
+    ob_start();
+    ?>
+    <div class="bean-profile__col bean-profile__viz">
+        <div class="sensory-profile">
+            <?php
+            foreach ( $labels as $key => $label ) {
+                if ( $scores[ $key ] !== null ) {
+                    cbi_sensory_bar( $label, $scores[ $key ] );
+                }
+            }
+            ?>
+        </div>
+        <?php if ( $radar_complete ) : ?>
+        <div class="radar-wrap">
+            <canvas id="<?php echo esc_attr( $radar_id ); ?>" role="img" aria-label="Flavor radar chart for <?php echo esc_attr( $title ); ?>"></canvas>
+        </div>
+        <script>
+        (function() {
+            function renderRadar() {
+                var canvas = document.getElementById('<?php echo esc_js( $radar_id ); ?>');
+                if ( ! canvas || typeof Chart === 'undefined' ) return;
+                new Chart( canvas, {
+                    type: 'radar',
+                    data: {
+                        labels: <?php echo $radar_labels; ?>,
+                        datasets: [{
+                            data: <?php echo $radar_data; ?>,
+                            backgroundColor: 'rgba(232, 113, 76, 0.14)',
+                            borderColor: 'rgba(232, 113, 76, 0.85)',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#e8714c',
+                            pointRadius: 4,
+                            pointHoverRadius: 5,
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: true,
+                        scales: {
+                            r: {
+                                min: 0,
+                                max: 5,
+                                ticks: { stepSize: 1, display: false },
+                                grid: { color: 'rgba(240, 233, 223, 0.12)' },
+                                angleLines: { color: 'rgba(240, 233, 223, 0.12)' },
+                                pointLabels: {
+                                    color: '#c7b9a8',
+                                    font: { family: "'DM Mono', monospace", size: 11 }
+                                }
+                            }
+                        },
+                        plugins: { legend: { display: false } },
+                        animation: {
+                            duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 800
+                        }
+                    }
+                });
+            }
+            if ( typeof Chart !== 'undefined' ) {
+                renderRadar();
+            } else {
+                window.addEventListener('load', renderRadar);
+            }
+        })();
+        </script>
+        <?php endif; ?>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+/**
+ * [coffee_profile id="123"] — render a bean's sensory bars + radar inline.
+ * Back-compat + lets a radar be embedded outside single-bean.php (roundups,
+ * comparisons). Omit id to use the current post. Guarded against double-render.
+ */
+function cbi_shortcode_coffee_profile( $atts ) {
+    $atts    = shortcode_atts( [ 'id' => 0 ], $atts, 'coffee_profile' );
+    $post_id = intval( $atts['id'] ) ?: get_the_ID();
+    return cbi_render_sensory_profile( $post_id );
+}
+add_shortcode( 'coffee_profile', 'cbi_shortcode_coffee_profile' );
 
 // ============================================================
 // 8b. HELPER — SCORE BANDS + SCORE BADGE

@@ -241,7 +241,7 @@ get_header(); ?>
                                 <div class="bean-specs__label">Best For</div>
                                 <div class="bean-specs__value">
                                     <?php foreach ( $brew_methods as $term ) : ?>
-                                        <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--brew"><?php echo esc_html( $term->name ); ?></a>
+                                        <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--brew"><?php echo cbi_term_chip_icon( $term ) . esc_html( $term->name ); ?></a>
                                     <?php endforeach; ?>
                                 </div>
                             </div>
@@ -263,79 +263,12 @@ get_header(); ?>
                         </div>
                     </div>
 
-                    <?php if ( $has_sensory ) :
-                        $radar_id   = 'bean-radar-' . $post_id;
-                        $radar_data = wp_json_encode( [
-                            intval( $acidity ),
-                            intval( $body ),
-                            intval( $sweetness ),
-                            intval( $bitterness ),
-                            intval( $roast_int ),
-                        ] );
+                    <?php
+                    // Sensory bars + flavor radar. Shared helper (functions.php) so the
+                    // [coffee_profile] shortcode and this template draw an identical chart,
+                    // and so the radar renders for every bean from its own ACF scores.
+                    echo cbi_render_sensory_profile( $post_id );
                     ?>
-                    <div class="bean-profile__col bean-profile__viz">
-                        <div class="sensory-profile">
-                            <?php
-                            if ( $acidity )    cbi_sensory_bar( 'Acidity',    $acidity );
-                            if ( $body )       cbi_sensory_bar( 'Body',       $body );
-                            if ( $sweetness )  cbi_sensory_bar( 'Sweetness',  $sweetness );
-                            if ( $bitterness ) cbi_sensory_bar( 'Bitterness', $bitterness );
-                            if ( $roast_int )  cbi_sensory_bar( 'Roast',      $roast_int );
-                            ?>
-                        </div>
-                        <div class="radar-wrap">
-                            <canvas id="<?php echo esc_attr( $radar_id ); ?>" role="img" aria-label="Flavor radar chart for <?php echo esc_attr( $title ); ?>"></canvas>
-                        </div>
-                        <script>
-                        (function() {
-                            function renderRadar() {
-                                var canvas = document.getElementById('<?php echo esc_js( $radar_id ); ?>');
-                                if ( ! canvas || typeof Chart === 'undefined' ) return;
-                                new Chart( canvas, {
-                                    type: 'radar',
-                                    data: {
-                                        labels: ['Acidity', 'Body', 'Sweetness', 'Bitterness', 'Roast'],
-                                        datasets: [{
-                                            data: <?php echo $radar_data; ?>,
-                                            backgroundColor: 'rgba(232, 113, 76, 0.14)',
-                                            borderColor: 'rgba(232, 113, 76, 0.85)',
-                                            borderWidth: 2,
-                                            pointBackgroundColor: '#e8714c',
-                                            pointRadius: 4,
-                                            pointHoverRadius: 5,
-                                        }]
-                                    },
-                                    options: {
-                                        maintainAspectRatio: true,
-                                        scales: {
-                                            r: {
-                                                min: 0,
-                                                max: 5,
-                                                ticks: { stepSize: 1, display: false },
-                                                grid: { color: 'rgba(240, 233, 223, 0.12)' },
-                                                angleLines: { color: 'rgba(240, 233, 223, 0.12)' },
-                                                pointLabels: {
-                                                    color: '#c7b9a8',
-                                                    font: { family: "'DM Mono', monospace", size: 11 }
-                                                }
-                                            }
-                                        },
-                                        plugins: { legend: { display: false } },
-                                        animation: {
-                                            duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 800
-                                        }
-                                    }
-                                });
-                            }
-                            if ( typeof Chart !== 'undefined' ) {
-                                renderRadar();
-                            } else {
-                                window.addEventListener('load', renderRadar);
-                            }
-                        })();
-                        </script>
-                    </div>
-                    <?php endif; ?>
 
                 </div>
             </div>
@@ -454,7 +387,7 @@ get_header(); ?>
                 <h2 class="cbi-section__heading">Flavor Notes</h2>
                 <div class="explore-groups__set">
                     <?php foreach ( $flavor_notes as $term ) : ?>
-                        <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--flavor"><?php echo esc_html( $term->name ); ?></a>
+                        <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--flavor"><?php echo cbi_term_chip_icon( $term ) . esc_html( $term->name ); ?></a>
                     <?php endforeach; ?>
                 </div>
             </div>

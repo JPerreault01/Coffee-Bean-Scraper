@@ -572,6 +572,21 @@ button.menu-toggle,
   .bean-tag { min-height: 34px; padding: 4px 14px; }
 }
 
+/* Inline taxonomy icon inside a chip (flavor notes, brew methods on the bean
+   page). Small, round, lazy-loaded; decorative beside its text label. */
+.bean-tag__icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: -1px 7px -1px -4px;
+  flex: 0 0 auto;
+  border: 1px solid var(--cbi-border);
+}
+@media (pointer: coarse) {
+  .bean-tag__icon { width: 20px; height: 20px; }
+}
+
 /* Legacy generic chip (browse cards, seeded content) */
 .chip {
   display: inline-flex;
@@ -1851,6 +1866,42 @@ details[open] .cbi-faq__question::after { transform: rotate(45deg); }
   background: linear-gradient(180deg, var(--cbi-bg-2) 0%, var(--cbi-bg) 100%);
   border-bottom: 1px solid var(--cbi-border);
   padding: var(--space-12) 0 var(--space-10);
+}
+
+/* Term hero banner — one tasteful full-width image above the term text, set
+   per-term by upload_taxonomy_images.py. Oxblood accent rule at its base ties
+   it to the brand; the gradient keeps the eyebrow/title legible if they sit
+   close. Pulls the text padding tighter so the image leads cleanly. */
+.archive-hero--has-image { padding-top: 0; }
+
+.archive-hero__media {
+  position: relative;
+  margin: 0 0 var(--space-8);
+  max-height: 340px;
+  overflow: hidden;
+  border-bottom: 3px solid var(--cbi-accent);
+}
+
+.archive-hero__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(20,16,14,0) 45%, rgba(20,16,14,0.55) 100%);
+  pointer-events: none;
+}
+
+.archive-hero__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 340px;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (max-width: 768px) {
+  .archive-hero__media,
+  .archive-hero__img { max-height: 200px; }
 }
 
 .archive-hero__eyebrow {
