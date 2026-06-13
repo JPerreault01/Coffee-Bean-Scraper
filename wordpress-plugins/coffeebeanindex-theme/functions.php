@@ -1434,6 +1434,23 @@ function cbi_hub_rm_canonical( $canonical ) {
     return $hub ? home_url( '/' . $hub['base'] . '/' ) : $canonical;
 }
 
+// A hub root resolves as the home/blog query, which RankMath (and sometimes core)
+// flags noindex. The hubs are primary SEO landing pages and MUST be indexable —
+// force index,follow on both paths.
+add_filter( 'rank_math/frontend/robots', 'cbi_hub_rm_robots' );
+function cbi_hub_rm_robots( $robots ) {
+    return cbi_is_hub() ? [ 'index' => 'index', 'follow' => 'follow' ] : $robots;
+}
+add_filter( 'wp_robots', 'cbi_hub_wp_robots' );
+function cbi_hub_wp_robots( $robots ) {
+    if ( cbi_is_hub() ) {
+        unset( $robots['noindex'], $robots['nofollow'] );
+        $robots['index']  = true;
+        $robots['follow'] = true;
+    }
+    return $robots;
+}
+
 add_action( 'wp_head', 'cbi_hub_head', 1 );
 function cbi_hub_head() {
     $hub = cbi_current_hub();
