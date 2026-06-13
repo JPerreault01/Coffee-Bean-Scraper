@@ -207,6 +207,11 @@ $hero_image_id = function_exists( 'cbi_term_hero_id' ) ? cbi_term_hero_id( $term
 </div>
 <?php endif; ?>
 
+<!-- Browse-all tree — hierarchical navigation for flavor-note + origin only -->
+<?php if ( in_array( $taxonomy, [ 'flavor-note', 'origin' ], true ) ) :
+    cbi_render_archive_tree( $taxonomy, $term );
+endif; ?>
+
 <!-- Sort Bar -->
 <nav class="sort-bar" aria-label="Sort beans">
     <div class="sort-bar__inner">

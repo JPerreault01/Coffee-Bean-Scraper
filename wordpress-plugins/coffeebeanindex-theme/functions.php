@@ -75,6 +75,18 @@ function cbi_enqueue_styles() {
         );
     }
 
+    // Taxonomy tree expand/collapse — Explore page + flavor-note/origin archives.
+    // Filtering stays in explore-filters.js; this only handles chevron expansion.
+    if ( is_page_template( 'page-explore.php' ) || is_tax( [ 'flavor-note', 'origin' ] ) ) {
+        wp_enqueue_script(
+            'cbi-taxonomy-tree',
+            get_stylesheet_directory_uri() . '/js/taxonomy-tree.js',
+            [],
+            '1.0.0',
+            true // footer
+        );
+    }
+
     // Guide ToC + smooth-scroll JS — only on the guide page template.
     // Builds the sticky table of contents from the article's H2/H3 headings.
     if ( is_page_template( 'template-guide.php' ) ) {
@@ -778,6 +790,316 @@ function cbi_breadcrumb( $items = [] ) {
             'itemListElement' => $schema_items,
         ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
     ?></script>
+    <?php
+}
+
+// ============================================================
+// 11b. TAXONOMY TREE — shared hierarchy UI (Explore filter + archive nav)
+// ============================================================
+//
+// One server-rendered, two-level tree used in two places:
+//   - page-explore.php          → checkbox FILTER rows (flavor-note + origin)
+//   - taxonomy-bean-archive.php → link NAV rows (flavor-note + origin)
+// js/taxonomy-tree.js only toggles expansion; all markup is rendered here.
+
+/** Count badge text, capped at "99+". */
+function cbi_count_cap( $n ) {
+    $n = (int) $n;
+    return $n > 99 ? '99+' : (string) $n;
+}
+
+/** Right-pointing chevron; CSS rotates it when aria-expanded="true". */
+function cbi_tree_chevron_svg() {
+    return '<svg class="cbi-tree__chevron-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg>';
+}
+
+/** Preferred top-row order per taxonomy; unlisted tops fall through alpha. */
+function cbi_tax_top_order( $taxonomy ) {
+    switch ( $taxonomy ) {
+        case 'flavor-note':
+            return [ 'chocolate', 'caramel-sweet', 'nutty', 'fruit', 'citrus-floral', 'earthy-smoky' ];
+        case 'origin':
+            return [ 'africa', 'asia', 'north-america', 'south-america', 'oceania', 'europe' ];
+        default:
+            return [];
+    }
+}
+
+/** Order top-level term objects: preferred slugs first, then the rest A→Z. */
+function cbi_order_top_terms( $tops, $preferred ) {
+    $by_slug = [];
+    foreach ( $tops as $t ) {
+        $by_slug[ $t->slug ] = $t;
+    }
+    $ordered = [];
+    $used    = [];
+    foreach ( $preferred as $slug ) {
+        if ( isset( $by_slug[ $slug ] ) ) {
+            $ordered[]      = $by_slug[ $slug ];
+            $used[ $slug ]  = true;
+        }
+    }
+    $rest = [];
+    foreach ( $tops as $t ) {
+        if ( ! isset( $used[ $t->slug ] ) ) {
+            $rest[] = $t;
+        }
+    }
+    usort( $rest, static function ( $a, $b ) { return strcmp( $a->name, $b->name ); } );
+    return array_merge( $ordered, $rest );
+}
+
+/**
+ * Build the EXPLORE filter tree for a hierarchical taxonomy.
+ *
+ * Returns [ 'nodes' => [...], 'by_id' => [ term_id => WP_Term ] ].
+ * Counts are DISTINCT published-bean tallies: a top node's count rolls its
+ * children up (deduped per bean), a child's count is its own. Only assigned
+ * terms (count > 0) are kept, so this is a pure filter. Works on a flat
+ * taxonomy too (every term renders as a top-level leaf row).
+ */
+function cbi_build_filter_tree( $taxonomy, $bean_posts ) {
+    $all = get_terms( [ 'taxonomy' => $taxonomy, 'hide_empty' => false ] );
+    if ( is_wp_error( $all ) || empty( $all ) ) {
+        return [ 'nodes' => [], 'by_id' => [] ];
+    }
+
+    $by_id    = [];
+    $children = [];
+    foreach ( $all as $t ) {
+        $by_id[ $t->term_id ] = $t;
+    }
+    foreach ( $all as $t ) {
+        if ( (int) $t->parent !== 0 && isset( $by_id[ $t->parent ] ) ) {
+            $children[ $t->parent ][] = $t;
+        }
+    }
+
+    // Distinct-bean counts: per-term, and per-top (rolled up, deduped per bean).
+    $term_counts = [];
+    $top_counts  = [];
+    foreach ( $bean_posts as $bp ) {
+        $assigned = get_the_terms( $bp->ID, $taxonomy );
+        if ( ! $assigned || is_wp_error( $assigned ) ) {
+            continue;
+        }
+        $seen_top = [];
+        foreach ( $assigned as $t ) {
+            $term_counts[ $t->slug ] = ( $term_counts[ $t->slug ] ?? 0 ) + 1;
+            $top_slug = ( (int) $t->parent !== 0 && isset( $by_id[ $t->parent ] ) )
+                ? $by_id[ $t->parent ]->slug
+                : $t->slug;
+            if ( ! isset( $seen_top[ $top_slug ] ) ) {
+                $top_counts[ $top_slug ] = ( $top_counts[ $top_slug ] ?? 0 ) + 1;
+                $seen_top[ $top_slug ]   = true;
+            }
+        }
+    }
+
+    $tops = [];
+    foreach ( $all as $t ) {
+        if ( (int) $t->parent === 0 ) {
+            $tops[] = $t;
+        }
+    }
+    $tops = cbi_order_top_terms( $tops, cbi_tax_top_order( $taxonomy ) );
+
+    $nodes = [];
+    foreach ( $tops as $top ) {
+        $count = (int) ( $top_counts[ $top->slug ] ?? 0 );
+        if ( $count < 1 ) {
+            continue; // filter tree shows assigned terms only
+        }
+
+        $kid_nodes = [];
+        $kids      = $children[ $top->term_id ] ?? [];
+        usort( $kids, static function ( $a, $b ) { return strcmp( $a->name, $b->name ); } );
+        foreach ( $kids as $kid ) {
+            $kc = (int) ( $term_counts[ $kid->slug ] ?? 0 );
+            if ( $kc < 1 ) {
+                continue;
+            }
+            $kid_nodes[] = [ 'slug' => $kid->slug, 'name' => $kid->name, 'count' => $kc ];
+        }
+
+        $nodes[] = [
+            'slug'     => $top->slug,
+            'name'     => $top->name,
+            'count'    => $count,
+            'children' => $kid_nodes,
+        ];
+    }
+
+    return [ 'nodes' => $nodes, 'by_id' => $by_id ];
+}
+
+/** Render the EXPLORE filter tree (checkbox rows wired to explore-filters.js). */
+function cbi_render_filter_tree( $data_key, $label, $nodes ) {
+    if ( empty( $nodes ) ) {
+        return;
+    }
+    ?>
+    <div class="explore-facet explore-facet--tree" data-facet="<?php echo esc_attr( $data_key ); ?>">
+        <div class="explore-facet__heading"><?php echo esc_html( $label ); ?></div>
+        <ul class="cbi-tree">
+            <?php foreach ( $nodes as $node ) :
+                $has_children = ! empty( $node['children'] );
+                $panel_id     = 'tree-' . $data_key . '-' . $node['slug'];
+            ?>
+                <li class="cbi-tree__node">
+                    <div class="cbi-tree__row cbi-tree__row--parent<?php echo $has_children ? '' : ' cbi-tree__row--leaf'; ?>">
+                        <label class="cbi-tree__label">
+                            <input type="checkbox" class="explore-filter-cb cbi-tree__checkbox"
+                                data-filter-group="<?php echo esc_attr( $data_key ); ?>"
+                                value="<?php echo esc_attr( $node['slug'] ); ?>">
+                            <span class="cbi-tree__name"><?php echo esc_html( $node['name'] ); ?></span>
+                        </label>
+                        <span class="cbi-tree__count tabular-nums"><?php echo esc_html( cbi_count_cap( $node['count'] ) ); ?></span>
+                        <?php if ( $has_children ) : ?>
+                            <button type="button" class="cbi-tree__chevron" aria-expanded="false"
+                                aria-controls="<?php echo esc_attr( $panel_id ); ?>"
+                                aria-label="<?php echo esc_attr( 'Expand ' . $node['name'] ); ?>">
+                                <?php echo cbi_tree_chevron_svg(); ?>
+                            </button>
+                        <?php endif; ?>
+                    </div>
+                    <?php if ( $has_children ) : ?>
+                        <ul class="cbi-tree__children" id="<?php echo esc_attr( $panel_id ); ?>">
+                            <?php foreach ( $node['children'] as $child ) : ?>
+                                <li class="cbi-tree__node">
+                                    <div class="cbi-tree__row cbi-tree__row--child">
+                                        <label class="cbi-tree__label">
+                                            <input type="checkbox" class="explore-filter-cb cbi-tree__checkbox"
+                                                data-filter-group="<?php echo esc_attr( $data_key ); ?>"
+                                                value="<?php echo esc_attr( $child['slug'] ); ?>">
+                                            <span class="cbi-tree__name"><?php echo esc_html( $child['name'] ); ?></span>
+                                        </label>
+                                        <span class="cbi-tree__count tabular-nums"><?php echo esc_html( cbi_count_cap( $child['count'] ) ); ?></span>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+    <?php
+}
+
+/** Inner content (link/span + count) for one archive nav row. */
+function cbi_archive_tree_row_lead( $term, $eff, $taxonomy ) {
+    $count = (int) ( $eff[ $term->term_id ] ?? 0 );
+    if ( $count > 0 ) {
+        $link = get_term_link( $term, $taxonomy );
+        $href = ( $link && ! is_wp_error( $link ) ) ? $link : '';
+        printf( '<a class="cbi-tree__link" href="%s">%s</a>', esc_url( $href ), esc_html( $term->name ) );
+    } else {
+        printf( '<span class="cbi-tree__name cbi-tree__name--muted">%s</span>', esc_html( $term->name ) );
+    }
+    printf( '<span class="cbi-tree__count tabular-nums">%s</span>', esc_html( cbi_count_cap( $count ) ) );
+}
+
+/**
+ * Render the ARCHIVE nav tree for flavor-note / origin.
+ *
+ * Full hierarchy from parent 0 down. Parent rows roll their children's counts
+ * up (a continent/family carries no direct beans but its archive lists every
+ * child bean, so a raw term->count of 0 would wrongly mute it). Zero-count
+ * terms render muted and non-linked. The current term gets .is-current and its
+ * branch starts expanded.
+ */
+function cbi_render_archive_tree( $taxonomy, $current_term ) {
+    $all = get_terms( [ 'taxonomy' => $taxonomy, 'hide_empty' => false ] );
+    if ( is_wp_error( $all ) || empty( $all ) ) {
+        return;
+    }
+
+    $by_id    = [];
+    $children = [];
+    foreach ( $all as $t ) {
+        $by_id[ $t->term_id ] = $t;
+    }
+    foreach ( $all as $t ) {
+        if ( (int) $t->parent !== 0 && isset( $by_id[ $t->parent ] ) ) {
+            $children[ $t->parent ][] = $t;
+        }
+    }
+
+    // Effective count: leaf = own; parent = own + direct children (see docblock).
+    $eff = [];
+    foreach ( $all as $t ) {
+        $c = (int) $t->count;
+        if ( ! empty( $children[ $t->term_id ] ) ) {
+            foreach ( $children[ $t->term_id ] as $ch ) {
+                $c += (int) $ch->count;
+            }
+        }
+        $eff[ $t->term_id ] = $c;
+    }
+
+    $tops = [];
+    foreach ( $all as $t ) {
+        if ( (int) $t->parent === 0 ) {
+            $tops[] = $t;
+        }
+    }
+    $tops = cbi_order_top_terms( $tops, cbi_tax_top_order( $taxonomy ) );
+
+    $current_id        = $current_term ? (int) $current_term->term_id : 0;
+    $current_parent_id = ( $current_term && $current_term->parent ) ? (int) $current_term->parent : 0;
+    $noun              = ( 'origin' === $taxonomy ) ? 'origins' : 'flavors';
+    ?>
+    <div class="cbi-tree-nav">
+        <div class="cbi-container">
+            <div class="cbi-tree-nav__heading">Browse all <?php echo esc_html( $noun ); ?></div>
+            <ul class="cbi-tree">
+                <?php foreach ( $tops as $top ) :
+                    $kids = $children[ $top->term_id ] ?? [];
+                    usort( $kids, static function ( $a, $b ) { return strcmp( $a->name, $b->name ); } );
+                    $has_children   = ! empty( $kids );
+                    $is_current_top = ( $current_id === (int) $top->term_id );
+                    $expanded       = ( $is_current_top || $current_parent_id === (int) $top->term_id );
+                    $top_empty      = ( (int) ( $eff[ $top->term_id ] ?? 0 ) < 1 );
+                    $panel_id       = 'navtree-' . $taxonomy . '-' . $top->slug;
+                ?>
+                    <li class="cbi-tree__node">
+                        <div class="cbi-tree__row cbi-tree__row--parent<?php
+                            echo $is_current_top ? ' is-current' : '';
+                            echo $top_empty ? ' cbi-tree__row--empty' : '';
+                            echo $has_children ? '' : ' cbi-tree__row--leaf';
+                        ?>">
+                            <?php cbi_archive_tree_row_lead( $top, $eff, $taxonomy ); ?>
+                            <?php if ( $has_children ) : ?>
+                                <button type="button" class="cbi-tree__chevron" aria-expanded="<?php echo $expanded ? 'true' : 'false'; ?>"
+                                    aria-controls="<?php echo esc_attr( $panel_id ); ?>"
+                                    aria-label="<?php echo esc_attr( ( $expanded ? 'Collapse ' : 'Expand ' ) . $top->name ); ?>">
+                                    <?php echo cbi_tree_chevron_svg(); ?>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                        <?php if ( $has_children ) : ?>
+                            <ul class="cbi-tree__children<?php echo $expanded ? ' is-open' : ''; ?>" id="<?php echo esc_attr( $panel_id ); ?>">
+                                <?php foreach ( $kids as $kid ) :
+                                    $kid_current = ( $current_id === (int) $kid->term_id );
+                                    $kid_empty   = ( (int) ( $eff[ $kid->term_id ] ?? 0 ) < 1 );
+                                ?>
+                                    <li class="cbi-tree__node">
+                                        <div class="cbi-tree__row cbi-tree__row--child<?php
+                                            echo $kid_current ? ' is-current' : '';
+                                            echo $kid_empty ? ' cbi-tree__row--empty' : '';
+                                        ?>">
+                                            <?php cbi_archive_tree_row_lead( $kid, $eff, $taxonomy ); ?>
+                                        </div>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endif; ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
     <?php
 }
 

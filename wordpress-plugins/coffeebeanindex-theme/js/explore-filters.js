@@ -57,42 +57,6 @@
         });
     }
 
-    // ── Flavor facet: Simple / Advanced toggle ───────────────────────────────
-    // Both views share the "flavor" filter group. On switch, the now-hidden
-    // panel's checkboxes are cleared so stale selections don't leak into the
-    // active view's filter. No reload — pure show/hide on rendered DOM.
-
-    var flavorToggleBtns = document.querySelectorAll('.explore-flavor-toggle__btn');
-    var flavorPanels     = document.querySelectorAll('[data-flavor-view-panel]');
-
-    function setFlavorView(view) {
-        flavorToggleBtns.forEach(function (btn) {
-            var active = btn.getAttribute('data-flavor-view') === view;
-            btn.classList.toggle('is-active', active);
-            btn.setAttribute('aria-pressed', active ? 'true' : 'false');
-        });
-
-        var changed = false;
-        flavorPanels.forEach(function (panel) {
-            var show = panel.getAttribute('data-flavor-view-panel') === view;
-            panel.hidden = !show;
-            if (!show) {
-                panel.querySelectorAll('.explore-filter-cb:checked').forEach(function (cb) {
-                    cb.checked = false;
-                    changed = true;
-                });
-            }
-        });
-
-        if (changed) applyFiltersReset();
-    }
-
-    flavorToggleBtns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            setFlavorView(btn.getAttribute('data-flavor-view'));
-        });
-    });
-
     // ── Rating slider live label ─────────────────────────────────────────────
 
     if (ratingSlider && ratingValEl) {

@@ -228,6 +228,63 @@ $origin_map = [
 ];
 
 // ---------------------------------------------------------------------------
+// Origin continent hierarchy
+// Newly-created origin country terms are nested under a continent parent so the
+// front-end tree (page-explore.php, taxonomy-bean-archive.php) stays correct
+// going forward. The migration script back-fills any existing flat terms.
+// keep in sync with set_origin_continents.php
+// ---------------------------------------------------------------------------
+
+$continent_parents = [
+    'africa'        => 'Africa',
+    'asia'          => 'Asia',
+    'north-america' => 'North America',
+    'south-america' => 'South America',
+    'oceania'       => 'Oceania',
+    'europe'        => 'Europe',
+];
+
+// keep in sync with set_origin_continents.php
+$country_to_continent = [
+    // Africa
+    'ethiopia'           => 'africa',
+    'kenya'              => 'africa',
+    'burundi'            => 'africa',
+    'tanzania'           => 'africa',
+    'rwanda'             => 'africa',
+    'uganda'             => 'africa',
+    // Asia
+    'sumatra'            => 'asia',
+    'indonesia'          => 'asia',
+    'india'              => 'asia',
+    'papua-new-guinea'   => 'asia',
+    'vietnam'            => 'asia',
+    'timor'              => 'asia',
+    // North America
+    'mexico'             => 'north-america',
+    'guatemala'          => 'north-america',
+    'costa-rica'         => 'north-america',
+    'honduras'           => 'north-america',
+    'nicaragua'          => 'north-america',
+    'el-salvador'        => 'north-america',
+    'panama'             => 'north-america',
+    'hawaii'             => 'north-america',
+    'jamaica'            => 'north-america',
+    'dominican-republic' => 'north-america',
+    'central-america'    => 'north-america',
+    'united-states'      => 'north-america',
+    // South America
+    'colombia'           => 'south-america',
+    'brazil'             => 'south-america',
+    'peru'               => 'south-america',
+    'bolivia'            => 'south-america',
+    'ecuador'            => 'south-america',
+    'south-america'      => 'south-america', // region term IS the continent
+];
+// Structural markers (blend, latin-america, multi-origin-blend) are intentionally
+// absent from the map above so they stay top-level (parent 0).
+
+// ---------------------------------------------------------------------------
 // Flavor-note canonical map
 // Keys: exact lowercase strings from products.json "flavor_notes" arrays
 // Values:
@@ -575,6 +632,34 @@ function cbi_get_or_create_term( $slug, $name, $taxonomy ) {
 }
 
 // ---------------------------------------------------------------------------
+// Helper: if an origin term is a known country, ensure it sits under the right
+// continent parent (creating the parent if needed). Unknown slugs and the
+// structural markers (blend, latin-america) are left at the top level.
+// Mirrors set_origin_continents.php so newly-created beans nest correctly.
+// ---------------------------------------------------------------------------
+
+function cbi_ensure_origin_parent( $term_id, $slug, array $country_to_continent, array $continent_parents ) {
+    if ( ! isset( $country_to_continent[ $slug ] ) ) {
+        return; // not a known country — leave top-level
+    }
+    $continent_slug = $country_to_continent[ $slug ];
+    if ( $slug === $continent_slug ) {
+        return; // term IS the continent (e.g. south-america) — stays top-level
+    }
+    if ( ! isset( $continent_parents[ $continent_slug ] ) ) {
+        return; // no display name for this continent — defensive
+    }
+    $parent_id = cbi_get_or_create_term( $continent_slug, $continent_parents[ $continent_slug ], 'origin' );
+    if ( ! $parent_id ) {
+        return;
+    }
+    $term = get_term( $term_id, 'origin' );
+    if ( $term && ! is_wp_error( $term ) && (int) $term->parent !== (int) $parent_id ) {
+        wp_update_term( $term_id, 'origin', [ 'parent' => (int) $parent_id ] );
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Already created — skip these
 // ---------------------------------------------------------------------------
 
@@ -651,6 +736,9 @@ foreach ( $products as $p ) {
             [ $o_slug, $o_name ] = $pair;
             $o_term_id = cbi_get_or_create_term( $o_slug, $o_name, 'origin' );
             if ( $o_term_id ) {
+                // Nest known countries under their continent parent (no-op for
+                // structural markers and already-parented terms).
+                cbi_ensure_origin_parent( $o_term_id, $o_slug, $country_to_continent, $continent_parents );
                 $origin_term_ids[] = $o_term_id;
             }
         }
