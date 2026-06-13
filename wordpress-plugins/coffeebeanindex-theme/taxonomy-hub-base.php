@@ -85,57 +85,106 @@ $render_doc_card = function ( $post_id, $kicker, $cta ) {
 
     <!-- ========================================================
          SECTION 2 — TERM GRID  (always)
-         Every term as a card -> its /<base>/<term>/ archive.
-         Hierarchical taxonomies render child terms as chips.
+         Curated cards, each linking to its /<base>/<term>/ archive.
+         grid='curated' (flavor, process) shows only intentional terms
+         (a description or child notes) and hides imported descriptor/
+         per-lot noise; grid='all' (origin, brew, roast) shows every real
+         term. Counts are archive-accurate (parents include their children).
+         Child terms render as note chips, never as their own card.
          ======================================================== -->
     <?php
+    $grid_mode = isset( $hub['grid'] ) ? $hub['grid'] : 'all';
+    $exclude   = isset( $hub['exclude'] ) ? (array) $hub['exclude'] : [];
+
     $all_terms = get_terms( [ 'taxonomy' => $taxonomy, 'hide_empty' => false ] );
     if ( is_wp_error( $all_terms ) ) {
         $all_terms = [];
     }
     $children_map = [];
-    $top_terms    = [];
     foreach ( $all_terms as $t ) {
         if ( $t->parent ) {
             $children_map[ $t->parent ][] = $t;
-        } else {
-            $top_terms[] = $t;
         }
     }
-    // Most-populated first, then alphabetical.
-    usort( $top_terms, function ( $a, $b ) {
-        if ( (int) $b->count !== (int) $a->count ) {
-            return (int) $b->count - (int) $a->count;
+
+    // Browse-accurate count: a parent term's archive includes its child terms
+    // (hierarchical tax_query include_children), so the card must reflect that
+    // total, not the parent's own (often zero) direct count.
+    $hub_term_count = function ( $term ) use ( $children_map, $taxonomy ) {
+        if ( empty( $children_map[ $term->term_id ] ) ) {
+            return (int) $term->count;
         }
-        return strcasecmp( $a->name, $b->name );
+        $q = new WP_Query( [
+            'post_type'      => 'bean',
+            'post_status'    => 'publish',
+            'fields'         => 'ids',
+            'posts_per_page' => 1,
+            'no_found_rows'  => false,
+            'tax_query'      => [ [ 'taxonomy' => $taxonomy, 'field' => 'term_id', 'terms' => $term->term_id, 'include_children' => true ] ],
+        ] );
+        $n = (int) $q->found_posts;
+        wp_reset_postdata();
+        return $n;
+    };
+
+    // Build the visible card set.
+    $cards = [];
+    foreach ( $all_terms as $t ) {
+        if ( $t->parent ) {
+            continue; // children become chips, not cards
+        }
+        if ( in_array( $t->slug, $exclude, true ) ) {
+            continue;
+        }
+        $kids     = isset( $children_map[ $t->term_id ] ) ? $children_map[ $t->term_id ] : [];
+        $has_desc = trim( (string) $t->description ) !== '';
+        if ( 'curated' === $grid_mode && ! $has_desc && empty( $kids ) ) {
+            continue; // imported noise: no editorial description, no curated children
+        }
+        $count = $hub_term_count( $t );
+        if ( $count < 1 ) {
+            continue; // nothing to browse
+        }
+        if ( $kids ) {
+            usort( $kids, function ( $a, $b ) { return strcasecmp( $a->name, $b->name ); } );
+        }
+        $cards[] = [ 'term' => $t, 'count' => $count, 'kids' => $kids, 'has_desc' => $has_desc ];
+    }
+    // Most-populated first, then alphabetical.
+    usort( $cards, function ( $a, $b ) {
+        if ( $b['count'] !== $a['count'] ) {
+            return $b['count'] - $a['count'];
+        }
+        return strcasecmp( $a['term']->name, $b['term']->name );
     } );
     ?>
     <section class="cbi-section hub-section">
         <h2 class="cbi-section__heading">All <?php echo esc_html( $tax_name ); ?></h2>
-        <?php if ( ! empty( $top_terms ) ) : ?>
+        <?php if ( ! empty( $cards ) ) : ?>
         <div class="hub-term-grid">
-            <?php foreach ( $top_terms as $t ) :
-                $kids = isset( $children_map[ $t->term_id ] ) ? $children_map[ $t->term_id ] : [];
-                if ( $kids ) {
-                    usort( $kids, function ( $a, $b ) { return strcasecmp( $a->name, $b->name ); } );
-                }
+            <?php foreach ( $cards as $card ) :
+                $t        = $card['term'];
+                $kids     = $card['kids'];
+                $count    = $card['count'];
+                $term_url = get_term_link( $t );
             ?>
-            <div class="hub-term-card">
-                <a class="hub-term-card__main" href="<?php echo esc_url( get_term_link( $t ) ); ?>">
+            <article class="hub-term-card">
+                <a class="hub-term-card__link" href="<?php echo esc_url( $term_url ); ?>">
                     <span class="hub-term-card__name"><?php echo esc_html( $t->name ); ?></span>
-                    <span class="hub-term-card__count tabular-nums"><?php echo (int) $t->count; ?> bean<?php echo 1 !== (int) $t->count ? 's' : ''; ?></span>
+                    <span class="hub-term-card__count"><strong class="tabular-nums"><?php echo (int) $count; ?></strong> <?php echo 1 === (int) $count ? 'bean' : 'beans'; ?></span>
                 </a>
-                <?php if ( $t->description ) : ?>
-                    <p class="hub-term-card__excerpt"><?php echo esc_html( wp_trim_words( wp_strip_all_tags( $t->description ), 18 ) ); ?></p>
+                <?php if ( $card['has_desc'] ) : ?>
+                    <p class="hub-term-card__desc"><?php echo esc_html( wp_trim_words( wp_strip_all_tags( $t->description ), 20 ) ); ?></p>
                 <?php endif; ?>
                 <?php if ( $kids ) : ?>
-                    <div class="hub-term-card__children">
+                    <div class="hub-term-card__notes">
                         <?php foreach ( $kids as $kid ) : ?>
-                            <a class="bean-tag" href="<?php echo esc_url( get_term_link( $kid ) ); ?>"><?php echo esc_html( $kid->name ); ?></a>
+                            <a class="hub-note-chip" href="<?php echo esc_url( get_term_link( $kid ) ); ?>"><?php echo esc_html( $kid->name ); ?></a>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
-            </div>
+                <a class="hub-term-card__cta" href="<?php echo esc_url( $term_url ); ?>">Browse <?php echo esc_html( $t->name ); ?> &rarr;</a>
+            </article>
             <?php endforeach; ?>
         </div>
         <?php else : ?>

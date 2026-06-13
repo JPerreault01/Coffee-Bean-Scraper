@@ -91,6 +91,11 @@ if ( $meta_key ) {
 
 $bean_query = new WP_Query( $args );
 
+// A parent term's archive includes its child terms' beans (hierarchical
+// include_children), so report the true total, not the term's direct count.
+// Keeps the hero stat, the stats guard, and the listed grid consistent.
+$bean_count = (int) $bean_query->found_posts;
+
 // ── Live data stats for the hero (avg score, price range) ─────────────────
 $avg_rating = null;
 $price_min  = null;

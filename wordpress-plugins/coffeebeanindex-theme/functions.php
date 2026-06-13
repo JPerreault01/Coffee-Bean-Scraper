@@ -1237,6 +1237,8 @@ function cbi_hub_config() {
     return [
         'origin' => [
             'taxonomy'    => 'origin',
+            'grid'        => 'all',          // show every real region (most have no long description)
+            'exclude'     => [ 'blend' ],    // "Blend" is not a single origin
             'h1'          => 'Coffee Origins',
             'eyebrow'     => 'Browse by Origin',
             'title'       => 'Coffee Origins: Taste by Growing Region | Coffee Bean Index',
@@ -1245,6 +1247,7 @@ function cbi_hub_config() {
         ],
         'flavor' => [
             'taxonomy'    => 'flavor-note',
+            'grid'        => 'curated',      // curated families only; hides imported descriptor noise
             'h1'          => 'Coffee Flavor Notes',
             'eyebrow'     => 'Browse by Flavor',
             'title'       => 'Coffee Flavor Notes: How to Taste Them | Coffee Bean Index',
@@ -1253,6 +1256,7 @@ function cbi_hub_config() {
         ],
         'brew' => [
             'taxonomy'    => 'brew-method',
+            'grid'        => 'all',
             'h1'          => 'Coffee Brewing Methods',
             'eyebrow'     => 'Browse by Brew Method',
             'title'       => 'Coffee Brewing Methods Compared | Coffee Bean Index',
@@ -1261,6 +1265,7 @@ function cbi_hub_config() {
         ],
         'process' => [
             'taxonomy'    => 'process-method',
+            'grid'        => 'curated',      // 4 real methods; hides per-lot import-artifact terms
             'h1'          => 'Coffee Processing Methods',
             'eyebrow'     => 'Browse by Process',
             'title'       => 'Coffee Processing Methods: Washed, Natural, Honey | Coffee Bean Index',
@@ -1269,6 +1274,7 @@ function cbi_hub_config() {
         ],
         'roast' => [
             'taxonomy'    => 'roast-level',
+            'grid'        => 'all',
             'h1'          => 'Coffee Roast Levels',
             'eyebrow'     => 'Browse by Roast Level',
             'title'       => 'Coffee Roast Levels Explained: Light to Dark | Coffee Bean Index',
