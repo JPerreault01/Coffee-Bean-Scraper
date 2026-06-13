@@ -1,0 +1,30 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What are the different coffee roast levels?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "From lightest to darkest: light, light-medium, medium, medium-dark, and dark. Roasters track them by two cracking sounds. Light roasts stop near first crack, around 400F, keeping bright origin flavor. Dark roasts run into second crack, past 440F, trading that for body, bittersweet depth, and smoke. Medium sits between them."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does dark roast have more caffeine than light roast?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, that is a myth. Caffeine is stable during roasting and barely changes. Measured by weight, light and dark are nearly identical, with light holding a hair more. Measured by scoop, light roast wins slightly because the denser beans pack more per spoon. Dark tastes stronger; it is not."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which roast level is best for espresso?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Medium-dark and dark are the traditional espresso choices. They give the low acidity, heavy body, and thick crema that pressure brewing rewards, and they are forgiving to dial in. Light-roast espresso is possible and increasingly popular, but it turns sour and finicky without precise grinding and temperature control."
+      }
+    }
+  ]
+}

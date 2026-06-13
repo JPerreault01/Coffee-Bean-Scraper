@@ -1,0 +1,30 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Where do coffee flavor notes come from?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "From the coffee itself, not added flavoring. The bean variety, the growing region, the processing method, and the roast level together create hundreds of aromatic compounds. Roasters taste the brewed coffee and name what is already there. A natural-process Ethiopian genuinely tastes of strawberry. Nothing is sprayed on."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the coffee flavor wheel?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Coffee Taster's Flavor Wheel is the industry-standard map of coffee flavor, first published by the SCA in 1995 and rebuilt in 2016 with World Coffee Research. It runs from broad categories like Fruity and Roasted at the center to precise notes like blueberry or tobacco at the rim. It names flavor, not quality."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I taste flavor notes in coffee?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Brew it black and let it cool slightly, since heat masks aroma. Smell first, then take a large sip to spread it across your palate. Start broad: is it fruity, nutty, or roasty? Then narrow down. Comparing two different coffees side by side makes the differences obvious fast."
+      }
+    }
+  ]
+}

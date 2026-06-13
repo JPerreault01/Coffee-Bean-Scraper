@@ -836,6 +836,9 @@ function cbi_footer_content() {
 add_action( 'pre_get_posts', 'cbi_include_beans_in_queries' );
 function cbi_include_beans_in_queries( $query ) {
     if ( is_admin() || ! $query->is_main_query() ) return;
+    // Taxonomy hub roots resolve as the home query (no queried object). The hub
+    // template builds its own grids/queries, so skip the post+bean injection here.
+    if ( $query->get( 'cbi_hub' ) ) return;
     if ( $query->is_home() || $query->is_feed() ) {
         if ( ! $query->get( 'post_type' ) ) {
             $query->set( 'post_type', [ 'post', 'bean' ] );
@@ -1200,4 +1203,258 @@ function cbi_taxonomy_faq_schema() {
     $decoded = json_decode( $schema );
     if ( ! $decoded ) return;
     echo '<script type="application/ld+json">' . wp_json_encode( $decoded, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . "</script>\n";
+}
+
+// ============================================================
+// 24. TAXONOMY HUB ROOTS — /origin/ /flavor/ /brew/ /process/ /roast/
+//
+//     A "hub" is the index page ABOVE the term archives: it lists every term
+//     in a taxonomy plus featured beans, ranked roundups, related guides, and
+//     a hub-level FAQ. WordPress does not route a bare taxonomy root, so we add
+//     a rewrite rule mapping each rewrite BASE to ?cbi_hub=<base>, then
+//     template_include loads taxonomy-hub-base.php (ONE shared renderer driven
+//     by the config below).
+//
+//     The rewrite BASE is the URL slug, which is NOT always the taxonomy name
+//     (roast-level serves at /roast/, process-method at /process/). The 'taxonomy'
+//     key below is the real taxonomy; the array KEY is the base. Both verified
+//     against cbi_register_taxonomies() in section 3.
+//
+//     Editable copy without a redeploy: intro + FAQ HTML lives in option
+//     cbi_hub_content_<base>; FAQ JSON-LD in option cbi_hub_faq_schema_<base>.
+//     Both fall back to the bundled /hubs/<base>.intro.html and
+//     /hubs/<base>.faq.schema.json so a fresh deploy is never blank.
+//     Roundup/guide linkage: tag the page with custom field cbi_hub_taxonomy =
+//     the taxonomy name. Future machines/accessories: see HUB_EXTENSION_NOTES.md.
+// ============================================================
+
+/**
+ * Per-hub configuration. Keyed by rewrite base.
+ *
+ * @return array<string,array>
+ */
+function cbi_hub_config() {
+    return [
+        'origin' => [
+            'taxonomy'    => 'origin',
+            'h1'          => 'Coffee Origins',
+            'eyebrow'     => 'Browse by Origin',
+            'title'       => 'Coffee Origins: Taste by Growing Region | Coffee Bean Index',
+            'description' => 'What every coffee origin tastes like and why, from bright Ethiopian to earthy Sumatran. Browse growing regions and the beans we have reviewed from each.',
+            'sections'    => [ 'featured' => true, 'roundups' => true, 'guides' => true, 'machines' => true, 'accessories' => true ],
+        ],
+        'flavor' => [
+            'taxonomy'    => 'flavor-note',
+            'h1'          => 'Coffee Flavor Notes',
+            'eyebrow'     => 'Browse by Flavor',
+            'title'       => 'Coffee Flavor Notes: How to Taste Them | Coffee Bean Index',
+            'description' => 'Coffee flavor notes explained: where chocolate, fruit, and floral notes come from, how to taste them, and the beans that carry each one.',
+            'sections'    => [ 'featured' => true, 'roundups' => true, 'guides' => true, 'machines' => true, 'accessories' => true ],
+        ],
+        'brew' => [
+            'taxonomy'    => 'brew-method',
+            'h1'          => 'Coffee Brewing Methods',
+            'eyebrow'     => 'Browse by Brew Method',
+            'title'       => 'Coffee Brewing Methods Compared | Coffee Bean Index',
+            'description' => 'Coffee brewing methods compared: immersion, percolation, and pressure. Grind, ratio, and temperature for espresso, pour over, French press, and more.',
+            'sections'    => [ 'featured' => true, 'roundups' => true, 'guides' => true, 'machines' => true, 'accessories' => true ],
+        ],
+        'process' => [
+            'taxonomy'    => 'process-method',
+            'h1'          => 'Coffee Processing Methods',
+            'eyebrow'     => 'Browse by Process',
+            'title'       => 'Coffee Processing Methods: Washed, Natural, Honey | Coffee Bean Index',
+            'description' => 'Coffee processing methods explained: washed, natural, honey, and wet-hulled, what each does to the cup, and the beans that use them.',
+            'sections'    => [ 'featured' => true, 'roundups' => true, 'guides' => true, 'machines' => true, 'accessories' => true ],
+        ],
+        'roast' => [
+            'taxonomy'    => 'roast-level',
+            'h1'          => 'Coffee Roast Levels',
+            'eyebrow'     => 'Browse by Roast Level',
+            'title'       => 'Coffee Roast Levels Explained: Light to Dark | Coffee Bean Index',
+            'description' => 'Coffee roast levels from light to dark: what each does to flavor, the caffeine myth settled, and which beans land at each level.',
+            'sections'    => [ 'featured' => true, 'roundups' => true, 'guides' => true, 'machines' => true, 'accessories' => true ],
+        ],
+    ];
+}
+
+/** True when the current request is a taxonomy hub root. */
+function cbi_is_hub() {
+    $base = get_query_var( 'cbi_hub' );
+    return $base && array_key_exists( $base, cbi_hub_config() );
+}
+
+/** Config for the current hub (base merged in), or null. */
+function cbi_current_hub() {
+    $base = get_query_var( 'cbi_hub' );
+    $cfg  = cbi_hub_config();
+    return isset( $cfg[ $base ] ) ? array_merge( [ 'base' => $base ], $cfg[ $base ] ) : null;
+}
+
+/**
+ * Load a hub content asset: option first (editable without redeploy), then the
+ * bundled theme file. $suffix is 'intro.html' or 'faq.schema.json'.
+ */
+function cbi_hub_asset( $base, $suffix ) {
+    $opt = ( $suffix === 'faq.schema.json' ) ? 'cbi_hub_faq_schema_' . $base : 'cbi_hub_content_' . $base;
+    $val = get_option( $opt, '' );
+    if ( is_string( $val ) && $val !== '' ) {
+        return $val;
+    }
+    $file = get_stylesheet_directory() . '/hubs/' . $base . '.' . $suffix;
+    return file_exists( $file ) ? (string) file_get_contents( $file ) : '';
+}
+
+/**
+ * Split the content blob into [intro_html, faq_html] on the <!-- cbi:faq -->
+ * marker. The marker is in the raw blob only; both halves are kses'd by the
+ * template before output, so the comment never reaches the page.
+ *
+ * @return array{0:string,1:string}
+ */
+function cbi_hub_split_content( $base ) {
+    $blob  = cbi_hub_asset( $base, 'intro.html' );
+    $parts = preg_split( '/<!--\s*cbi:faq\s*-->/', $blob, 2 );
+    $intro = isset( $parts[0] ) ? trim( $parts[0] ) : '';
+    $faq   = isset( $parts[1] ) ? trim( $parts[1] ) : '';
+    return [ $intro, $faq ];
+}
+
+/** kses allow-list for hub content (intro prose + FAQ accordion). */
+function cbi_hub_kses_allowed() {
+    return [
+        'p'       => [],
+        'br'      => [],
+        'strong'  => [],
+        'em'      => [],
+        'a'       => [ 'href' => [], 'rel' => [], 'title' => [], 'target' => [] ],
+        'h2'      => [ 'id' => [], 'class' => [] ],
+        'h3'      => [ 'id' => [], 'class' => [] ],
+        'ul'      => [ 'class' => [] ],
+        'ol'      => [ 'class' => [] ],
+        'li'      => [ 'class' => [] ],
+        'table'   => [ 'class' => [] ],
+        'thead'   => [], 'tbody' => [], 'tr' => [], 'th' => [], 'td' => [],
+        'div'     => [ 'class' => [] ],
+        'span'    => [ 'class' => [] ],
+        'details' => [ 'class' => [] ],
+        'summary' => [ 'class' => [] ],
+    ];
+}
+
+// ── Routing: rewrite rule + query var + template ───────────────────────────
+
+add_action( 'init', 'cbi_register_hub_rewrites' );
+function cbi_register_hub_rewrites() {
+    $bases = array_keys( cbi_hub_config() );               // all [a-z]+ tokens
+    $regex = '^(' . implode( '|', $bases ) . ')/?$';
+    add_rewrite_rule( $regex, 'index.php?cbi_hub=$matches[1]', 'top' );
+}
+
+add_filter( 'query_vars', 'cbi_register_hub_query_var' );
+function cbi_register_hub_query_var( $vars ) {
+    $vars[] = 'cbi_hub';
+    return $vars;
+}
+
+add_filter( 'template_include', 'cbi_hub_template', 99 );
+function cbi_hub_template( $template ) {
+    if ( cbi_is_hub() ) {
+        $custom = get_stylesheet_directory() . '/taxonomy-hub-base.php';
+        if ( file_exists( $custom ) ) {
+            return $custom;
+        }
+    }
+    return $template;
+}
+
+// A bare hub root resolves as the home query (no queried object). Stop WP's
+// canonical guesser from redirecting /origin/ to the front page.
+add_filter( 'redirect_canonical', 'cbi_hub_no_canonical_redirect' );
+function cbi_hub_no_canonical_redirect( $redirect_url ) {
+    return cbi_is_hub() ? false : $redirect_url;
+}
+
+// ── Layout contract: tag hubs into the same body-class / no-sidebar rules ──
+
+add_filter( 'body_class', 'cbi_hub_body_classes' );
+function cbi_hub_body_classes( $classes ) {
+    if ( ! cbi_is_hub() ) {
+        return $classes;
+    }
+    $hub       = cbi_current_hub();
+    $classes[] = 'cbi-app';
+    $classes[] = 'cbi-hub';
+    $classes[] = 'cbi-hub--' . $hub['base'];
+    if ( ! in_array( 'full-width-content', $classes, true ) ) {
+        $classes[] = 'full-width-content';
+    }
+    return $classes;
+}
+
+add_filter( 'generate_show_title', 'cbi_hub_hide_gp_title' );
+function cbi_hub_hide_gp_title( $show ) {
+    return cbi_is_hub() ? false : $show;
+}
+
+add_filter( 'generate_sidebar_layout', 'cbi_hub_no_sidebar' );
+function cbi_hub_no_sidebar( $layout ) {
+    return cbi_is_hub() ? 'no-sidebar' : $layout;
+}
+
+add_filter( 'generate_content_width', 'cbi_hub_full_width' );
+function cbi_hub_full_width( $width ) {
+    return cbi_is_hub() ? 100 : $width;
+}
+
+// ── Head: title, description, canonical, FAQ schema ────────────────────────
+
+// Clean <title> for the hub (core path). Late priority so it wins the chain.
+add_filter( 'pre_get_document_title', 'cbi_hub_document_title', 99 );
+function cbi_hub_document_title( $title ) {
+    $hub = cbi_current_hub();
+    return $hub ? $hub['title'] : $title;
+}
+
+// RankMath path: feed it the hub's values so it does not emit the home-page
+// title/description/canonical on the hub. No-ops cleanly when RankMath is off.
+add_filter( 'rank_math/frontend/title', 'cbi_hub_rm_title' );
+function cbi_hub_rm_title( $title ) {
+    $hub = cbi_current_hub();
+    return $hub ? $hub['title'] : $title;
+}
+add_filter( 'rank_math/frontend/description', 'cbi_hub_rm_description' );
+function cbi_hub_rm_description( $desc ) {
+    $hub = cbi_current_hub();
+    return $hub ? $hub['description'] : $desc;
+}
+add_filter( 'rank_math/frontend/canonical', 'cbi_hub_rm_canonical' );
+function cbi_hub_rm_canonical( $canonical ) {
+    $hub = cbi_current_hub();
+    return $hub ? home_url( '/' . $hub['base'] . '/' ) : $canonical;
+}
+
+add_action( 'wp_head', 'cbi_hub_head', 1 );
+function cbi_hub_head() {
+    $hub = cbi_current_hub();
+    if ( ! $hub ) {
+        return;
+    }
+
+    // Only emit our own description/canonical when RankMath is NOT handling the
+    // head (the filters above cover the RankMath case) — avoids duplicate tags.
+    if ( ! class_exists( 'RankMath' ) ) {
+        echo '<link rel="canonical" href="' . esc_url( home_url( '/' . $hub['base'] . '/' ) ) . '">' . "\n";
+        echo '<meta name="description" content="' . esc_attr( $hub['description'] ) . '">' . "\n";
+    }
+
+    // Hub FAQPage JSON-LD (parallel to the term-archive emitter in section 23,
+    // which is gated to is_tax() and never fires on a hub root).
+    $schema = cbi_hub_asset( $hub['base'], 'faq.schema.json' );
+    if ( $schema ) {
+        $decoded = json_decode( $schema );
+        if ( $decoded ) {
+            echo '<script type="application/ld+json">' . wp_json_encode( $decoded, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . "</script>\n";
+        }
+    }
 }

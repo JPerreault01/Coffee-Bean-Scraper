@@ -1,0 +1,30 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does coffee origin really change the taste?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, more than any other single factor before roasting. Altitude, climate, soil, and the local processing tradition set a coffee's acidity, body, and base flavors. A high-grown washed Ethiopian tastes floral and bright. A wet-hulled Sumatran tastes earthy and heavy. Same plant, completely different cup."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is single origin coffee?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Single origin coffee comes from one source: one country, and often one region, farm, or single harvest, rather than a blend of beans from several countries. The point is to show the character of that one place. Blends instead mix origins for consistency and a repeatable flavor."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which coffee origin is best for beginners?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Colombia and Nicaragua are the most forgiving starting points. Both deliver mild acidity, medium body, and clear caramel and chocolate notes that survive brewing mistakes. Save high-acid Ethiopian light roasts for once you know what brightness you like. Start smooth, then explore toward the extremes."
+      }
+    }
+  ]
+}

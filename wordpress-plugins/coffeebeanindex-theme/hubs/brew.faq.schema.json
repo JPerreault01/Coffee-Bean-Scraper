@@ -1,0 +1,30 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What are the main coffee brewing methods?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "They group into three categories. Immersion steeps grounds directly in water, like a French press, cold brew, or AeroPress. Percolation passes water through a bed of grounds, like pour over, drip, and Chemex. Pressure forces hot water through a tight puck, like espresso and a moka pot."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which coffee brewing method is best?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "There is no objective best. Pour over gives the cleanest, brightest cup and rewards attention. French press gives the most body and forgives mistakes. Espresso gives intensity but needs equipment and practice. The best method is the one whose flavor and effort match what you actually want each morning."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between French press and pour over?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Filtration and contact. A French press is full immersion through a metal mesh, so oils and fine sediment stay in, giving a heavy, rich cup. Pour over passes water through paper, which traps the oils and produces a clean, bright cup that highlights delicate notes. Same beans, very different texture."
+      }
+    }
+  ]
+}

@@ -86,6 +86,7 @@ Based on 0.25rem units: `--space-1` through `--space-24` (0.25rem → 6rem).
 / (homepage)
 ├── /beans/               → archive-bean.php (all-beans index)
 │   └── /beans/[slug]/    → single-bean.php (full review)
+├── /origin/  /flavor/  /brew/  /process/  /roast/   → taxonomy-hub-base.php (HUB roots)
 ├── /flavor/[slug]/       → taxonomy-bean-archive.php
 ├── /origin/[slug]/       → taxonomy-bean-archive.php
 ├── /roast/[slug]/        → taxonomy-bean-archive.php
@@ -111,7 +112,8 @@ Based on 0.25rem units: `--space-1` through `--space-24` (0.25rem → 6rem).
 | `front-page.php` | Homepage (any Reading setting) |
 | `single-bean.php` | Individual bean review (`post_type=bean`) |
 | `archive-bean.php` | `/beans/` all-beans index |
-| `taxonomy-bean-archive.php` | All six taxonomy archives |
+| `taxonomy-bean-archive.php` | All six taxonomy archives (term pages, e.g. `/origin/ethiopia/`) |
+| `taxonomy-hub-base.php` | Taxonomy HUB roots `/origin/ /flavor/ /brew/ /process/ /roast/` (rewrite + `cbi_hub` query var, functions.php §24; see HUB_EXTENSION_NOTES.md) |
 | `template-roundup.php` | "Best of" pages (Page template) |
 | `template-comparison.php` | "X vs Y" pages (Page template) |
 | `template-guide.php` | Origin guides, brew guides (Page template) |

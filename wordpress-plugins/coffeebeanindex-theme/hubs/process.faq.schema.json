@@ -1,0 +1,30 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What are the main coffee processing methods?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Three dominate, plus one regional method. Washed removes all the fruit before drying. Natural dries the whole cherry with the bean still inside. Honey leaves part of the sticky mucilage on during drying. Wet-hulled, used across Indonesia, hulls the bean at high moisture for an earthy, low-acid cup."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between washed and natural coffee?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "When the fruit comes off. Washed coffee is de-pulped and fermented clean before drying, so the cup is bright, clean, and acidity-forward. Natural coffee dries inside the whole cherry, so fruit sugars ferment into the bean, giving heavier body and bold berry sweetness. Washed shows the bean; natural shows the fruit."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does honey processed coffee contain honey?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Honey process uses no honey at all. The name refers to the sticky, honey-like mucilage left clinging to the bean as it dries. That layer ferments slightly and adds sweetness and body, landing between a clean washed coffee and a fruity natural. Producers grade it yellow, red, or black by how much they leave on."
+      }
+    }
+  ]
+}

@@ -77,11 +77,13 @@ cbi_add_menu_item( $menu_id, 'Nicaragua', home_url( '/origin/nicaragua/' ), $ori
 cbi_add_menu_item( $menu_id, 'Latin America', home_url( '/origin/latin-america/' ), $origins );
 
 // Roasts
-$roasts = cbi_add_menu_item( $menu_id, 'Roasts', home_url( '/roast-level/' ) );
-cbi_add_menu_item( $menu_id, 'Light', home_url( '/roast-level/light/' ), $roasts );
-cbi_add_menu_item( $menu_id, 'Medium', home_url( '/roast-level/medium/' ), $roasts );
-cbi_add_menu_item( $menu_id, 'Medium-Dark', home_url( '/roast-level/medium-dark/' ), $roasts );
-cbi_add_menu_item( $menu_id, 'Dark', home_url( '/roast-level/dark/' ), $roasts );
+// NOTE: the roast-level taxonomy rewrite base is '/roast/', NOT '/roast-level/'.
+// The hub root and every term archive live under /roast/ or these links 404.
+$roasts = cbi_add_menu_item( $menu_id, 'Roasts', home_url( '/roast/' ) );
+cbi_add_menu_item( $menu_id, 'Light', home_url( '/roast/light/' ), $roasts );
+cbi_add_menu_item( $menu_id, 'Medium', home_url( '/roast/medium/' ), $roasts );
+cbi_add_menu_item( $menu_id, 'Medium-Dark', home_url( '/roast/medium-dark/' ), $roasts );
+cbi_add_menu_item( $menu_id, 'Dark', home_url( '/roast/dark/' ), $roasts );
 
 // Brew Methods
 // NOTE: the brew-method taxonomy rewrite base is '/brew/', NOT '/brew-method/'.
@@ -104,8 +106,8 @@ cbi_add_menu_item( $menu_id, 'Best Dark Roast', home_url( '/best-dark-roast-coff
 $learn = cbi_add_menu_item( $menu_id, 'Learn', home_url( '/learn/' ) );
 cbi_add_menu_item( $menu_id, 'Origin Guides', home_url( '/origin/' ), $learn );
 cbi_add_menu_item( $menu_id, 'Brew Guides', home_url( '/brew/' ), $learn );
-cbi_add_menu_item( $menu_id, 'Roast Guides', home_url( '/roast-level/' ), $learn );
-cbi_add_menu_item( $menu_id, 'Process Methods', home_url( '/process-method/' ), $learn );
+cbi_add_menu_item( $menu_id, 'Roast Guides', home_url( '/roast/' ), $learn );
+cbi_add_menu_item( $menu_id, 'Process Methods', home_url( '/process/' ), $learn );
 
 // Price Tracker (placeholder)
 cbi_add_menu_item( $menu_id, 'Price Tracker', home_url( '/price-tracker/' ) );
