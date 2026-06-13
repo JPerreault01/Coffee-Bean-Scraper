@@ -367,11 +367,11 @@
     "name": "Caribou Coffee Caribou Blend",
     "brand": "Caribou Coffee",
     "roast_level": "Medium",
-    "origin": "Colombia, Central America blend",
-    "process_method": "Washed",
-    "weight_oz": 20.0,
-    "amazon_asin": "B00CB0GM70",
-    "roaster_url": null,
+    "origin": "Brazil, Costa Rica, Colombia, Guatemala, Sumatra blend",
+    "process_method": "Washed and natural blend",
+    "weight_oz": 12,
+    "amazon_asin": "B00451SEJ4",
+    "roaster_url": "https://www.cariboucoffee.com/product/caribou-blend/",
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "drip",
@@ -400,7 +400,10 @@
         "logic": "flavor_profile"
       }
     ],
-    "reference_slug": null
+    "reference_slug": null,
+    "profile_source": "Caribou listing + Amazon (B00451SEJ4) + Tasting Table: spice and berry up front, bittersweet chocolate and cedar finish, syrupy body, clean finish; 100% Rainforest Alliance Arabica, Brazil/Costa Rica/Colombia/Guatemala/Sumatra. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "blue-bottle-hayes-valley",
@@ -1320,11 +1323,11 @@
     "name": "Starbucks Pike Place Roast",
     "brand": "Starbucks",
     "roast_level": "Medium",
-    "origin": "Latin America blend",
+    "origin": "Latin America blend (Mexico, Costa Rica, Colombia, Puerto Rico)",
     "process_method": "Washed",
-    "weight_oz": 12,
-    "amazon_asin": null,
-    "roaster_url": "https://athome.starbucks.com/products/pike-place-roast",
+    "weight_oz": 18,
+    "amazon_asin": "B0936JKKJ2",
+    "roaster_url": "https://athome.starbucks.com/products/pike-place-roast-whole-bean",
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "drip",
@@ -1340,20 +1343,32 @@
     "sweetness": 3,
     "bitterness": 2,
     "roast_intensity": 3,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": null
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {
+        "product": "Peet's Coffee Cafe Domingo",
+        "logic": "performance"
+      },
+      {
+        "product": "Dunkin' Original Blend Medium Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Starbucks listing + Amazon (B0936JKKJ2): cocoa, praline, toasted nut; 100% Arabica Latin America (Mexico, Costa Rica, Colombia, Puerto Rico), smooth medium roast. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "starbucks-french-roast",
     "name": "Starbucks French Roast",
     "brand": "Starbucks",
     "roast_level": "Dark",
-    "origin": "Latin America blend",
+    "origin": "Latin America, Asia-Pacific blend",
     "process_method": "Washed",
-    "weight_oz": 12,
-    "amazon_asin": null,
-    "roaster_url": "https://athome.starbucks.com/products/french-roast",
+    "weight_oz": 28,
+    "amazon_asin": "B0959PRQG8",
+    "roaster_url": "https://athome.starbucks.com/products/french-roast-whole-bean",
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "drip",
@@ -1369,20 +1384,32 @@
     "sweetness": 2,
     "bitterness": 4,
     "roast_intensity": 5,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": null
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "San Francisco Bay French Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Starbucks Caffe Verona",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Starbucks listing + Amazon (B0959PRQG8) + Tasting Table: dark caramel, sweet smoke, low acidity, light body; X-Bold intensity, 100% Arabica multi-origin (Latin America + Asia-Pacific). Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "starbucks-veranda-blonde",
     "name": "Starbucks Veranda Blend Blonde Roast",
     "brand": "Starbucks",
     "roast_level": "Light",
-    "origin": "Latin America blend",
+    "origin": "Latin America blend (Mexico, Costa Rica, Colombia, Puerto Rico)",
     "process_method": "Washed",
     "weight_oz": 12,
     "amazon_asin": null,
-    "roaster_url": "https://athome.starbucks.com/products/veranda-blend",
+    "roaster_url": "https://athome.starbucks.com/products/veranda-blend-whole-bean",
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "drip",
@@ -1398,20 +1425,32 @@
     "sweetness": 4,
     "bitterness": 1,
     "roast_intensity": 2,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": null
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "Starbucks Pike Place Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Peet's Coffee Big Bang Medium Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Starbucks listing + Kroger/Fred Meyer: toasted malt, milk chocolate, soft spice; 100% Arabica Latin America, Starbucks' lightest roast. Whole-bean Amazon ASIN not confirmed (retailer listings only) -> BACKFILL. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "dunkin-original-blend",
     "name": "Dunkin' Original Blend Medium Roast",
     "brand": "Dunkin'",
     "roast_level": "Medium",
-    "origin": "Latin America blend",
+    "origin": "Latin America blend (100% Arabica)",
     "process_method": "Washed",
-    "weight_oz": 12,
-    "amazon_asin": null,
-    "roaster_url": "https://www.dunkinathome.com/products/original-blend",
+    "weight_oz": 18,
+    "amazon_asin": "B000YJMQDQ",
+    "roaster_url": "https://www.dunkinathome.com/products/whole-bean-original-blend",
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "drip"
@@ -1426,18 +1465,30 @@
     "sweetness": 3,
     "bitterness": 2,
     "roast_intensity": 3,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": null
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {
+        "product": "Starbucks Pike Place Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Eight O'Clock Original Whole Bean Coffee",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Dunkin' listing + Amazon (B000YJMQDQ) + CoffeeReview: smooth, balanced, mild; 100% Arabica, the signature breakfast-style medium roast. Specific origins not published by Dunkin'. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "community-coffee-cafe-special",
     "name": "Community Coffee Cafe Special Medium-Dark Roast",
     "brand": "Community Coffee",
     "roast_level": "Medium-Dark",
-    "origin": "Latin America blend",
-    "process_method": "Washed",
-    "weight_oz": 12,
+    "origin": "Central and South America blend",
+    "process_method": "Natural",
+    "weight_oz": 32,
     "amazon_asin": null,
     "roaster_url": "https://shop.communitycoffee.com/products/cafe-special",
     "affiliate_tag": "coffeebeanind-20",
@@ -1455,9 +1506,21 @@
     "sweetness": 3,
     "bitterness": 3,
     "roast_intensity": 4,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": null
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "San Francisco Bay Fog Chaser",
+        "logic": "performance"
+      },
+      {
+        "product": "Cafe Don Pablo Gourmet Coffee Signature Blend",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Community Coffee listing + Amazon (ground B0126UAWRW): naturally sun-dried South and Central American beans, medium-dark roast, caramel and cocoa. Whole-bean ASIN unconfirmed (Cafe Special sells mainly ground/K-Cup) -> BACKFILL. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "new-england-blue-mountain-blend",
@@ -8572,6 +8635,133 @@
     ],
     "reference_slug": null,
     "profile_source": "Peet's listing + CoffeeReview (Cafe Domingo): three Latin American coffees, toast, toffee, nougat, crisp clean finish, medium roast. Whole-bean Amazon ASIN not confidently confirmed (K-Cup ASIN B00D5QPCI6 found) -> BACKFILL. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "starbucks-espresso-roast",
+    "name": "Starbucks Espresso Roast",
+    "brand": "Starbucks",
+    "roast_level": "Dark",
+    "origin": "Latin America, Asia-Pacific blend",
+    "process_method": "Washed",
+    "weight_oz": 18,
+    "amazon_asin": "B09369VYBL",
+    "roaster_url": "https://athome.starbucks.com/products/espresso-roast-whole-bean",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso",
+      "moka pot"
+    ],
+    "flavor_notes": [
+      "molasses",
+      "caramel",
+      "full body",
+      "rich"
+    ],
+    "acidity": 2,
+    "body": 4,
+    "sweetness": 3,
+    "bitterness": 3,
+    "roast_intensity": 4,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Starbucks Caffe Verona",
+        "logic": "performance"
+      },
+      {
+        "product": "Lavazza Espresso Barista Gran Crema",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Starbucks listing + Amazon (B09369VYBL) + clearlycoffee review: molasses, caramel sweetness, bold full body; 100% Arabica Latin America + Asia-Pacific, the in-store espresso base since 1975. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "starbucks-caffe-verona",
+    "name": "Starbucks Caffe Verona",
+    "brand": "Starbucks",
+    "roast_level": "Dark",
+    "origin": "Latin America, Asia-Pacific blend (with Italian Roast)",
+    "process_method": "Washed",
+    "weight_oz": 18,
+    "amazon_asin": "B0935ZP5X8",
+    "roaster_url": "https://athome.starbucks.com/products/caffe-verona-whole-bean",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press",
+      "espresso"
+    ],
+    "flavor_notes": [
+      "dark cocoa",
+      "caramelized sugar",
+      "roasty sweetness",
+      "full body"
+    ],
+    "acidity": 1,
+    "body": 4,
+    "sweetness": 3,
+    "bitterness": 3,
+    "roast_intensity": 5,
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {
+        "product": "Starbucks French Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Peet's Coffee Major Dickason's Blend",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Starbucks listing + CoffeeReview (Verona) + Amazon (B0935ZP5X8): dark cocoa, caramelized sugar, roasty sweetness, full body; Latin America + Asia-Pacific with a portion of Italian Roast. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "mccafe-premium-roast",
+    "name": "McCafe Premium Roast",
+    "brand": "McCafe",
+    "roast_level": "Medium-Dark",
+    "origin": "Multi-origin Arabica (origin not published)",
+    "process_method": "Washed",
+    "weight_oz": 31.7,
+    "amazon_asin": "B08468NRLX",
+    "roaster_url": "https://www.mccafe.com/",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "earthy",
+      "mild cocoa",
+      "light smoke",
+      "clean finish"
+    ],
+    "acidity": 2,
+    "body": 3,
+    "sweetness": 2,
+    "bitterness": 3,
+    "roast_intensity": 4,
+    "review_framing": "functional",
+    "comparison_anchors": [
+      {
+        "product": "Dunkin' Original Blend Medium Roast",
+        "logic": "performance"
+      },
+      {
+        "product": "Starbucks Pike Place Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Amazon (B08468NRLX) + clearlycoffee review: earthy, slight cocoa, light smoke, smooth clean finish; 100% Arabica. NOTE: US McCafe Premium Roast is sold ground; the only whole-bean SKU found is a Canadian import (medium-dark, 900g). Origin not published. Verified 2026-06-13.",
     "price_per_oz": null,
     "price_status": "BACKFILL"
   }
