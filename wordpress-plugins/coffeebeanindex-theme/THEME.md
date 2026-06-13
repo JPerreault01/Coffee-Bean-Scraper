@@ -2,42 +2,54 @@
 
 # Coffee Bean Index — Theme Design System
 
-## Art Direction: Print-Inspired Editorial
+## Art Direction: Dark Data-Driven Review Database (v3.0)
 
-**Decision**: Warm paper/off-white base, near-black espresso text, oxblood accent.
+**Decision**: Roasted near-black base, cream text, oxblood accent, monospace display type.
 
-**Why**: The previous dark amber-on-near-black aesthetic read as a tech demo, not an editorial publication. The print editorial direction (inspired by Standart Magazine, NYT Cooking, Serious Eats) communicates trust, permanence, and editorial authority — the qualities that make a roaster want to be reviewed here and a reader trust the recommendations.
+**Why**: The site is a database, not a blog. The v3.0 dark direction (reference points: Fragrantica's interconnected profile pages, CamelCamelCamel's price-history utility, HouseFresh's independent-tester credibility, Wirecutter's CTA discipline) makes the data the hero — score badges, spec tables, price charts, and taxonomy chips read as instruments on a dark instrument panel. Monospace display type signals "structured data" the way a serif signaled "editorial" in v2.
 
-**Not chosen**: Refined dark mode — rejected because the existing dark implementation had a "tech demo" feel that would require the same effort to fix. The light editorial direction has a lower floor and a higher ceiling.
+**The score is a system, not a number.** `cbi_score_badge()` renders a banded badge (value + `/10` + band label). Bands: Exceptional 9.0+ (gold ring), Excellent 8.0+, Very good 7.0+ (oxblood fill), Good 6.0+, Mixed 5.0+ (neutral fill), Skip <5.0 (outline only). Weak scores never wear the brand color.
+
+**Two accent roles.** Oxblood (`--cbi-accent` `#9e2b0e`) is for FILLED surfaces only (buttons, badges) with white text. `--cbi-accent-text` (`#e8714c`, ember) is the link/text accent — oxblood is too dark to pass WCAG AA as text on the dark background, ember clears it.
+
+**Superseded**: the v2.0 warm-paper "print editorial" direction (Playfair Display, `#faf7f3` paper). Retired because the brief called for a serious data-driven database register; the light editorial look read as a recipe blog.
 
 ---
 
 ## Design Tokens (`style.css :root`)
 
-### Palette
+### Palette (dark, v3.0)
 | Token | Value | Use |
 |---|---|---|
-| `--cbi-bg` | `#faf7f3` | Page background (warm paper) |
-| `--cbi-bg-2` | `#f2ece3` | Hero sections, header |
-| `--cbi-bg-3` | `#e8e0d5` | Deeper section backgrounds |
-| `--cbi-surface` | `#ede8df` | Card surfaces, sidebar |
-| `--cbi-border` | `#d4c9bb` | Hairline borders |
-| `--cbi-border-light` | `#e2d8cc` | Lighter borders |
-| `--cbi-text` | `#1c1410` | Near-black espresso text |
-| `--cbi-text-muted` | `#5c5048` | Body copy, descriptions |
-| `--cbi-text-dim` | `#73655b` | Metadata, captions, labels (WCAG AA on --cbi-bg) |
-| `--cbi-accent` | `#9e2b0e` | Oxblood — primary accent |
-| `--cbi-accent-light` | `#c03a18` | Hover state |
-| `--cbi-accent-dark` | `#7a2008` | Active/pressed |
-| `--cbi-accent-bg` | `#fdf1ee` | Very light tint for hover states |
-| `--cbi-accent-glow` | `rgba(158,43,14,0.08)` | Subtle background tint |
+| `--cbi-bg` | `#14100c` | Page background (warm near-black) |
+| `--cbi-bg-2` | `#1a1410` | Raised bands, hero gradient top, header/nav |
+| `--cbi-bg-3` | `#241c15` | Deepest panels |
+| `--cbi-surface` | `#1d1712` | Card surface |
+| `--cbi-surface-2` | `#271f17` | Card headers, spec-table label column |
+| `--cbi-border` | `#3a2e22` | Hairline borders |
+| `--cbi-border-light` | `#2b2219` | Inner / lighter borders |
+| `--cbi-text` | `#f0e9df` | Primary cream text |
+| `--cbi-text-muted` | `#c7b9a8` | Body copy, descriptions (AA) |
+| `--cbi-text-dim` | `#9d8e7d` | Metadata, captions, labels (AA) |
+| `--cbi-accent` | `#9e2b0e` | Oxblood — FILLS only (buttons, badges) |
+| `--cbi-accent-light` | `#c13a14` | Fill hover / border |
+| `--cbi-accent-text` | `#e8714c` | Ember — link + text accent (AA) |
+| `--cbi-accent-text-2` | `#f08a67` | Text accent hover |
+| `--cbi-accent-bg` | `rgba(158,43,14,0.16)` | Tint for hover states |
+| `--cbi-positive` | `#79c47e` | Price drops |
+| `--cbi-negative` | `#e07a6d` | Price rises |
+| `--cbi-gold` | `#d9a456` | Exceptional band ring, flavor chip tint |
+
+Category chip tints: `--tint-flavor` gold, `--tint-origin` green, `--tint-roast` orange, `--tint-brew` blue (all ≥ 4.5:1 on the surface).
 
 ### Typography
 | Token | Value |
 |---|---|
-| `--font-display` | Playfair Display, Georgia, serif |
+| `--font-display` | DM Mono, ui-monospace, monospace |
 | `--font-body` | DM Sans, system-ui, sans-serif |
-| `--font-mono` | DM Mono, Courier New, monospace |
+| `--font-mono` | DM Mono, ui-monospace, monospace |
+
+**Mono is the identity** (display headings + all data). Body prose uses DM Sans at a constrained measure (`--measure: 70ch`) for readability — mono is never used for long paragraphs. Playfair Display was removed from the font enqueue in v3.0.
 
 **Fonts loaded** via `wp_enqueue_scripts()` in functions.php with `preconnect` hints — not @import in style.css (would be render-blocking).
 
@@ -45,15 +57,17 @@
 
 ### Type Scale
 ```
+--text-2xs:  0.6875rem  (denominators, band labels, micro-meta)
 --text-xs:   0.75rem    (labels, metadata, tags)
 --text-sm:   0.875rem   (captions, card text)
 --text-base: 1rem       (body text)
---text-lg:   1.125rem   (larger body, card titles)
+--text-md:   1.0625rem  (review/prose body)
+--text-lg:   1.125rem   (larger body, leads)
 --text-xl:   1.25rem    (h4, sub-headings)
 --text-2xl:  1.5rem     (h3, section heads)
---text-3xl:  2rem       (h2, page sections)
---text-4xl:  2.75rem    (h2 large)
---text-5xl:  3.75rem    (h1, hero titles)
+--text-3xl:  1.875rem   (h2, page sections)
+--text-4xl:  2.375rem   (h2 large)
+--text-5xl:  3rem       (h1, hero titles)
 ```
 
 ### Spacing Scale
@@ -116,7 +130,12 @@ Based on 0.25rem units: `--space-1` through `--space-24` (0.25rem → 6rem).
 | Section heading | `.cbi-section__heading` | Label style, uppercase mono |
 | Affiliate disclosure | `.cbi-disclosure-inline` | Inline, near affiliate links |
 | Image placeholder | `cbi_coffee_placeholder()` | SVG coffee cup, no emoji |
-| Rating badge | `.bean-rating`, `.cbi-rating-badge` | |
+| **Score badge** | `cbi_score_badge($rating, $size, $show_band)` + `cbi_score_band()` | Banded rating system. Sizes `xl`/`md`/`sm`. Bands map to `.cbi-score--{exceptional…skip}`. Use this, not raw numbers |
+| Rating badge (legacy) | `.bean-rating`, `.cbi-rating-badge` | Pre-v3 fixed badge; kept for back-compat, prefer `cbi_score_badge()` |
+| **Fit cards** | `.fit-cards`, `.fit-card`, `.fit-card--skip` | Buy it if / Skip it if, side by side (green/red left border) |
+| **Price delta** | `.price-delta`, `--down`, `--up` | Pill for price vs 30-day avg |
+| **Hero decision panel** | `.bean-hero__panel` | Score + price + CTA above the fold in the bean hero |
+| **Sticky mobile CTA** | `.bean-ctabar` | Fixed bottom bar (price + buy) under 1025px |
 | Sensory bars | `cbi_sensory_bar()` PHP helper | |
 | Spec table | `.bean-specs`, `.bean-specs__row` | |
 | Profile card | `.bean-profile`, `.bean-profile__col`, `.bean-profile__viz` | 2-col (specs \| sensory+radar); `--specs-only` collapses to 1 col; stacks <760px |
@@ -154,9 +173,9 @@ registered under the "Coffee Bean Index" pattern category for visual insertion.
 
 | Location | CSS hook | Recommended size |
 |---|---|---|
-| Homepage hero background | `.home-hero__bg` (style.css "HOMEPAGE v2") | 2400×1200px (2:1) |
-| Browse-category tiles | `.home-cat-tile--{roast-level\|origin\|brew-method} .home-cat-tile__media` | 800×600px |
-| Bean / guide thumbnails | WordPress featured image | 1200×675px (16:9) |
+| Homepage hero background | `.cbi-hero__bg` (injected by `cbi_hero_head()` from `cbi_home_image_ids`) | 2400×1200px (2:1) |
+| Category cards | `.cbi-cat__img` (resolved via `cbi_home_image_url()`) | 600×400px (3:2) |
+| Bean / guide thumbnails | WordPress featured image | 1200×900px (4:3 card crop) |
 
 ---
 

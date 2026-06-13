@@ -1,4 +1,4 @@
-# Deploy Notes — Theme Rebuild v2.0
+# Deploy Notes — Theme Rebuild v3.0 (dark)
 
 Steps to complete after merging and running `deploy-theme`.
 
@@ -20,24 +20,24 @@ Go to **Appearance → Customize** only if you want to tune the cosmetic default
 - **Separate Containers**: Disable if enabled — avoids stray box shadows
 - **Boxed Layout**: Off
 
-### Colors
-- **Background Color**: `#faf7f3`
-- **Text Color**: `#1c1410`
-- **Link Color**: `#9e2b0e`
-- **Link Hover Color**: `#c03a18`
+### Colors (v3.0 dark theme)
+- **Background Color**: `#14100c`
+- **Text Color**: `#f0e9df`
+- **Link Color**: `#e8714c`
+- **Link Hover Color**: `#f08a67`
 
 ### Header
-- **Header Background**: `#faf7f3`
+- **Header Background**: `#14100c`
 - **Navigation Background**: transparent
-- **Navigation Link Color**: `#5c5048`
-- **Navigation Link Hover Color**: `#9e2b0e`
+- **Navigation Link Color**: `#c7b9a8`
+- **Navigation Link Hover Color**: `#e8714c`
 
 ### Footer
-- **Footer Background**: `#f2ece3`
+- **Footer Background**: `#100c08`
 
 ### Typography
 - **Body Font**: DM Sans (or leave as system font — our CSS overrides it anyway)
-- **Heading Font**: Playfair Display (or leave as default — our CSS overrides)
+- **Heading Font**: DM Mono (Playfair Display was retired in v3.0 — our CSS overrides regardless)
 
 ---
 
@@ -192,13 +192,15 @@ After deploy:
 
 Walk through these pages on the live site after deploy:
 
-- [ ] Homepage: paper-white background, oxblood accent, two-column hero, stat blocks, browse chips, review cards with SVG coffee placeholder (no ☼ symbol)
-- [ ] Single bean: breadcrumb, large title, verdict pull-quote, rating badge (oxblood, not dark), spec table, sensory bars in oxblood, radar chart (light colors), tasting notes with dash markers, buy box, similar beans list
-- [ ] `/beans/` archive: sort bar works (rating, price, name, date sort), bean grid, pagination
-- [ ] Taxonomy archive (e.g., `/flavor/dark-chocolate/`): archive hero, description, bean grid
-- [ ] Generic page (About): centered column, editorial typography
-- [ ] Header: paper-white background, nav links in warm grey, oxblood on hover
-- [ ] Footer: four-column grid, disclosure at top, links in warm grey
+- [ ] Homepage: dark roasted background, hero photo with overlay, search box, live stats, top-rated card grid with banded score pills, counted browse chips, price-drop strip (or placeholder), trust band, email band
+- [ ] Single bean: breadcrumb, mono title, verdict, score badge with band label (e.g. "7.5 Very good"), price + CTA in hero panel, sticky bottom CTA bar on mobile, spec table, sensory bars, radar chart (light grid on dark), tasting notes, Buy it if / Skip it if cards, Price & History section with chart, FAQ
+- [ ] `/beans/` archive: breadcrumb, data stats, sort bar works (rating, price, name, date), card grid with thumbnails, pagination
+- [ ] Taxonomy archive (e.g., `/flavor/dark-chocolate/`): hero with avg-score + price-range stats, sibling chips, sort bar, bean grid, term guide content below the grid
+- [ ] `/explore/`: dark facets, sort in the toolbar, chips, cards, pagination
+- [ ] Generic page (About): centered readable column, light text on dark
+- [ ] Header: dark background, mono uppercase nav, ember hover; mobile menu opens dark
+- [ ] Footer: near-black band, four columns, disclosure box, methodology links
+- [ ] Mobile 375px: no horizontal scroll anywhere; sticky CTA bar does not cover the footer disclosure
 
 ---
 

@@ -30,10 +30,12 @@
 
 add_action( 'wp_enqueue_scripts', 'cbi_enqueue_styles' );
 function cbi_enqueue_styles() {
-    // Google Fonts — enqueued properly so WP can manage load order
+    // Google Fonts — enqueued properly so WP can manage load order.
+    // v3.0 dark redesign: Playfair Display dropped (serif display retired with
+    // the paper-editorial look). DM Mono carries display + data, DM Sans body.
     wp_enqueue_style(
         'cbi-fonts',
-        'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap',
+        'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap',
         [],
         null
     );
@@ -48,7 +50,7 @@ function cbi_enqueue_styles() {
         'cbi-child',
         get_stylesheet_directory_uri() . '/style.css',
         [ 'generate-style', 'cbi-fonts' ],
-        '2.1.0'
+        '3.0.0'
     );
 
     // Chart.js — only on bean pages (reduces page weight everywhere else)
@@ -91,6 +93,8 @@ add_action( 'wp_head', 'cbi_font_preconnect', 1 );
 function cbi_font_preconnect() {
     echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
     echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+    // Browser chrome matches the dark theme (mobile address bar, PWA frame)
+    echo '<meta name="theme-color" content="#14100c">' . "\n";
 }
 
 /**
@@ -383,6 +387,53 @@ function cbi_sensory_bar( $label, $value, $max = 5 ) {
 }
 
 // ============================================================
+// 8b. HELPER — SCORE BANDS + SCORE BADGE
+//     The anchored rubric (CLAUDE_content_standards_section.md)
+//     maps decimal scores to named bands. Presenting the band next
+//     to the number makes the score read as a rating SYSTEM rather
+//     than a floating decimal. Bands 7.0+ render in oxblood; 5.0 to
+//     6.9 render neutral; below 5.0 renders dim. That asymmetry is
+//     deliberate: weak scores should not wear the brand color.
+// ============================================================
+
+function cbi_score_band( $rating ) {
+    $r = floatval( $rating );
+    if ( $r >= 9.0 ) return [ 'label' => 'Exceptional', 'slug' => 'exceptional' ];
+    if ( $r >= 8.0 ) return [ 'label' => 'Excellent',   'slug' => 'excellent' ];
+    if ( $r >= 7.0 ) return [ 'label' => 'Very good',   'slug' => 'very-good' ];
+    if ( $r >= 6.0 ) return [ 'label' => 'Good',        'slug' => 'good' ];
+    if ( $r >= 5.0 ) return [ 'label' => 'Mixed',       'slug' => 'mixed' ];
+    return [ 'label' => 'Skip it', 'slug' => 'skip' ];
+}
+
+/**
+ * Render the score badge component.
+ *
+ * @param mixed  $rating    ACF rating (decimal per the rubric).
+ * @param string $size      xl (bean hero) | md (default) | sm (cards, inline).
+ * @param bool   $show_band Render the band label under the badge.
+ * @return string HTML ('' when no rating).
+ */
+function cbi_score_badge( $rating, $size = 'md', $show_band = true ) {
+    if ( $rating === '' || $rating === null ) return '';
+    $band  = cbi_score_band( $rating );
+    $score = number_format( (float) $rating, 1 );
+    $html  = sprintf(
+        '<span class="cbi-score cbi-score--%1$s cbi-score--%2$s" role="img" aria-label="Scored %3$s out of 10: %4$s">' .
+            '<span class="cbi-score__badge" aria-hidden="true"><span class="cbi-score__value">%3$s</span><span class="cbi-score__denom">/10</span></span>',
+        esc_attr( $size ),
+        esc_attr( $band['slug'] ),
+        esc_html( $score ),
+        esc_html( $band['label'] )
+    );
+    if ( $show_band ) {
+        $html .= '<span class="cbi-score__band" aria-hidden="true">' . esc_html( $band['label'] ) . '</span>';
+    }
+    $html .= '</span>';
+    return $html;
+}
+
+// ============================================================
 // 9. HELPER — BEAN CARD HTML (used in archives + homepage)
 // ============================================================
 
@@ -401,24 +452,29 @@ function cbi_bean_card( $post_id ) {
     $roasts  = get_the_terms( $post_id, 'roast-level' );
     $origins = get_the_terms( $post_id, 'origin' );
 
+    $has_rating = ( $rating !== '' && $rating !== null );
+    $band       = $has_rating ? cbi_score_band( $rating ) : null;
+
     ob_start();
     ?>
-    <div class="bean-card">
-        <?php if ( has_post_thumbnail( $post_id ) ) : ?>
-        <div class="bean-card__image">
-            <?php echo get_the_post_thumbnail( $post_id, 'medium', [ 'loading' => 'lazy', 'width' => '400', 'height' => '225', 'alt' => esc_attr( $title ) ] ); ?>
-            <?php if ( $rating !== '' && $rating !== null ) : ?>
-                <span class="bean-card__rating-badge"><?php echo esc_html( $rating ); ?>/10</span>
+    <article class="bean-card">
+        <a href="<?php echo esc_url( $link ); ?>" class="bean-card__media" tabindex="-1" aria-hidden="true">
+            <?php if ( has_post_thumbnail( $post_id ) ) : ?>
+                <?php echo get_the_post_thumbnail( $post_id, 'medium', [ 'class' => 'bean-card__img', 'loading' => 'lazy', 'decoding' => 'async', 'alt' => esc_attr( $title ) ] ); ?>
+            <?php else : ?>
+                <?php cbi_coffee_placeholder( 'bean-card__img bean-card__img--placeholder' ); ?>
             <?php endif; ?>
-        </div>
-        <?php endif; ?>
+            <?php if ( $has_rating ) : ?>
+                <span class="bean-card__score bean-card__score--<?php echo esc_attr( $band['slug'] ); ?> tabular-nums"><?php echo esc_html( number_format( (float) $rating, 1 ) ); ?></span>
+            <?php endif; ?>
+        </a>
         <div class="bean-card__body">
             <?php if ( $roaster ) : ?>
                 <div class="bean-card__roaster"><?php echo esc_html( $roaster ); ?></div>
             <?php endif; ?>
-            <div class="bean-card__name"><?php echo esc_html( $title ); ?></div>
+            <h3 class="bean-card__name"><a href="<?php echo esc_url( $link ); ?>"><?php echo esc_html( $title ); ?></a></h3>
             <?php if ( $verdict ) : ?>
-                <div class="bean-card__verdict"><?php echo esc_html( $verdict ); ?></div>
+                <p class="bean-card__verdict"><?php echo esc_html( $verdict ); ?></p>
             <?php endif; ?>
             <div class="bean-card__tags">
                 <?php
@@ -442,16 +498,16 @@ function cbi_bean_card( $post_id ) {
         </div>
         <div class="bean-card__footer">
             <div class="bean-card__metrics">
-                <?php if ( $rating !== '' && $rating !== null ) : ?>
-                    <div class="bean-card__rating tabular-nums"><?php echo esc_html( $rating ); ?><span class="bean-card__rating-label">/ 10</span></div>
+                <?php if ( $has_rating ) : ?>
+                    <div class="bean-card__rating tabular-nums"><?php echo esc_html( number_format( (float) $rating, 1 ) ); ?><span class="bean-card__rating-label"><?php echo esc_html( $band['label'] ); ?></span></div>
                 <?php endif; ?>
                 <?php if ( $price_oz !== '' && $price_oz !== null ) : ?>
                     <div class="bean-card__price tabular-nums">$<?php echo esc_html( number_format( (float) $price_oz, 2 ) ); ?><span class="bean-card__price-label">/oz</span></div>
                 <?php endif; ?>
             </div>
-            <a href="<?php echo esc_url( $link ); ?>" class="bean-card__link">Full Review &rarr;</a>
+            <a href="<?php echo esc_url( $link ); ?>" class="bean-card__link">Review &rarr;</a>
         </div>
-    </div>
+    </article>
     <?php
     return ob_get_clean();
 }
@@ -716,50 +772,57 @@ function cbi_footer_content() {
     $espresso    = $safe_term_link( 'espresso', 'brew-method' );
     $frenchpress = $safe_term_link( 'french-press', 'brew-method' );
     $pourover    = $safe_term_link( 'pour-over', 'brew-method' );
+    $bean_total  = wp_count_posts( 'bean' );
+    $bean_total  = $bean_total ? (int) $bean_total->publish : 0;
     ?>
     <div class="footer-inner">
-        <div class="footer-disclosure">
-            Coffee Bean Index participates in the Amazon Services LLC Associates Program and other affiliate programs. We earn commissions on qualifying purchases at no extra cost to you. Prices are updated daily and may differ from those shown. Some content is generated or assisted by AI systems using structured product and review data.
-        </div>
         <div class="footer-grid">
             <div class="footer-brand">
-                <div class="footer-brand__name">Coffee Bean Index</div>
-                <div class="footer-brand__desc">Data-driven coffee reviews. Price tracking, flavor profiles, and honest recommendations.</div>
+                <div class="footer-brand__name">Coffee Bean <span>Index</span></div>
+                <div class="footer-brand__desc">An independent coffee review database. Anchored 10-point scoring, daily price tracking, and flavor-profile data on every bean.</div>
+                <?php if ( $bean_total > 0 ) : ?>
+                    <div class="footer-brand__stat tabular-nums"><?php echo esc_html( $bean_total ); ?> beans indexed &middot; prices checked daily</div>
+                <?php endif; ?>
             </div>
             <div class="footer-col">
-                <div class="footer-col__heading">Reviews</div>
+                <div class="footer-col__heading">Browse</div>
                 <ul>
                     <li><a href="<?php echo esc_url( $beans_url ); ?>">All Beans</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/explore/' ) ); ?>">Explore &amp; Filter</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/origin/' ) ); ?>">Origins</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/roast/' ) ); ?>">Roast Levels</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/flavor/' ) ); ?>">Flavor Notes</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/roaster/' ) ); ?>">Roasters</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <div class="footer-col__heading">By Brew Method</div>
+                <ul>
                     <li><a href="<?php echo esc_url( $espresso ); ?>">Espresso</a></li>
                     <li><a href="<?php echo esc_url( $frenchpress ); ?>">French Press</a></li>
                     <li><a href="<?php echo esc_url( $pourover ); ?>">Pour Over</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/explore/' ) ); ?>">All Brew Methods</a></li>
                 </ul>
             </div>
             <div class="footer-col">
-                <div class="footer-col__heading">Explore</div>
+                <div class="footer-col__heading">About</div>
                 <ul>
-                    <li><a href="<?php echo esc_url( home_url( '/flavor/' ) ); ?>">By Flavor</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/origin/' ) ); ?>">By Origin</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/roast/' ) ); ?>">By Roast</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/roaster/' ) ); ?>">By Roaster</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <div class="footer-col__heading">Info</div>
-                <ul>
-                    <li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>">About</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>">About the Index</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/editorial-standards/' ) ); ?>">How We Score</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/affiliate-disclosure/' ) ); ?>">Affiliate Disclosure</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/editorial-standards/' ) ); ?>">How We Review</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>">Privacy Policy</a></li>
                 </ul>
             </div>
         </div>
+        <div class="footer-disclosure">
+            Coffee Bean Index participates in the Amazon Services LLC Associates Program and other affiliate programs. We earn commissions on qualifying purchases at no extra cost to you. Prices are updated daily and may differ from those shown. Some content is generated or assisted by AI systems using structured product and review data; every review is edited and approved by a human before publishing.
+        </div>
         <div class="footer-bottom">
             <span>&copy; <?php echo esc_html( date( 'Y' ) ); ?> Coffee Bean Index</span>
-            <span>
-                <a href="<?php echo esc_url( home_url( '/affiliate-disclosure/' ) ); ?>" style="color:inherit;">Affiliate Disclosure</a>
-                &nbsp;&middot;&nbsp;
-                <a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>" style="color:inherit;">Privacy</a>
+            <span class="footer-bottom__links">
+                <a href="<?php echo esc_url( home_url( '/editorial-standards/' ) ); ?>">Methodology</a>
+                <a href="<?php echo esc_url( home_url( '/affiliate-disclosure/' ) ); ?>">Affiliate Disclosure</a>
+                <a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>">Privacy</a>
             </span>
         </div>
     </div>

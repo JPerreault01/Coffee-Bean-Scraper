@@ -3,9 +3,13 @@
  * Template: Single Bean Page
  * File: single-bean.php
  *
- * Full bean profile page — review, specs, sensory profile,
- * radar chart, price chart, similar beans, taxonomy links.
- * Affiliate disclosure is placed near the top (FTC requirement).
+ * v3.0 — money-page scan order:
+ *   Hero: breadcrumb / roaster / name / verdict / score band / price + CTA
+ *   (CTA + price visible above the fold on mobile; sticky CTA bar below 1025px)
+ *   Profile (specs | sensory + radar) → Tasting notes → Buy/Skip fit cards →
+ *   Full review → Price analysis + price-history chart → FAQ → flavor chips →
+ *   related guides. Sidebar: buy box, at-a-glance, similar beans, explore links.
+ * Affiliate disclosure near the top (FTC requirement).
  */
 
 get_header(); ?>
@@ -51,16 +55,25 @@ get_header(); ?>
     $process_name = ( $processes && ! is_wp_error( $processes ) )     ? $processes[0]->name : '';
 
     $has_sensory = ( $acidity || $body || $sweetness || $bitterness || $roast_int );
+    $has_rating  = ( $rating !== '' && $rating !== null );
+
+    // Build Amazon URL from ASIN if amazon_affiliate_url is empty.
+    // Every outbound Amazon link must carry the affiliate tag — never link bare.
+    if ( ! $amazon_url && $amazon_asin ) {
+        $amazon_url = 'https://www.amazon.com/dp/' . rawurlencode( $amazon_asin ) . '?tag=coffeebeanind-20';
+    }
+    $primary_cta_url = $amazon_url ?: $roaster_url;
+    $primary_cta_txt = $amazon_url ? 'Buy on Amazon' : 'Buy from Roaster';
 ?>
 
 <!-- ============================================================
-     BEAN HERO
+     BEAN HERO — name + score + verdict + price + CTA above the fold
      ============================================================ -->
 <section class="bean-hero">
     <div class="bean-hero__inner">
 
-        <!-- Breadcrumb -->
-        <div class="bean-hero__breadcrumb">
+        <!-- Breadcrumb (schema emitted by cbi_bean_schema in functions.php) -->
+        <nav class="bean-hero__breadcrumb" aria-label="Breadcrumb">
             <a href="<?php echo esc_url( home_url() ); ?>">Home</a>
             <span>/</span>
             <a href="<?php echo esc_url( get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' ) ); ?>">Beans</a>
@@ -69,68 +82,103 @@ get_header(); ?>
                 <a href="<?php echo esc_url( get_term_link( $roasters[0] ) ); ?>"><?php echo esc_html( $roaster_name ); ?></a>
             <?php endif; ?>
             <span>/</span>
-            <span><?php echo esc_html( $title ); ?></span>
-        </div>
+            <span aria-current="page"><?php echo esc_html( $title ); ?></span>
+        </nav>
 
-        <div class="bean-hero__top">
+        <div class="bean-hero__grid">
+
+            <!-- Identity column -->
             <div>
                 <?php if ( $roaster_name ) : ?>
-                    <div class="bean-hero__roaster"><?php echo esc_html( $roaster_name ); ?></div>
-                <?php endif; ?>
-                <h1 class="bean-hero__title"><?php echo esc_html( $title ); ?></h1>
-                <?php if ( $verdict ) : ?>
-                    <div class="bean-hero__verdict"><?php echo esc_html( $verdict ); ?></div>
+                    <div class="bean-hero__roaster">
+                        <a href="<?php echo esc_url( get_term_link( $roasters[0] ) ); ?>"><?php echo esc_html( $roaster_name ); ?></a>
+                    </div>
                 <?php endif; ?>
 
-                <!-- Taxonomy tags -->
-                <div class="bean-hero__tags">
-                    <?php if ( $roast_levels && ! is_wp_error( $roast_levels ) ) :
-                        foreach ( $roast_levels as $term ) : ?>
-                            <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--roast"><?php echo esc_html( $term->name ); ?></a>
-                        <?php endforeach;
-                    endif; ?>
-                    <?php if ( $origins && ! is_wp_error( $origins ) ) :
-                        foreach ( $origins as $term ) : ?>
-                            <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--origin"><?php echo esc_html( $term->name ); ?></a>
-                        <?php endforeach;
-                    endif; ?>
-                    <?php if ( $processes && ! is_wp_error( $processes ) ) :
-                        foreach ( $processes as $term ) : ?>
-                            <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag"><?php echo esc_html( $term->name ); ?></a>
-                        <?php endforeach;
-                    endif; ?>
-                    <?php if ( $brew_methods && ! is_wp_error( $brew_methods ) ) :
-                        foreach ( $brew_methods as $term ) : ?>
-                            <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--brew"><?php echo esc_html( $term->name ); ?></a>
-                        <?php endforeach;
-                    endif; ?>
-                    <?php if ( $flavor_notes && ! is_wp_error( $flavor_notes ) ) :
-                        foreach ( array_slice( $flavor_notes, 0, 4 ) as $term ) : ?>
-                            <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--flavor"><?php echo esc_html( $term->name ); ?></a>
-                        <?php endforeach;
-                    endif; ?>
+                <h1 class="bean-hero__title"><?php echo esc_html( $title ); ?></h1>
+
+                <?php if ( $verdict ) : ?>
+                    <p class="bean-hero__verdict"><?php echo esc_html( $verdict ); ?></p>
+                <?php endif; ?>
+
+                <div class="bean-hero__meta">
+                    <?php if ( $last_reviewed ) : ?>
+                        <span>Reviewed <?php echo esc_html( date( 'M j, Y', strtotime( $last_reviewed ) ) ); ?></span>
+                    <?php endif; ?>
+                    <?php if ( $personal_mode ) : ?>
+                        <span>Personally reviewed by the site author</span>
+                    <?php endif; ?>
+                    <?php if ( $product_id ) : ?>
+                        <span>Price tracked daily</span>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Decision panel: score + price + CTA -->
+            <div class="bean-hero__panel">
+                <div class="bean-hero__panel-row">
+                    <?php if ( $has_rating ) {
+                        echo cbi_score_badge( $rating, 'xl' );
+                    } ?>
+                    <?php if ( $current_price || $price_per_oz ) : ?>
+                    <div class="bean-hero__price-block">
+                        <?php if ( $current_price ) : ?>
+                            <div class="bean-hero__price">$<?php echo esc_html( number_format( (float) $current_price, 2 ) ); ?></div>
+                        <?php endif; ?>
+                        <div class="bean-hero__price-sub">
+                            <?php if ( $price_per_oz ) echo '$' . esc_html( number_format( (float) $price_per_oz, 2 ) ) . '/oz'; ?>
+                            <?php if ( $product_id ) echo $price_per_oz ? ' &middot; updated daily' : 'updated daily'; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
                 </div>
 
-                <?php if ( $personal_mode ) : ?>
-                    <p style="font-size:var(--text-xs);color:var(--cbi-text-dim);font-family:var(--font-mono);margin-top:var(--space-3);margin-bottom:0;">
-                        Personally reviewed by the site author.
-                    </p>
+                <?php if ( $primary_cta_url ) : ?>
+                    <a href="<?php echo esc_url( $primary_cta_url ); ?>" class="cbi-btn cbi-btn--primary bean-hero__cta" target="_blank" rel="nofollow sponsored noopener">
+                        <?php echo esc_html( $primary_cta_txt ); ?>
+                    </a>
+                    <p class="bean-hero__panel-note">Affiliate link. We earn a commission at no extra cost to you.</p>
+                <?php else : ?>
+                    <p class="bean-hero__panel-note">Purchase links coming soon. Price history below.</p>
                 <?php endif; ?>
             </div>
 
-            <?php if ( $rating !== '' && $rating !== null ) : ?>
-                <div class="bean-rating" aria-label="Rating: <?php echo esc_attr( $rating ); ?> out of 10">
-                    <div class="bean-rating__score"><?php echo esc_html( $rating ); ?></div>
-                    <div class="bean-rating__label">/ 10</div>
-                </div>
-            <?php endif; ?>
+        </div>
+
+        <!-- Taxonomy chips: every chip is a door into the database -->
+        <div class="bean-hero__tags">
+            <?php if ( $roast_levels && ! is_wp_error( $roast_levels ) ) :
+                foreach ( $roast_levels as $term ) : ?>
+                    <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--roast"><?php echo esc_html( $term->name ); ?></a>
+                <?php endforeach;
+            endif; ?>
+            <?php if ( $origins && ! is_wp_error( $origins ) ) :
+                foreach ( $origins as $term ) : ?>
+                    <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--origin"><?php echo esc_html( $term->name ); ?></a>
+                <?php endforeach;
+            endif; ?>
+            <?php if ( $processes && ! is_wp_error( $processes ) ) :
+                foreach ( $processes as $term ) : ?>
+                    <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag"><?php echo esc_html( $term->name ); ?></a>
+                <?php endforeach;
+            endif; ?>
+            <?php if ( $brew_methods && ! is_wp_error( $brew_methods ) ) :
+                foreach ( $brew_methods as $term ) : ?>
+                    <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--brew"><?php echo esc_html( $term->name ); ?></a>
+                <?php endforeach;
+            endif; ?>
+            <?php if ( $flavor_notes && ! is_wp_error( $flavor_notes ) ) :
+                foreach ( array_slice( $flavor_notes, 0, 4 ) as $term ) : ?>
+                    <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--flavor"><?php echo esc_html( $term->name ); ?></a>
+                <?php endforeach;
+            endif; ?>
         </div>
 
     </div>
 </section>
 
 <!-- Affiliate disclosure — near top, above buy links (FTC requirement) -->
-<div class="cbi-disclosure-inline" style="border-radius:0;border-left:none;border-right:none;border-top:none;">
+<div class="cbi-disclosure-inline">
     <div class="cbi-container">
         This page contains affiliate links. We may earn commissions from qualifying purchases at no extra cost to you.
     </div>
@@ -145,14 +193,11 @@ get_header(); ?>
         <!-- ===================== LEFT COLUMN ===================== -->
         <main class="bean-main">
 
-            <!-- Profile: spec table + sensory bars + flavor radar, grouped into
-                 one balanced two-column card so the radar reads as part of the
-                 product profile instead of floating in dead space. -->
+            <!-- Profile: spec table + sensory bars + flavor radar -->
             <div class="cbi-section">
-                <div class="cbi-section__heading">Profile</div>
+                <h2 class="cbi-section__heading">Profile</h2>
                 <div class="bean-profile<?php echo $has_sensory ? '' : ' bean-profile--specs-only'; ?>">
 
-                    <!-- Left column: specs -->
                     <div class="bean-profile__col">
                         <div class="bean-specs">
                             <?php if ( $roaster_name ) : ?>
@@ -228,7 +273,6 @@ get_header(); ?>
                             intval( $roast_int ),
                         ] );
                     ?>
-                    <!-- Right column: sensory bars over the flavor radar -->
                     <div class="bean-profile__col bean-profile__viz">
                         <div class="sensory-profile">
                             <?php
@@ -253,10 +297,10 @@ get_header(); ?>
                                         labels: ['Acidity', 'Body', 'Sweetness', 'Bitterness', 'Roast'],
                                         datasets: [{
                                             data: <?php echo $radar_data; ?>,
-                                            backgroundColor: 'rgba(158, 43, 14, 0.10)',
-                                            borderColor: 'rgba(158, 43, 14, 0.75)',
+                                            backgroundColor: 'rgba(232, 113, 76, 0.14)',
+                                            borderColor: 'rgba(232, 113, 76, 0.85)',
                                             borderWidth: 2,
-                                            pointBackgroundColor: '#9e2b0e',
+                                            pointBackgroundColor: '#e8714c',
                                             pointRadius: 4,
                                             pointHoverRadius: 5,
                                         }]
@@ -268,10 +312,10 @@ get_header(); ?>
                                                 min: 0,
                                                 max: 5,
                                                 ticks: { stepSize: 1, display: false },
-                                                grid: { color: 'rgba(28, 20, 16, 0.10)' },
-                                                angleLines: { color: 'rgba(28, 20, 16, 0.10)' },
+                                                grid: { color: 'rgba(240, 233, 223, 0.12)' },
+                                                angleLines: { color: 'rgba(240, 233, 223, 0.12)' },
                                                 pointLabels: {
-                                                    color: '#5c5048',
+                                                    color: '#c7b9a8',
                                                     font: { family: "'DM Mono', monospace", size: 11 }
                                                 }
                                             }
@@ -299,7 +343,7 @@ get_header(); ?>
             <!-- Tasting Notes -->
             <?php if ( $tasting_notes ) : ?>
             <div class="cbi-section">
-                <div class="cbi-section__heading">Tasting Notes</div>
+                <h2 class="cbi-section__heading">Tasting Notes</h2>
                 <ul class="tasting-notes">
                     <?php foreach ( array_filter( array_map( 'trim', explode( "\n", $tasting_notes ) ) ) as $note ) : ?>
                         <li><?php echo esc_html( $note ); ?></li>
@@ -308,39 +352,63 @@ get_header(); ?>
             </div>
             <?php endif; ?>
 
-            <!-- Review Body — section headings use H2 (direct subsections of the H1 bean title) -->
+            <!-- Buy it / Skip it — the decision section, side by side -->
+            <?php if ( $whos_for || $whos_not_for ) : ?>
             <div class="cbi-section">
-                <div class="review-body">
+                <h2 class="cbi-section__heading">Who It&rsquo;s For</h2>
+                <div class="fit-cards">
                     <?php if ( $whos_for ) : ?>
-                    <h2>Who it&rsquo;s for</h2>
-                    <p><?php echo esc_html( $whos_for ); ?></p>
+                    <div class="fit-card">
+                        <div class="fit-card__label">Buy it if</div>
+                        <p><?php echo esc_html( $whos_for ); ?></p>
+                    </div>
                     <?php endif; ?>
-
                     <?php if ( $whos_not_for ) : ?>
-                    <h2>Who should skip it</h2>
-                    <p><?php echo esc_html( $whos_not_for ); ?></p>
-                    <?php endif; ?>
-
-                    <?php if ( get_the_content() ) : ?>
-                    <h2>Full review</h2>
-                    <?php the_content(); ?>
-                    <?php endif; ?>
-
-                    <?php if ( $price_analysis ) : ?>
-                    <h2>Price analysis</h2>
-                    <p><?php echo esc_html( $price_analysis ); ?></p>
-                    <?php endif; ?>
-
-                    <?php if ( $rating !== '' && $rating !== null ) : ?>
-                    <h2>Rating</h2>
-                    <p style="font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:500;color:var(--cbi-accent);font-variant-numeric:tabular-nums;">
-                        <?php echo esc_html( $rating ); ?>/10
-                    </p>
+                    <div class="fit-card fit-card--skip">
+                        <div class="fit-card__label">Skip it if</div>
+                        <p><?php echo esc_html( $whos_not_for ); ?></p>
+                    </div>
                     <?php endif; ?>
                 </div>
             </div>
+            <?php endif; ?>
 
-            <!-- FAQ Accordion — sourced from ACF fields; visible + searchable  -->
+            <!-- Full review (editor content) -->
+            <?php if ( get_the_content() ) : ?>
+            <div class="cbi-section">
+                <div class="review-body">
+                    <h2>Full review</h2>
+                    <?php the_content(); ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- Price analysis + history — the differentiator, one section -->
+            <?php if ( $price_analysis || $product_id ) : ?>
+            <div class="cbi-section" id="price">
+                <h2 class="cbi-section__heading">Price &amp; History</h2>
+                <?php if ( $price_analysis ) : ?>
+                    <div class="review-body" style="margin-bottom:var(--space-5);">
+                        <p><?php echo esc_html( $price_analysis ); ?></p>
+                    </div>
+                <?php endif; ?>
+                <?php if ( $product_id ) : ?>
+                    <div class="price-chart-wrap">
+                        <?php echo do_shortcode( '[coffee_price_chart product_id="' . esc_attr( $product_id ) . '"]' ); ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+
+            <!-- Rating, presented as a system -->
+            <?php if ( $has_rating ) : ?>
+            <div class="cbi-section">
+                <h2 class="cbi-section__heading">Rating</h2>
+                <?php echo cbi_score_badge( $rating, 'md' ); ?>
+            </div>
+            <?php endif; ?>
+
+            <!-- FAQ Accordion — sourced from ACF fields; visible + searchable -->
             <?php
             $faq_items = [];
             if ( $tasting_notes ) {
@@ -366,7 +434,7 @@ get_header(); ?>
             }
             if ( ! empty( $faq_items ) ) : ?>
             <div class="cbi-section">
-                <div class="cbi-section__heading">FAQ</div>
+                <h2 class="cbi-section__heading">FAQ</h2>
                 <div class="cbi-faq">
                     <?php foreach ( $faq_items as $faq_item ) : ?>
                     <details class="cbi-faq__item">
@@ -380,21 +448,11 @@ get_header(); ?>
             </div>
             <?php endif; ?>
 
-            <!-- Price History Chart — shortcode preserves product_id linkage to SQLite -->
-            <?php if ( $product_id ) : ?>
-            <div class="cbi-section">
-                <div class="cbi-section__heading">Price History</div>
-                <div class="price-chart-wrap">
-                    <?php echo do_shortcode( '[coffee_price_chart product_id="' . esc_attr( $product_id ) . '"]' ); ?>
-                </div>
-            </div>
-            <?php endif; ?>
-
             <!-- All Flavor Tags -->
             <?php if ( $flavor_notes && ! is_wp_error( $flavor_notes ) ) : ?>
             <div class="cbi-section">
-                <div class="cbi-section__heading">Flavor Notes</div>
-                <div style="display:flex;flex-wrap:wrap;gap:var(--space-2);">
+                <h2 class="cbi-section__heading">Flavor Notes</h2>
+                <div class="explore-groups__set">
                     <?php foreach ( $flavor_notes as $term ) : ?>
                         <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--flavor"><?php echo esc_html( $term->name ); ?></a>
                     <?php endforeach; ?>
@@ -402,9 +460,8 @@ get_header(); ?>
             </div>
             <?php endif; ?>
 
-            <!-- Related Guides — dynamically built from the bean's taxonomy terms -->
+            <!-- Related Guides — built from the bean's taxonomy terms -->
             <?php
-            // Build guide links from each of the bean's taxonomy terms that have descriptions (= guide content)
             $guide_sections = [
                 'origin'         => $origins,
                 'roast-level'    => $roast_levels,
@@ -428,7 +485,6 @@ get_header(); ?>
                     ];
                 }
             }
-            // Also include any manually linked guides from ACF (legacy / editorial overrides)
             if ( ! empty( $linked_guides ) ) {
                 foreach ( (array) $linked_guides as $guide_id ) {
                     $gurl = get_permalink( $guide_id );
@@ -442,30 +498,30 @@ get_header(); ?>
             }
             if ( ! empty( $dynamic_guide_links ) ) : ?>
             <div class="cbi-section">
-                <div class="cbi-section__heading">Related Guides</div>
-                <?php foreach ( $dynamic_guide_links as $gl ) : ?>
-                    <a href="<?php echo esc_url( $gl['url'] ); ?>" style="display:block;color:var(--cbi-text-muted);font-size:var(--text-sm);padding:var(--space-3) 0;border-bottom:1px solid var(--cbi-border);">
-                        &rarr; <?php echo esc_html( $gl['label'] ); ?>
-                    </a>
-                <?php endforeach; ?>
+                <h2 class="cbi-section__heading">Related Guides</h2>
+                <div class="related-list">
+                    <?php foreach ( $dynamic_guide_links as $gl ) : ?>
+                        <a href="<?php echo esc_url( $gl['url'] ); ?>" class="related-list__item"><?php echo esc_html( $gl['label'] ); ?></a>
+                    <?php endforeach; ?>
+                </div>
             </div>
             <?php endif; ?>
 
             <!-- Linked Recipes -->
             <?php if ( ! empty( $linked_recipes ) ) : ?>
             <div class="cbi-section">
-                <div class="cbi-section__heading">Recipes Using This Bean</div>
-                <?php foreach ( (array) $linked_recipes as $recipe_id ) : ?>
-                    <a href="<?php echo esc_url( get_permalink( $recipe_id ) ); ?>" style="display:block;color:var(--cbi-text-muted);font-size:var(--text-sm);padding:var(--space-3) 0;border-bottom:1px solid var(--cbi-border);">
-                        &rarr; <?php echo esc_html( get_the_title( $recipe_id ) ); ?>
-                    </a>
-                <?php endforeach; ?>
+                <h2 class="cbi-section__heading">Recipes Using This Bean</h2>
+                <div class="related-list">
+                    <?php foreach ( (array) $linked_recipes as $recipe_id ) : ?>
+                        <a href="<?php echo esc_url( get_permalink( $recipe_id ) ); ?>" class="related-list__item"><?php echo esc_html( get_the_title( $recipe_id ) ); ?></a>
+                    <?php endforeach; ?>
+                </div>
             </div>
             <?php endif; ?>
 
             <!-- Last reviewed -->
             <?php if ( $last_reviewed ) : ?>
-            <p style="font-size:var(--text-xs);color:var(--cbi-text-dim);font-family:var(--font-mono);margin-top:var(--space-6);">
+            <p class="review-meta">
                 Last reviewed: <?php echo esc_html( date( 'F j, Y', strtotime( $last_reviewed ) ) ); ?>
             </p>
             <?php endif; ?>
@@ -476,13 +532,6 @@ get_header(); ?>
         <aside class="bean-sidebar">
 
             <!-- Buy Box -->
-            <?php
-            // Build Amazon URL from ASIN if amazon_affiliate_url ACF field is empty.
-            // Every outbound Amazon link must carry the affiliate tag — never link bare.
-            if ( ! $amazon_url && $amazon_asin ) {
-                $amazon_url = 'https://www.amazon.com/dp/' . rawurlencode( $amazon_asin ) . '?tag=coffeebeanind-20';
-            }
-            ?>
             <div class="buy-box">
                 <div class="buy-box__title">Buy This Bean</div>
 
@@ -507,21 +556,22 @@ get_header(); ?>
                 <?php endif; ?>
 
                 <?php if ( ! $amazon_url && ! $roaster_url ) : ?>
-                    <p style="color:var(--cbi-text-dim);font-size:var(--text-xs);margin-top:var(--space-2);">Purchase links coming soon.</p>
+                    <p class="buy-box__disclosure">Purchase links coming soon.</p>
                 <?php endif; ?>
 
                 <div class="buy-box__disclosure">
-                    Affiliate links &mdash; we earn a small commission at no extra cost to you.
+                    Affiliate links. We earn a small commission at no extra cost to you.
                 </div>
             </div>
 
-            <!-- At a glance — quick-scan summary that stays beside the review -->
-            <?php if ( ( $rating !== '' && $rating !== null ) || $roast_name || $origin_name || $price_per_oz ) : ?>
+            <!-- At a glance -->
+            <?php if ( $has_rating || $roast_name || $origin_name || $price_per_oz ) : ?>
             <div class="glance-card">
                 <div class="cbi-section__heading">At a glance</div>
                 <dl class="glance">
-                    <?php if ( $rating !== '' && $rating !== null ) : ?>
-                    <div class="glance__row"><dt>Rating</dt><dd class="tabular-nums"><?php echo esc_html( $rating ); ?>/10</dd></div>
+                    <?php if ( $has_rating ) :
+                        $glance_band = cbi_score_band( $rating ); ?>
+                    <div class="glance__row"><dt>Score</dt><dd class="tabular-nums"><?php echo esc_html( number_format( (float) $rating, 1 ) ); ?>/10 &middot; <?php echo esc_html( $glance_band['label'] ); ?></dd></div>
                     <?php endif; ?>
                     <?php if ( $roast_name ) : ?>
                     <div class="glance__row"><dt>Roast</dt><dd><?php echo esc_html( $roast_name ); ?></dd></div>
@@ -580,7 +630,7 @@ get_header(); ?>
                                 </span>
                             </div>
                             <?php if ( $sim_rating !== '' && $sim_rating !== null ) : ?>
-                                <span class="similar-bean-card__score"><?php echo esc_html( $sim_rating ); ?>/10</span>
+                                <span class="similar-bean-card__score"><?php echo esc_html( number_format( (float) $sim_rating, 1 ) ); ?>/10</span>
                             <?php endif; ?>
                         </a>
                         <?php endwhile;
@@ -588,8 +638,7 @@ get_header(); ?>
                     endif;
                 }
 
-                // Sparse-state fallback: give the right column useful weight on pages with
-                // fewer than 2 similar-bean matches (early library state, niche flavor combos).
+                // Sparse-state fallback: keep the rail useful with fewer than 2 matches
                 if ( $similar_count < 2 ) :
                     $explore_groups = [];
                     if ( $roast_levels && ! is_wp_error( $roast_levels ) ) {
@@ -603,47 +652,43 @@ get_header(); ?>
                     }
                     if ( ! empty( $explore_groups ) ) : ?>
                     <div style="margin-top:var(--space-4);">
-                        <div style="font-size:var(--text-xs);color:var(--cbi-text-dim);font-family:var(--font-mono);margin-bottom:var(--space-3);">Browse by category</div>
                         <?php foreach ( $explore_groups as $group ) : ?>
-                        <div style="margin-bottom:var(--space-4);">
-                            <div style="font-size:var(--text-xs);color:var(--cbi-text-dim);font-family:var(--font-mono);margin-bottom:var(--space-2);"><?php echo esc_html( $group['label'] ); ?></div>
-                            <div style="display:flex;flex-wrap:wrap;gap:var(--space-2);">
-                                <?php foreach ( $group['terms'] as $term ) : ?>
-                                    <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag <?php echo esc_attr( $group['class'] ); ?>">
-                                        All <?php echo esc_html( $term->name ); ?> &rarr;
-                                    </a>
-                                <?php endforeach; ?>
-                            </div>
+                        <div class="explore-groups__label"><?php echo esc_html( $group['label'] ); ?></div>
+                        <div class="explore-groups__set">
+                            <?php foreach ( $group['terms'] as $term ) : ?>
+                                <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag <?php echo esc_attr( $group['class'] ); ?>">
+                                    All <?php echo esc_html( $term->name ); ?> &rarr;
+                                </a>
+                            <?php endforeach; ?>
                         </div>
                         <?php endforeach; ?>
                     </div>
                     <?php else : ?>
-                    <p style="color:var(--cbi-text-dim);font-size:var(--text-sm);">More beans coming soon.</p>
+                    <p class="text-dim" style="font-size:var(--text-sm);">More beans coming soon.</p>
                     <?php endif; ?>
                 <?php endif; ?>
             </div>
 
-            <!-- Origin Link -->
-            <?php if ( $origins && ! is_wp_error( $origins ) ) : ?>
+            <!-- Keep exploring: origin + roaster archives -->
+            <?php if ( ( $origins && ! is_wp_error( $origins ) ) || ( $roasters && ! is_wp_error( $roasters ) ) ) : ?>
             <div class="cbi-section">
-                <div class="cbi-section__heading">Origin</div>
-                <?php foreach ( $origins as $term ) : ?>
-                    <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--origin" style="display:inline-block;margin-bottom:var(--space-2);">
-                        All <?php echo esc_html( $term->name ); ?> coffees &rarr;
-                    </a>
-                <?php endforeach; ?>
-            </div>
-            <?php endif; ?>
-
-            <!-- Roaster Link -->
-            <?php if ( $roasters && ! is_wp_error( $roasters ) ) : ?>
-            <div class="cbi-section">
-                <div class="cbi-section__heading">Roaster</div>
-                <?php foreach ( $roasters as $term ) : ?>
-                    <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag" style="display:inline-block;margin-bottom:var(--space-2);">
-                        All <?php echo esc_html( $term->name ); ?> beans &rarr;
-                    </a>
-                <?php endforeach; ?>
+                <div class="cbi-section__heading">Keep Exploring</div>
+                <?php if ( $origins && ! is_wp_error( $origins ) ) : ?>
+                    <div class="explore-groups__label">Origin</div>
+                    <div class="explore-groups__set">
+                        <?php foreach ( $origins as $term ) : ?>
+                            <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag bean-tag--origin">All <?php echo esc_html( $term->name ); ?> coffees &rarr;</a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+                <?php if ( $roasters && ! is_wp_error( $roasters ) ) : ?>
+                    <div class="explore-groups__label">Roaster</div>
+                    <div class="explore-groups__set">
+                        <?php foreach ( $roasters as $term ) : ?>
+                            <a href="<?php echo esc_url( get_term_link( $term ) ); ?>" class="bean-tag">All <?php echo esc_html( $term->name ); ?> beans &rarr;</a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </div>
             <?php endif; ?>
 
@@ -651,6 +696,23 @@ get_header(); ?>
 
     </div>
 </div>
+
+<!-- Sticky mobile CTA — price + buy action always in reach below 1025px -->
+<?php if ( $primary_cta_url ) : ?>
+<div class="bean-ctabar">
+    <div class="bean-ctabar__info">
+        <?php if ( $current_price ) : ?>
+            <span class="bean-ctabar__price tabular-nums">$<?php echo esc_html( number_format( (float) $current_price, 2 ) ); ?></span>
+        <?php endif; ?>
+        <?php if ( $price_per_oz ) : ?>
+            <span class="bean-ctabar__sub tabular-nums">$<?php echo esc_html( number_format( (float) $price_per_oz, 2 ) ); ?>/oz</span>
+        <?php endif; ?>
+    </div>
+    <a href="<?php echo esc_url( $primary_cta_url ); ?>" class="bean-ctabar__btn" target="_blank" rel="nofollow sponsored noopener">
+        <?php echo esc_html( $primary_cta_txt ); ?>
+    </a>
+</div>
+<?php endif; ?>
 
 <?php endwhile; ?>
 

@@ -219,14 +219,22 @@ echo wp_json_encode( [
 <!-- Explore Hero -->
 <section class="explore-hero">
     <div class="cbi-container">
+        <?php cbi_breadcrumb( [
+            [ 'label' => 'Home',    'url' => home_url() ],
+            [ 'label' => 'Explore', 'url' => get_permalink() ],
+        ] ); ?>
         <div class="explore-hero__eyebrow">Discovery</div>
         <h1 class="explore-hero__title">Explore Coffee Beans</h1>
         <p class="explore-hero__desc">Every bean in the index, browsable by origin, roast level, flavor profile, process method, and brew type. Filter by minimum rating and sort by price to find exactly what you want next.</p>
+        <div class="archive-hero__stats">
+            <span class="archive-stat"><strong class="tabular-nums"><?php echo esc_html( $bean_count ); ?></strong> bean<?php echo 1 !== $bean_count ? 's' : ''; ?> in the index</span>
+            <span class="archive-stat"><strong class="tabular-nums">5</strong> filter dimensions</span>
+        </div>
     </div>
 </section>
 
 <!-- Affiliate disclosure — FTC requirement near affiliate-linked content -->
-<div class="cbi-disclosure-inline" style="border-radius:0;border-left:none;border-right:none;border-top:none;">
+<div class="cbi-disclosure-inline">
     <div class="cbi-container">
         This page contains affiliate links. We may earn commissions from qualifying purchases at no extra cost to you.
     </div>
@@ -363,16 +371,6 @@ echo wp_json_encode( [
                     </div>
                 </div>
 
-                <!-- Sort -->
-                <div class="explore-facet explore-facet--sort">
-                    <div class="explore-facet__heading">Sort By</div>
-                    <select id="explore-sort" class="explore-sort-select">
-                        <option value="rating">Rating (high &rarr; low)</option>
-                        <option value="price">Price/oz (low &rarr; high)</option>
-                        <option value="name">Name (A &rarr; Z)</option>
-                    </select>
-                </div>
-
             </div><!-- .explore-sidebar__inner -->
         </aside>
 
@@ -382,6 +380,16 @@ echo wp_json_encode( [
             <div class="explore-toolbar">
                 <div class="explore-count" id="explore-count" aria-live="polite">
                     <?php echo esc_html( $bean_count ); ?> bean<?php echo 1 !== $bean_count ? 's' : ''; ?> found
+                </div>
+                <!-- Sort lives in the toolbar (visible on mobile even with
+                     filters collapsed); explore-filters.js binds by ID -->
+                <div class="explore-facet explore-facet--sort">
+                    <label class="explore-facet__heading" for="explore-sort">Sort by</label>
+                    <select id="explore-sort" class="explore-sort-select">
+                        <option value="rating">Rating (high &rarr; low)</option>
+                        <option value="price">Price/oz (low &rarr; high)</option>
+                        <option value="name">Name (A &rarr; Z)</option>
+                    </select>
                 </div>
             </div>
 

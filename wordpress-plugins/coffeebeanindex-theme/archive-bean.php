@@ -85,20 +85,25 @@ echo wp_json_encode( [
 <!-- Archive Hero -->
 <section class="archive-hero">
     <div class="cbi-container">
+        <?php cbi_breadcrumb( [
+            [ 'label' => 'Home',  'url' => home_url() ],
+            [ 'label' => 'Beans', 'url' => get_post_type_archive_link( 'bean' ) ?: home_url( '/beans/' ) ],
+        ] ); ?>
         <div class="archive-hero__eyebrow">The Database</div>
         <h1 class="archive-hero__title">All Coffee Beans</h1>
         <p class="archive-hero__desc">
             Every bean we&rsquo;ve reviewed, sorted by how we score them.
             Price-tracked daily. Filter by flavor, origin, or roast below.
         </p>
-        <p class="archive-hero__count">
-            <?php echo esc_html( $total_beans ); ?> bean<?php echo 1 !== $total_beans ? 's' : ''; ?> in the index
-        </p>
+        <div class="archive-hero__stats">
+            <span class="archive-stat"><strong class="tabular-nums"><?php echo esc_html( $total_beans ); ?></strong> bean<?php echo 1 !== $total_beans ? 's' : ''; ?> in the index</span>
+            <span class="archive-stat"><strong>Daily</strong> price checks</span>
+        </div>
     </div>
 </section>
 
 <!-- Affiliate disclosure -->
-<div class="cbi-disclosure-inline" style="border-radius:0;border-left:none;border-right:none;border-top:none;">
+<div class="cbi-disclosure-inline">
     <div class="cbi-container">
         This page contains affiliate links. We may earn commissions from qualifying purchases.
     </div>
@@ -158,7 +163,7 @@ echo wp_json_encode( [
             wp_reset_postdata();
         else : ?>
             <div style="grid-column:1/-1;padding:var(--space-16) 0;text-align:center;">
-                <p style="color:var(--cbi-text-dim);">No beans in the index yet &mdash; check back soon.</p>
+                <p class="text-dim">No beans in the index yet. Check back soon.</p>
                 <a href="<?php echo esc_url( home_url() ); ?>" class="cbi-btn cbi-btn--secondary" style="margin-top:var(--space-4);">Back to homepage</a>
             </div>
         <?php endif; ?>
