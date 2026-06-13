@@ -647,7 +647,7 @@
     "name": "Eight O'Clock Original Whole Bean Coffee",
     "brand": "Eight O'Clock Coffee",
     "roast_level": "Medium",
-    "origin": "Central and South America blend",
+    "origin": "Latin America and East Africa blend",
     "process_method": "Washed",
     "weight_oz": 36.0,
     "amazon_asin": "B00AAEGPVM",
@@ -680,7 +680,10 @@
         "logic": "flavor_profile"
       }
     ],
-    "reference_slug": null
+    "reference_slug": null,
+    "profile_source": "Eight O'Clock listing + Amazon + Walmart: sweet and fruity, well-balanced; 100% Arabica from Latin America to East Africa, roasted in Maryland, Kosher. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "don-franciscos-colombia",
@@ -763,11 +766,11 @@
   },
   {
     "id": "cafe-bustelo-espresso",
-    "name": "CafÃ© Bustelo Espresso Style Dark Roast",
-    "brand": "CafÃ© Bustelo",
+    "name": "Cafe Bustelo Espresso Style Dark Roast",
+    "brand": "Cafe Bustelo",
     "roast_level": "Dark",
-    "origin": "Latin America blend",
-    "process_method": "Washed",
+    "origin": "Latin America blend (Central America, Brazil)",
+    "process_method": "Washed and natural blend",
     "weight_oz": 16.0,
     "amazon_asin": "B00475D9BS",
     "roaster_url": null,
@@ -799,7 +802,10 @@
         "logic": "flavor_profile"
       }
     ],
-    "reference_slug": null
+    "reference_slug": null,
+    "profile_source": "Cafe Bustelo listing + CoffeeReview (Dark Roast) + Roasty review: smoky, bold, full-bodied, intensely bitter with a hint of raisin; origins not published but consensus is Central America + Brazil. Whole-bean version is sold as 'Supreme by Bustelo' and a 16oz Cafe Bustelo Espresso Style whole bean. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "blue-bottle-bella-donovan",
@@ -1120,11 +1126,11 @@
     "name": "Koa Coffee Estate Kona Medium Roast",
     "brand": "Koa Coffee",
     "roast_level": "Medium",
-    "origin": "Kona, Hawaii",
+    "origin": "Kona, Hawaii (single origin, 100% Kona)",
     "process_method": "Washed",
-    "weight_oz": 8,
+    "weight_oz": 16,
     "amazon_asin": null,
-    "roaster_url": "https://koacoffee.com/products/estate-medium-roast",
+    "roaster_url": "https://koacoffee.com/p/pure-kona-coffee/estate-medium-roast-whole-bean-kona",
     "affiliate_tag": "coffeebeanind-20",
     "best_brew_methods": [
       "drip",
@@ -1140,16 +1146,28 @@
     "sweetness": 4,
     "bitterness": 1,
     "roast_intensity": 3,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": "_skip"
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Volcanica Kona Coffee",
+        "logic": "origin"
+      },
+      {
+        "product": "Volcanica Ethiopian Yirgacheffe",
+        "logic": "performance"
+      }
+    ],
+    "reference_slug": "_skip",
+    "profile_source": "Koa Coffee listing + Kona-category references: 100% single-estate Kona from Mauna Loa slopes, crisp/bright with brown sugar, milk chocolate, honey and light fruit. Premium price (~$40/lb at roaster). Sold mainly direct from Koa; Amazon whole-bean ASIN not confirmed -> BACKFILL. Same product as seed 'koa-coffee-hawaiian-kona' (id reused to avoid duplicate). Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "volcanica-ethiopian-yirgacheffe",
     "name": "Volcanica Ethiopian Yirgacheffe",
     "brand": "Volcanica Coffee",
     "roast_level": "Medium",
-    "origin": "Yirgacheffe, Ethiopia",
+    "origin": "Yirgacheffe, Ethiopia (single origin)",
     "process_method": "Washed",
     "weight_oz": 16,
     "amazon_asin": null,
@@ -1169,17 +1187,29 @@
     "sweetness": 4,
     "bitterness": 1,
     "roast_intensity": 3,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": "ethiopian-yirgacheffe-coffee"
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "Counter Culture Hologram",
+        "logic": "origin"
+      },
+      {
+        "product": "Volcanica Kona Coffee",
+        "logic": "performance"
+      }
+    ],
+    "reference_slug": "ethiopian-yirgacheffe-coffee",
+    "profile_source": "Volcanica listing + CoffeeReview (Ethiopian Yirgacheffe) + The Brew Adventures: washed Yirgacheffe landrace Arabica, blueberry and lemon forward with stone fruit and dark chocolate, floral, rich mouthfeel, bright. Amazon whole-bean ASIN not confirmed -> BACKFILL. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "volcanica-sumatra-mandheling",
     "name": "Volcanica Sumatra Mandheling",
     "brand": "Volcanica Coffee",
     "roast_level": "Dark",
-    "origin": "Sumatra",
-    "process_method": "Wet-Hulled",
+    "origin": "Sumatra, Indonesia (single origin)",
+    "process_method": "Wet-hulled (Giling Basah)",
     "weight_oz": 16,
     "amazon_asin": null,
     "roaster_url": "https://volcanicacoffee.com/products/sumatra-mandheling-coffee",
@@ -1198,9 +1228,21 @@
     "sweetness": 2,
     "bitterness": 4,
     "roast_intensity": 5,
-    "review_framing": null,
-    "comparison_anchors": [],
-    "reference_slug": "sumatra-mandheling-coffee"
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "Camano Island Coffee Roasters Sumatra",
+        "logic": "origin"
+      },
+      {
+        "product": "Death Wish Valhalla Java",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": "sumatra-mandheling-coffee",
+    "profile_source": "Volcanica listing (Sumatra Mandheling Reserve dark roast): wet-hulled, earthy richness, chocolate, heavy syrupy body, low acidity, smooth. Amazon whole-bean ASIN not confirmed -> BACKFILL. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
   },
   {
     "id": "volcanica-costa-rica-tarrazu",
@@ -8762,6 +8804,220 @@
     ],
     "reference_slug": null,
     "profile_source": "Amazon (B08468NRLX) + clearlycoffee review: earthy, slight cocoa, light smoke, smooth clean finish; 100% Arabica. NOTE: US McCafe Premium Roast is sold ground; the only whole-bean SKU found is a Canadian import (medium-dark, 900g). Origin not published. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "eight-oclock-dark-italian",
+    "name": "Eight O'Clock Dark Italian Espresso",
+    "brand": "Eight O'Clock Coffee",
+    "roast_level": "Dark",
+    "origin": "Latin America and East Africa blend",
+    "process_method": "Washed",
+    "weight_oz": 32,
+    "amazon_asin": "B0F331F1KP",
+    "roaster_url": "https://www.eightoclock.com/products/eight-oclock-coffee-dark-italian-espresso-whole-bean",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "espresso",
+      "drip",
+      "french press"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "caramel",
+      "full body",
+      "bold"
+    ],
+    "acidity": 1,
+    "body": 4,
+    "sweetness": 2,
+    "bitterness": 4,
+    "roast_intensity": 5,
+    "review_framing": "roast_mechanism",
+    "comparison_anchors": [
+      {
+        "product": "Eight O'Clock Original Whole Bean Coffee",
+        "logic": "performance"
+      },
+      {
+        "product": "Starbucks Espresso Roast",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Eight O'Clock listing + Amazon (B0F331F1KP): chocolate and caramel, full-bodied; 100% Arabica Latin America to East Africa, dark espresso roast. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "the-bean-coffee-jamaica",
+    "name": "The Bean Coffee Company Jamaica Blue Mountain Style",
+    "brand": "The Bean Coffee Company",
+    "roast_level": "Medium",
+    "origin": "Blend (Jamaica Blue Mountain style approximation, not authentic JBM)",
+    "process_method": "Washed",
+    "weight_oz": 16,
+    "amazon_asin": "BACKFILL",
+    "roaster_url": "https://www.thebeancoffeecompany.com/",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over",
+      "french press"
+    ],
+    "flavor_notes": [
+      "brown sugar",
+      "cocoa",
+      "mild floral",
+      "smooth"
+    ],
+    "acidity": 3,
+    "body": 2,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 3,
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {
+        "product": "Volcanica Jamaican Blue Mountain Blend",
+        "logic": "flavor_profile"
+      },
+      {
+        "product": "Eight O'Clock Original Whole Bean Coffee",
+        "logic": "performance"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Generic Jamaica Blue Mountain STYLE profile (smooth, brown sugar, cocoa, mild floral, light-medium body) cross-referenced from Coffee Bean Direct / espresso-coffee-guide. IMPORTANT: this is a Blue Mountain-STYLE blend, NOT authentic Jamaica Blue Mountain. The Bean Coffee Company's specific listing/ASIN not confidently confirmed -> amazon_asin BACKFILL; flavor notes are style-typical, not verified for this exact SKU. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "volcanica-kona-coffee",
+    "name": "Volcanica Kona Coffee Extra Fancy",
+    "brand": "Volcanica Coffee",
+    "roast_level": "Medium",
+    "origin": "Kona, Hawaii (single origin, 100% Kona Extra Fancy)",
+    "process_method": "Washed",
+    "weight_oz": 16,
+    "amazon_asin": "B0030IEZUA",
+    "roaster_url": "https://volcanicacoffee.com/products/kona-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over"
+    ],
+    "flavor_notes": [
+      "jasmine",
+      "caramel",
+      "tart cherry",
+      "buttery"
+    ],
+    "acidity": 3,
+    "body": 3,
+    "sweetness": 4,
+    "bitterness": 1,
+    "roast_intensity": 3,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Koa Coffee Estate Kona Medium Roast",
+        "logic": "origin"
+      },
+      {
+        "product": "Volcanica Ethiopian Yirgacheffe",
+        "logic": "performance"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Volcanica listing + Amazon (B0030IEZUA): Extra Fancy 100% Kona, silky buttery body, floral (jasmine), caramel undertones, bright citrus/tart cherry, light acidity, nutty finish. Roasted in Atlanta. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "volcanica-jamaican-blue-mountain",
+    "name": "Volcanica Jamaican Blue Mountain Blend",
+    "brand": "Volcanica Coffee",
+    "roast_level": "Medium",
+    "origin": "Jamaica Blue Mountain blend (30% JBM, 70% mountain-grown)",
+    "process_method": "Washed",
+    "weight_oz": 16,
+    "amazon_asin": "B0030LRUCW",
+    "roaster_url": "https://volcanicacoffee.com/products/jamaica-blue-mountain-coffee-blend",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over",
+      "french press"
+    ],
+    "flavor_notes": [
+      "brown sugar",
+      "star anise",
+      "cocoa",
+      "creamy"
+    ],
+    "acidity": 3,
+    "body": 3,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 3,
+    "review_framing": "comparative",
+    "comparison_anchors": [
+      {
+        "product": "The Bean Coffee Company Jamaica Blue Mountain Style",
+        "logic": "flavor_profile"
+      },
+      {
+        "product": "Volcanica House Blend",
+        "logic": "performance"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Volcanica listing + Amazon (B0030LRUCW): medium roast, brown sugar, star anise, cocoa, creamy sweetness, light acidity. NOTE: this is the Volcanica JBM BLEND (30% Jamaica Blue Mountain, 70% other mountain-grown; the only blend approved by the Jamaican Coffee Board), NOT 100% JBM. Verified 2026-06-13.",
+    "price_per_oz": null,
+    "price_status": "BACKFILL"
+  },
+  {
+    "id": "volcanica-house-blend",
+    "name": "Volcanica House Blend",
+    "brand": "Volcanica Coffee",
+    "roast_level": "Medium",
+    "origin": "Central and South America blend",
+    "process_method": "Washed",
+    "weight_oz": 16,
+    "amazon_asin": "B0030LIKUI",
+    "roaster_url": "https://volcanicacoffee.com/products/volcanica-house-blend-coffee",
+    "affiliate_tag": "coffeebeanind-20",
+    "best_brew_methods": [
+      "drip",
+      "pour over",
+      "french press"
+    ],
+    "flavor_notes": [
+      "chocolate",
+      "sweet",
+      "balanced",
+      "full body"
+    ],
+    "acidity": 2,
+    "body": 3,
+    "sweetness": 3,
+    "bitterness": 2,
+    "roast_intensity": 3,
+    "review_framing": "sensory",
+    "comparison_anchors": [
+      {
+        "product": "Caribou Coffee Caribou Blend",
+        "logic": "performance"
+      },
+      {
+        "product": "Volcanica Costa Rica Tarrazu",
+        "logic": "flavor_profile"
+      }
+    ],
+    "reference_slug": null,
+    "profile_source": "Volcanica listing + Amazon (B0030LIKUI): medium roast South and Central American blend, chocolate notes, sweet yet bold, balanced acidity, clean, full body. Mycotoxin/mold tested. Verified 2026-06-13.",
     "price_per_oz": null,
     "price_status": "BACKFILL"
   }
